@@ -1,18 +1,18 @@
 [tool.poetry]
-name = "geneweaver-client"
-version = "0.0.6"
+name = "jax-geneweaver-client"
+version = "0.0.1"
 description = ""
 authors = ["Jax & Baylor Computational Sciences <cssc@jax.org>"]
 readme = "README.md"
 packages = [
-    { from="src", include= "geneweaver/client"}
+    { from="src", include= "jax/geneweaver/client"}
 ]
 
 [tool.poetry.dependencies]
 python = "^3.9"
 requests = "^2.28.1"
 pydantic = {extras = ["dotenv"], version = "^1.10.2"}
-geneweaver-core = "^0.0.20"
+jax-geneweaver-core = "^0.0.1"
 
 
 [build-system]

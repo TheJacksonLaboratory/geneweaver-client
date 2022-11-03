@@ -1,7 +1,10 @@
+"""
+Functions that call the legecy GeneWeaver Flask API that's built in to the py3-geneweaver-website repo.
+"""
 import requests
 from typing import Optional
-from geneweaver.core.schema import legacy_api
-from geneweaver.client.config import ClientSettings
+from jax.geneweaver.core.schema import legacy_api
+from jax.geneweaver.client.config import ClientSettings
 
 
 def add_geneset_by_user(settings: ClientSettings,
@@ -19,7 +22,6 @@ def create_temp_geneset_original(settings: ClientSettings, geneset):
     url = settings.API_HOST + settings.LEGACY_PATHS.CREATE_TEMP_GENESET_ORIGINAL
     response = requests.post(url, json=geneset.dict())
     return response
-
 
 
 def add_project_by_user(settings: ClientSettings,
