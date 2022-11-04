@@ -82,7 +82,7 @@ python-versions = "*"
 
 [[package]]
 name = "jax-geneweaver-core"
-version = "0.0.2"
+version = "0.0.3"
 description = "The core of the Jax-Geneweaver Python library"
 category = "main"
 optional = false
@@ -237,7 +237,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "bdbcbc7ac34948d174b99ad595174ca79fb6c4845dff18b1f0eeaa9425ae1a0a"
+content-hash = "3305d8cfeac1927c3cdf7710e470045352e364684e8961ce013858e2ebd4f6e1"
 
 [metadata.files]
 attrs = [
@@ -321,8 +321,8 @@ iniconfig = [
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
 ]
 jax-geneweaver-core = [
-    {file = "jax_geneweaver_core-0.0.2-py3-none-any.whl", hash = "sha256:0c2abf610ce0cc54cd43ddb55214151ad315877d5570bea8e17482b23976d7d6"},
-    {file = "jax_geneweaver_core-0.0.2.tar.gz", hash = "sha256:871f47558517c180326635e745f914297c8d290e4e1df3a466dd273b75cbe252"},
+    {file = "jax_geneweaver_core-0.0.3-py3-none-any.whl", hash = "sha256:d912d1f87f777b961b11dd7d322961b73d4cf15404083e1ea10d58be4edaa2c8"},
+    {file = "jax_geneweaver_core-0.0.3.tar.gz", hash = "sha256:82a1e85b411d2b3e40c3221aac798af6915ef664af212d413f23ff161250455d"},
 ]
 packaging = [
     {file = "packaging-21.3-py3-none-any.whl", hash = "sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522"},
