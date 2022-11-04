@@ -11,13 +11,13 @@ image:
   password: '$JAX_CS_REGISTRY_BITBUCKET'
 definitions:
   steps:
-    - step: &unittests
+    - step: &quicktests
       name: Run limited test suite by default
       script:
         - poetry install --no-interaction --no-ansi
         - poetry run pytest -v tests/unit/
           --junitxml=test-reports/report.xml
-          --cov
+          --cov src/geneweaver/client
           --cov-report xml:coverage-reports/coverage-report.xml
           --cov-report html:coverage-html/
       artifacts:
@@ -29,9 +29,9 @@ definitions:
           lfs: true
         script:
           - poetry install --no-interaction --no-ansi
-          - poetry run pytest -v tests/unit/
+          - poetry run pytest -v tests/
             --junitxml=test-reports/report.xml 
-            --cov 
+            --cov src/geneweaver/client
             --cov-report xml:coverage-reports/coverage-report.xml 
             --cov-report html:coverage-html/ 
           # SonarCloud scan
@@ -60,9 +60,6 @@ definitions:
           - poetry config pypi-token.pypi $PYPI_TOKEN
           - poetry publish --build
 pipelines:
-  default:
-    - step: *unittests
-    - step: *securityscan
   pull-requests:
     '**':
       - step: *prtests
