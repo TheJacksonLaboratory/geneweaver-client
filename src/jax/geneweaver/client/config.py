@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel, BaseSettings, validator
 
 
@@ -50,7 +51,7 @@ class ClientSettings(BaseSettings):
             return values['API_HOST'] + values['API_PATH']
         return v
 
-    API_KEY: str
+    API_KEY: Optional[str] = None
 
     class Config:
         env_file = '.env'
