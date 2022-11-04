@@ -17,7 +17,7 @@ definitions:
         - poetry install --no-interaction --no-ansi
         - poetry run pytest -v tests/unit/
           --junitxml=test-reports/report.xml
-          --cov src/geneweaver/client
+          --cov jax.geneweaver.client
           --cov-report xml:coverage-reports/coverage-report.xml
           --cov-report html:coverage-html/
       artifacts:
@@ -31,7 +31,7 @@ definitions:
           - poetry install --no-interaction --no-ansi
           - poetry run pytest -v tests/
             --junitxml=test-reports/report.xml 
-            --cov src/geneweaver/client
+            --cov jax.geneweaver.client
             --cov-report xml:coverage-reports/coverage-report.xml 
             --cov-report html:coverage-html/ 
           # SonarCloud scan
