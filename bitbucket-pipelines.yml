@@ -18,7 +18,7 @@ definitions:
           lfs: true
         script:
           - poetry install --no-interaction --no-ansi
-          - poetry run pytest -v tests/*
+          - poetry run pytest -v tests/
             --junitxml=test-reports/report.xml 
             --cov 
             --cov-report xml:coverage-reports/coverage-report.xml 
@@ -39,7 +39,7 @@ definitions:
         script:
           - export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring && 
             poetry config repositories.testpypi https://test.pypi.org/legacy/
-          - poetry config pypi-token.testpypi $JAX_CS_PYPI_TEST_TOKEN
+          - poetry config pypi-token.testpypi $PYPI_TEST_TOKEN
           - poetry publish --build --repository testpypi
     - step: &deployprod
         name: Deploy to Production PyPI
