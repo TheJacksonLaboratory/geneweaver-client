@@ -41,7 +41,7 @@ class ClientSettings(BaseSettings):
     API_HOST: str = "https://geneweaver.org"
     API_PATH: str = "/api/v2"
 
-    API_URL: str = API_HOST + API_PATH
+    API_URL: Optional[str] = None
 
     LEGACY_PATHS: LegacyClientPaths = LegacyClientPaths()
 

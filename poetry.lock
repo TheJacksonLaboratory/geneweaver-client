@@ -2,7 +2,7 @@
 name = "attrs"
 version = "22.1.0"
 description = "Classes Without Boilerplate"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.5"
 
@@ -35,7 +35,7 @@ unicode-backport = ["unicodedata2"]
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
 
@@ -43,7 +43,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7
 name = "coverage"
 version = "6.5.0"
 description = "Code coverage measurement for Python"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -57,7 +57,7 @@ toml = ["tomli"]
 name = "exceptiongroup"
 version = "1.0.1"
 description = "Backport of PEP 654 (exception groups)"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -76,13 +76,13 @@ python-versions = ">=3.5"
 name = "iniconfig"
 version = "1.1.1"
 description = "iniconfig: brain-dead simple config-ini parsing"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
 [[package]]
 name = "jax-geneweaver-core"
-version = "0.0.1"
+version = "0.0.2"
 description = "The core of the Jax-Geneweaver Python library"
 category = "main"
 optional = false
@@ -95,7 +95,7 @@ pydantic = {version = ">=1.9.1,<2.0.0", extras = ["dotenv"]}
 name = "packaging"
 version = "21.3"
 description = "Core utilities for Python packages"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -106,7 +106,7 @@ pyparsing = ">=2.0.2,<3.0.5 || >3.0.5"
 name = "pluggy"
 version = "1.0.0"
 description = "plugin and hook calling mechanisms for python"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -134,7 +134,7 @@ email = ["email-validator (>=1.0.3)"]
 name = "pyparsing"
 version = "3.0.9"
 description = "pyparsing module - Classes and methods to define and execute parsing grammars"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6.8"
 
@@ -145,7 +145,7 @@ diagrams = ["jinja2", "railroad-diagrams"]
 name = "pytest"
 version = "7.2.0"
 description = "pytest: simple powerful testing with Python"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -165,7 +165,7 @@ testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.
 name = "pytest-cov"
 version = "4.0.0"
 description = "Pytest plugin for measuring coverage."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -209,7 +209,7 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -237,7 +237,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "c9c769b0c2cc401b1b1eb231124034e994abdbe77d1c7200be795886836ad248"
+content-hash = "bdbcbc7ac34948d174b99ad595174ca79fb6c4845dff18b1f0eeaa9425ae1a0a"
 
 [metadata.files]
 attrs = [
@@ -321,8 +321,8 @@ iniconfig = [
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
 ]
 jax-geneweaver-core = [
-    {file = "jax-geneweaver-core-0.0.1.tar.gz", hash = "sha256:53c03e060953f75c9f20231a69fadf47f977ff86b038329e470548856189559b"},
-    {file = "jax_geneweaver_core-0.0.1-py3-none-any.whl", hash = "sha256:5885f85a0d7906d27779a4764845367fa282ab9fdf40cb64549b97d65e6e2954"},
+    {file = "jax_geneweaver_core-0.0.2-py3-none-any.whl", hash = "sha256:0c2abf610ce0cc54cd43ddb55214151ad315877d5570bea8e17482b23976d7d6"},
+    {file = "jax_geneweaver_core-0.0.2.tar.gz", hash = "sha256:871f47558517c180326635e745f914297c8d290e4e1df3a466dd273b75cbe252"},
 ]
 packaging = [
     {file = "packaging-21.3-py3-none-any.whl", hash = "sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522"},

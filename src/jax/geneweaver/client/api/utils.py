@@ -4,9 +4,9 @@ from contextlib import contextmanager
 from jax.geneweaver.client.api.exc import GeneweaverAPIException
 
 
-def _raise_for_status_hook(r, *args, **kwargs):
+def _raise_for_status_hook(response, *args, **kwargs):
     """A function hook to have requests raise an exception for non-200 status codes."""
-    r.raise_for_status()
+    response.raise_for_status()
 
 
 @contextmanager

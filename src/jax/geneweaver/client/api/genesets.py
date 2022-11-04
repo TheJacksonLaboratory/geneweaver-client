@@ -15,7 +15,7 @@ def post(token: str, geneset: GenesetUpload) -> Optional[Geneset]:
         resp = session.post(settings.API_URL + ENDPOINT,
                             json=geneset.dict(),
                             headers={"Authorization": token})
-        return Geneset(**resp.json())
+    return Geneset(**resp.json())
 
 
 def post_batch(token: str, geneset: BatchUpload) -> Geneset:

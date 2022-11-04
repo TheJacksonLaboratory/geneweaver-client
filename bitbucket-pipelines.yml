@@ -12,13 +12,24 @@ image:
 definitions:
   steps:
     - step: &unittests
-        name: Run Unittests
+      name: Run limited test suite by default
+      script:
+        - poetry install --no-interaction --no-ansi
+        - poetry run pytest -v tests/unit/
+          --junitxml=test-reports/report.xml
+          --cov
+          --cov-report xml:coverage-reports/coverage-report.xml
+          --cov-report html:coverage-html/
+      artifacts:
+        - coverage-html/*
+    - step: &prtests
+        name: Run an expanded test suite for Pull Requests
         clone:
           depth: full
           lfs: true
         script:
           - poetry install --no-interaction --no-ansi
-          - poetry run pytest -v tests/
+          - poetry run pytest -v tests/unit/
             --junitxml=test-reports/report.xml 
             --cov 
             --cov-report xml:coverage-reports/coverage-report.xml 
@@ -54,11 +65,11 @@ pipelines:
     - step: *securityscan
   pull-requests:
     '**':
-      - step: *unittests
+      - step: *prtests
       - step: *securityscan
       - step: *deploytest
   branches:
     master:
-      - step: *unittests
+      - step: *prtests
       - step: *securityscan
       - step: *deployprod
