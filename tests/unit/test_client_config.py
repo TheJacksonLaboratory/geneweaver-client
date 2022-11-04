@@ -37,3 +37,16 @@ def test_client_settings_kwargs():
     assert these_settings.API_KEY == 'test_1'
     assert these_settings.API_PATH == 'test_2'
     assert these_settings.API_URL == 'test_3'
+
+
+def test_client_settings_kwargs_generate_api_url():
+    """Test the instantiating ClientSettings class with kwargs, leaving out API_URL."""
+    these_settings = ClientSettings(
+        API_HOST='test_0',
+        API_KEY='test_1',
+        API_PATH='test_2',
+    )
+    assert these_settings.API_HOST == 'test_0'
+    assert these_settings.API_KEY == 'test_1'
+    assert these_settings.API_PATH == 'test_2'
+    assert these_settings.API_URL == 'test_0test_2'
