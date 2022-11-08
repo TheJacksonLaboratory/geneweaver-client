@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel, BaseSettings, validator
 
 
@@ -38,9 +39,9 @@ class LegacyClientPaths(BaseModel):
 
 class ClientSettings(BaseSettings):
     API_HOST: str = "https://geneweaver.org"
-    API_PATH: str = "/api/v1"
+    API_PATH: str = "/api/v2"
 
-    API_URL: str = API_HOST + API_PATH
+    API_URL: Optional[str] = None
 
     LEGACY_PATHS: LegacyClientPaths = LegacyClientPaths()
 
@@ -50,7 +51,7 @@ class ClientSettings(BaseSettings):
             return values['API_HOST'] + values['API_PATH']
         return v
 
-    API_KEY: str
+    API_KEY: Optional[str] = None
 
     class Config:
         env_file = '.env'

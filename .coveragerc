@@ -1,0 +1,6 @@
+[run]
+source =
+    ./src/geneweaver
+omit =
+    ./src/jax/geneweaver/client/**/*legacy*
+    ./src/jax/geneweaver/client/*legacy*

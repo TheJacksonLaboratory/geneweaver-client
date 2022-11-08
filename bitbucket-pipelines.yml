@@ -1,0 +1,72 @@
+# This is a Bitbucket Pipelines CI/CD configuration file.
+#
+# Check out Atlassian guides at https://confluence.atlassian.com/x/zd-5Mw for more examples.
+# Only use spaces to indent your .yml configuration.
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+# See https://bitbucket-pipelines.atlassian.io/validator
+image:
+  name: us-docker.pkg.dev/jax-cs-registry/docker/base/python3.10-slim-poetry
+  username: _json_key_base64
+  password: '$JAX_CS_REGISTRY_BITBUCKET'
+definitions:
+  steps:
+    - step: &quicktests
+      name: Run limited test suite by default
+      script:
+        - poetry install --no-interaction --no-ansi
+        - poetry run pytest -v tests/unit/
+          --junitxml=test-reports/report.xml
+          --cov jax.geneweaver.client
+          --cov-report xml:coverage-reports/coverage-report.xml
+          --cov-report html:coverage-html/
+      artifacts:
+        - coverage-html/*
+    - step: &prtests
+        name: Run an expanded test suite for Pull Requests
+        clone:
+          depth: full
+          lfs: true
+        script:
+          - poetry install --no-interaction --no-ansi
+          - poetry run pytest -v tests/
+            --junitxml=test-reports/report.xml 
+            --cov jax.geneweaver.client
+            --cov-report xml:coverage-reports/coverage-report.xml 
+            --cov-report html:coverage-html/ 
+          # SonarCloud scan
+          - pipe: sonarsource/sonarcloud-scan:1.4.0
+          - pipe: sonarsource/sonarcloud-quality-gate:0.1.6
+        artifacts:
+          - coverage-html/*
+    - step: &securityscan
+        name: Security Scan
+        script:
+          # See more security tools at https://bitbucket.org/product/features/pipelines/integrations?&category=security
+          - pipe: atlassian/git-secrets-scan:0.5.1
+    - step: &deploytest
+        name: Deploy to Test PyPI
+        trigger: manual
+        script:
+          - export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring && 
+            poetry config repositories.testpypi https://test.pypi.org/legacy/
+          - poetry config pypi-token.testpypi $PYPI_TEST_TOKEN
+          - poetry publish --build --repository testpypi
+    - step: &deployprod
+        name: Deploy to Production PyPI
+        trigger: manual
+        script:
+          - export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
+          - poetry config pypi-token.pypi $PYPI_TOKEN
+          - poetry publish --build
+pipelines:
+  pull-requests:
+    '**':
+      - step: *prtests
+      - step: *securityscan
+      - step: *deploytest
+  branches:
+    master:
+      - step: *prtests
+      - step: *securityscan
+      - step: *deployprod
