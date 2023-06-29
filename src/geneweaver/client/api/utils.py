@@ -1,11 +1,14 @@
 """API related utilities, helpers, and other internal functions."""
 from contextlib import contextmanager
+from typing import Any
 
 import requests
 from geneweaver.client.api.exc import GeneweaverAPIException
 
 
-def _raise_for_status_hook(response, *args, **kwargs):
+def _raise_for_status_hook(
+    response: requests.Response, *args: Any, **kwargs: Any  # noqa: ANN401
+) -> None:
     """Have request responses raise an exception for non-200 status codes."""
     response.raise_for_status()
 

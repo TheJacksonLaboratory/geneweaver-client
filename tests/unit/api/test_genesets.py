@@ -1,3 +1,5 @@
+"""Tests for the Geneset API."""
+# ruff: noqa: ANN001, ANN201
 import datetime
 
 import pytest
@@ -52,6 +54,7 @@ VALID_GENESET_BATCH_UPLOADS = [
 @pytest.mark.parametrize("geneset", VALID_GENESET_UPLOADS)
 @pytest.mark.parametrize("response", VALID_GENESET_RESPONSES)
 def test_post_geneset(config_sessionmanager_patch, geneset, response):
+    """Test that the geneset upload API works."""
     config_sessionmanager_patch(status_code=200, resp_json=response)
     result = genesets.post("token", geneset)
     assert result is not None
@@ -60,6 +63,7 @@ def test_post_geneset(config_sessionmanager_patch, geneset, response):
 @pytest.mark.parametrize("geneset", VALID_GENESET_UPLOADS)
 @pytest.mark.parametrize("error_status", CLIENT_ERROR + SERVER_ERROR)
 def test_post_geneset_fails(config_sessionmanager_patch, error_status, geneset):
+    """Test that the geneset upload API fails when the server returns an error."""
     config_sessionmanager_patch(status_code=error_status, resp_json={"error": "test"})
     with pytest.raises(GeneweaverAPIException):
         _ = genesets.post("token", geneset)
@@ -68,6 +72,7 @@ def test_post_geneset_fails(config_sessionmanager_patch, error_status, geneset):
 @pytest.mark.parametrize("geneset", VALID_GENESET_BATCH_UPLOADS)
 @pytest.mark.parametrize("response", VALID_GENESET_RESPONSES)
 def test_post_geneset_batch(config_sessionmanager_patch, geneset, response):
+    """Test that the geneset batch upload API works."""
     config_sessionmanager_patch(status_code=200, resp_json=response)
     result = genesets.post_batch("token", geneset)
     assert result is not None

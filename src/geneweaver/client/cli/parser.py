@@ -1,3 +1,4 @@
+"""CLI for parsing data files."""
 from pathlib import Path
 
 import typer
@@ -12,20 +13,22 @@ console = Console()
 
 
 @cli.command()
-def get_headers(file_path: Path, sheet: str = None):
+def get_headers(file_path: Path, sheet: str = None) -> None:
+    """Get the headers from a data file."""
     headers = []
     try:
         headers = general.get_headers(file_path, sheet_name=sheet)
     except (EmptyFileError, ValueError) as e:
         print(e)
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e
 
     for header in headers:
         print(header)
 
 
 @cli.command()
-def preview(file_path: Path, rows_to_read: int = 5, sheet: str = None):
+def preview(file_path: Path, rows_to_read: int = 5, sheet: str = None) -> None:
+    """Preview the data in a data file."""
     rows = []
     try:
         headers, headers_idx = general.get_headers(file_path, sheet_name=sheet)
@@ -34,7 +37,7 @@ def preview(file_path: Path, rows_to_read: int = 5, sheet: str = None):
         )
     except (EmptyFileError, ValueError) as e:
         print(e)
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e
 
     table = Table(*headers)
     for row in rows:
@@ -43,10 +46,11 @@ def preview(file_path: Path, rows_to_read: int = 5, sheet: str = None):
 
 
 @cli.command()
-def get_sheet_names(file_path: Path):
+def get_sheet_names(file_path: Path) -> None:
+    """Get the sheet names from an Excel file."""
     try:
         names = xlsx.get_sheet_names(file_path)
         print(names)
     except ValueError as e:
         print(e)
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e
