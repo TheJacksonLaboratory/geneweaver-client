@@ -1,5 +1,5 @@
 """Exception classes relating to calling the Geneweaver API."""
-from jax.geneweaver.core.exc import GeneweaverException
+from geneweaver.core.exc import GeneweaverException
 
 
 class GeneweaverAPIException(GeneweaverException):

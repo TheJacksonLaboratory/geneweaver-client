@@ -1,23 +1,35 @@
-import pytest
 import datetime
 
-from jax.geneweaver.client.api import genesets, GeneweaverAPIException
-from jax.geneweaver.core.schema.geneset import GenesetUpload, BatchUpload
-from jax.geneweaver.core.enum import GenesetAccess, GenesetScoreType
+import pytest
+from geneweaver.client.api import genesets
+from geneweaver.client.api.exc import GeneweaverAPIException
+from geneweaver.core.enum import GenesetAccess, GenesetScoreType
+from geneweaver.core.schema.geneset import BatchUpload, GenesetUpload
 
 from .test_api_utils import CLIENT_ERROR, SERVER_ERROR
 
 VALID_GENESET_RESPONSES = [
-    {"name": "test", "abbreviation": "test", "description": "test", "count": 1,
-     "threshold_type": 0, "threshold": '0', "gene_id_type": 0,
-     "created": str(datetime.date.today()),
-     "admin_flag": "test",
-     "updated": str(datetime.datetime.now()),
-     "status": "test", "gsv_qual": "test", "attribution": 0, "is_edgelist": False}
+    {
+        "name": "test",
+        "abbreviation": "test",
+        "description": "test",
+        "count": 1,
+        "threshold_type": 0,
+        "threshold": "0",
+        "gene_id_type": 0,
+        "created": str(datetime.date.today()),
+        "admin_flag": "test",
+        "updated": str(datetime.datetime.now()),
+        "status": "test",
+        "gsv_qual": "test",
+        "attribution": 0,
+        "is_edgelist": False,
+    }
 ]
 
 VALID_GENESET_UPLOADS = [
-    GenesetUpload(**{
+    GenesetUpload(
+        **{
             "score-type": GenesetScoreType.BINARY,
             "pubmed-id": "12345678",
             "access": GenesetAccess.PUBLIC,
@@ -26,8 +38,10 @@ VALID_GENESET_UPLOADS = [
             "label": "test",
             "species": "test",
             "description": "test",
-            "gene-identifiers": "test",
-            "gene-list": [{"gene-id": "test", "value": 1}]}),
+            "gene-identifier": "test",
+            "gene-list": [{"gene-id": "test", "value": 1}],
+        }
+    ),
 ]
 
 VALID_GENESET_BATCH_UPLOADS = [

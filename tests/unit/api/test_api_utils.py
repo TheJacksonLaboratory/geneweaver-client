@@ -1,7 +1,8 @@
+from itertools import chain
+
 import pytest
 import requests
-from itertools import chain
-from jax.geneweaver.client.api.utils import _raise_for_status_hook, sessionmanager
+from geneweaver.client.api.utils import _raise_for_status_hook, sessionmanager
 
 INFO = list(range(100, 104))
 SUCCESS = list(chain(range(200, 209), (226,)))

@@ -1,13 +1,16 @@
-import pytest
 import json
-import requests
-from requests import Response
 from contextlib import contextmanager
-from jax.geneweaver.client.api.utils import _raise_for_status_hook
+
+import pytest
+import requests
+from geneweaver.client.api.utils import _raise_for_status_hook
+from requests import Response
 
 
 class MockSession:
-    def __init__(self, status_code=200, resp_json=None, resp_content=None, raise_for_status=True):
+    def __init__(
+        self, status_code=200, resp_json=None, resp_content=None, raise_for_status=True
+    ) -> None:
         self._default_resp_content = b'{"status": "ok"}'
         self.status_code = status_code
         self.raise_for_status = raise_for_status
@@ -50,13 +53,17 @@ class MockSession:
         return self._prepare_mock_response(url, **kwargs)
 
 
-@pytest.fixture
+@pytest.fixture()
 def config_sessionmanager_patch(monkeypatch):
     def create_contextmanager(status_code=200, resp_json=None, resp_content=None):
         @contextmanager
         def mocked_contextmanager():
-            mock = MockSession(status_code=status_code, resp_json=resp_json, resp_content=resp_content)
+            mock = MockSession(
+                status_code=status_code, resp_json=resp_json, resp_content=resp_content
+            )
             yield mock
+
         monkeypatch.setattr(requests, "Session", mocked_contextmanager)
         return mocked_contextmanager
+
     return create_contextmanager
