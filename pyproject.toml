@@ -1,25 +1,40 @@
 [tool.poetry]
-name = "jax-geneweaver-client"
-version = "0.0.1"
-description = ""
-authors = ["Jax & Baylor Computational Sciences <cssc@jax.org>"]
+name = "geneweaver-client"
+version = "0.0.1a0"
+description = "A Python Client for the Geneweaver API"
+authors = ["Jax Computational Sciences <cssc@jax.org>"]
 readme = "README.md"
+license = "Apache-2.0"
+homepage = "https://bergsalex.github.io/geneweaver-docs/"
+repository = "https://bitbucket.org/jacksonlaboratory/geneweaver-client/"
 packages = [
-    { from="src", include= "jax/geneweaver/client"}
+    { from="src", include= "geneweaver/client"}
 ]
+
+[tool.poetry.scripts]
+gweave = "geneweaver.client.cli.main:cli"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-requests = "^2.28.1"
-pydantic = {extras = ["dotenv"], version = "^1.10.2"}
-pytest = "^7.2.0"
+requests = "^2.28.2"
+pydantic = {extras = ["dotenv"], version = "^1.10.7"}
+pytest = "^7.2.2"
 pytest-cov = "^4.0.0"
-jax-geneweaver-core = "0.0.3"
-
+geneweaver-core = "^0.1.0a1"
+typer = {extras = ["all"], version = "^0.9.0"}
+rich = "^13.4.2"
+openpyxl = "^3.1.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"
 pytest-cov = "^4.0.0"
+geneweaver-testing = "^0.0.1a10"
+
+[tool.ruff]
+select = ['F', 'E', 'W', 'A', 'C90', 'N', 'B', 'ANN', 'D', 'I', 'ERA', 'PD', 'NPY', 'PT']
+
+[tool.isort]
+profile = "black"
 
 [build-system]
 requires = ["poetry-core"]
