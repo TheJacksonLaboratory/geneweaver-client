@@ -27,10 +27,10 @@ def get_headers(file_path: StringOrPath, sheet_name: Optional[str] = None) -> Li
     file_type = utils.get_file_type(file_path)
 
     if file_type == "csv":
-        data = csv.get_headers(file_path)
+        data, _ = csv.get_headers(file_path)
 
     elif file_type == "xlsx":
-        data = xlsx.get_headers(file_path, sheet_name)
+        data, _ = xlsx.get_headers(file_path, sheet_name)
 
     else:
         raise ValueError(f"Unsupported file type: {file_type}")

@@ -5,15 +5,16 @@ import typer
 
 from . import parser
 
-cli = typer.Typer()
+cli = typer.Typer(no_args_is_help=True)
 cli.add_typer(parser.cli, name="parse")
 
 
-def version_callback() -> None:
+def version_callback(version: bool) -> None:
     """Print the version of the GeneWeaver CLI client."""
-    version = pkg_resources.get_distribution("geneweaver-client").version
-    typer.echo(f"GeneWeaver CLI client (gweave) version: {version}")
-    raise typer.Exit(code=0)
+    if version:
+        version = pkg_resources.get_distribution("geneweaver-client").version
+        typer.echo(f"GeneWeaver CLI client (gweave) version: {version}")
+        raise typer.Exit(code=0)
 
 
 @cli.callback()

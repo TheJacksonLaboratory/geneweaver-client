@@ -45,6 +45,6 @@ def replace_keys(
     """
     new_data = []
     for row in data:
-        new_row = dict(zip(new_keys, row.values(), strict=True))
+        new_row = dict(zip(new_keys, row.values()))  # noqa: B905
         new_data.append(new_row)
     return new_data
