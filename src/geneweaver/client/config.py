@@ -1,9 +1,13 @@
-from typing import Optional
+"""GeneWeaver Client configuration module."""
+
+from typing import Optional, Type
 
 from pydantic import BaseModel, BaseSettings, validator
 
 
 class LegacyClientPaths(BaseModel):
+    """Configuration schema for legacy client paths."""
+
     KEYWORD_SEARCH_GUEST: str = "/api/get/search/bykeyword/{apikey}/{search_term}/"
 
     GET_GENESETS_BY_GENE_REF_ID: str = (
@@ -53,6 +57,8 @@ class LegacyClientPaths(BaseModel):
 
 
 class ClientSettings(BaseSettings):
+    """Settings class for GeneWeaver Client."""
+
     API_HOST: str = "https://geneweaver.org"
     API_PATH: str = "/api/v2"
 
@@ -61,7 +67,10 @@ class ClientSettings(BaseSettings):
     LEGACY_PATHS: LegacyClientPaths = LegacyClientPaths()
 
     @validator("API_URL")
-    def validate_api_url(cls, v, values):
+    def validate_api_url(
+        cls: Type["ClientSettings"], v: Optional[str], values: dict  # noqa: N805
+    ) -> str:
+        """Construct the API URL if not explicitly set."""
         if not v:
             return values["API_HOST"] + values["API_PATH"]
         return v
@@ -69,6 +78,8 @@ class ClientSettings(BaseSettings):
     API_KEY: Optional[str] = None
 
     class Config:
+        """Settings configuration."""
+
         env_file = ".env"
         env_prefix = "GW_CLIENT_"
 
