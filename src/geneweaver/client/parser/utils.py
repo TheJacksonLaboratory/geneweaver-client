@@ -10,14 +10,11 @@ def get_file_type(file_path: StringOrPath) -> str:
 
     :param file_path: Path to the file.
 
-    Returns
-    -------
-    str: The file type. 'csv' if the file is a CSV file, 'xlsx' if the file is an Excel
-         file.
+    :returns: The file type.
+                - 'csv' if the file is a CSV file,
+                - 'xlsx' if the file is an Excel file.
 
-    Raises
-    ------
-    ValueError: If the file type is not supported.
+    :raises ValueError: If the file type is not supported.
     """
     file_path = Path(file_path)  # convert to Path object if not already
     extension = file_path.suffix.lower()
@@ -39,9 +36,7 @@ def replace_keys(
     :param new_keys: List of new keys. The order should correspond to the order of
     original keys.
 
-    Returns
-    -------
-    List[Dict[str, str]]: A new list of dictionaries with replaced keys.
+    :returns: A new list of dictionaries with replaced keys.
     """
     new_data = []
     for row in data:

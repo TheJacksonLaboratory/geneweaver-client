@@ -13,9 +13,7 @@ def get_sheet_names(file_path: StringOrPath) -> List[str]:
 
     :param file_path: The path to the Excel file.
 
-    Returns
-    -------
-    List[str]: A list of strings representing the names of all sheets in the file.
+    :returns: A list of strings representing the names of all sheets in the file.
     """
     try:
         workbook = load_workbook(filename=file_path, read_only=True)
@@ -36,10 +34,7 @@ def get_sheet(file_path: StringOrPath, sheet_name: str = None) -> Worksheet:
     :param sheet_name: The name of the sheet to open. If not provided, the active sheet
     is returned.
 
-    Returns
-    -------
-    openpyxl.worksheet.worksheet.Worksheet: The requested worksheet from the Excel
-    workbook.
+    :returns: The requested worksheet from the Excel workbook.
     """
     workbook = load_workbook(filename=file_path, read_only=True)
     if sheet_name:
@@ -64,9 +59,7 @@ def find_header(
     :param sheet_name: The name of the sheet to open. If not provided, the active sheet
     is returned.
 
-    Returns
-    -------
-    Tuple[bool, int]:
+    :returns:
         First index - True if a header row is found, False otherwise.
         Second index - The index of the header row if found, otherwise -1.
     """
@@ -93,9 +86,7 @@ def has_header(
     :param max_rows_to_check: The number of rows to check from the top to find a
     header row.
 
-    Returns
-    -------
-    bool:  True if a header row is found, False otherwise.
+    :returns:  True if a header row is found, False otherwise.
     """
     return find_header(file_path, max_rows_to_check, sheet_name)[0]
 
@@ -113,9 +104,7 @@ def get_headers(
     :param sheet_name: Name of the sheet to read from. If not provided, the function
     will read from the active sheet.
 
-    Returns
-    -------
-    Tuple[List[str], int]: List of column names from the CSV file, and the index of the
+    :returns: List of column names from the CSV file, and the index of the
     header row.
     """
     headers = []
@@ -133,13 +122,9 @@ def read_row(file_path: str, row_idx: int = 0, sheet_name: str = None) -> List[s
     :param sheet_name: Name of the sheet to read from. If not provided, the function
     will read from the active sheet.
 
-    Returns
-    -------
-    List[str]: The contents of a row
+    :returns: The contents of a row
 
-    Raises
-    ------
-    ValueError: If the file is empty or does not contain enough rows.
+    :raises ValueError: If the file is empty or does not contain enough rows.
     """
     sheet = get_sheet(file_path, sheet_name)
     row_idx += 1
@@ -164,9 +149,7 @@ def read_to_dict(
     :param sheet_name: Name of the sheet to read from. If not provided, the function
     will read from the active sheet.
 
-    Returns
-    -------
-    List[Dict[str, Union[str, int]]]: A list of dictionaries, where each dictionary
+    :returns: A list of dictionaries, where each dictionary
     represents a row from the Excel file.
     """
     headers = read_row(file_path, start_row, sheet_name=sheet_name)
@@ -194,9 +177,7 @@ def read_to_dict_n_rows(
     :param sheet_name: Name of the sheet to read from. If not provided, the function
     will read from the active sheet.
 
-    Returns
-    -------
-    List[Dict[str, str]]: A list of dictionaries, where each dictionary represents
+    :returns: A list of dictionaries, where each dictionary represents
     a row from the Excel file.
     """
     headers = read_row(file_path, start_row, sheet_name=sheet_name)

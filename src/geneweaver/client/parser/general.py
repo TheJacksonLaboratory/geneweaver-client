@@ -16,13 +16,9 @@ def get_headers(file_path: StringOrPath, sheet_name: Optional[str] = None) -> Li
                        If not provided, the function will read from the active sheet.
                        This argument is ignored for CSV files.
 
-    Returns
-    -------
-    List[str]: A list of strings representing the header row of the file.
+    :returns: A list of strings representing the header row of the file.
 
-    Raises
-    ------
-    ValueError: If the file type is neither CSV nor Excel (.xlsx).
+    :raises ValueError: If the file type is neither CSV nor Excel (.xlsx).
     """
     file_type = utils.get_file_type(file_path)
 
@@ -50,10 +46,8 @@ def data_file_to_dict(
     :param sheet_name: Name of the sheet to read from (for Excel files). If not
     provided, the function will read from the active sheet. Ignored for CSV files.
 
-    Returns
-    -------
-    List[DictRow]: A list of dictionaries, where each dictionary represents a row from
-    the CSV or Excel file.
+    :returns: A list of dictionaries, where each dictionary represents a row from the
+    CSV or Excel file.
     """
     file_type = utils.get_file_type(file_path)
 
@@ -85,10 +79,8 @@ def data_file_to_dict_n_rows(
     :param sheet_name: Name of the sheet to read from (for Excel files). If not
     provided, the function will read from the active sheet. Ignored for CSV files.
 
-    Returns
-    -------
-    List[DictRow]: A list of dictionaries, where each dictionary
-    represents a row from the CSV or Excel file.
+    :returns: A list of dictionaries, where each dictionary represents a row from the
+    CSV or Excel file.
     """
     file_type = utils.get_file_type(file_path)
 

@@ -23,10 +23,8 @@ def find_header(
     :param max_rows_to_check: The number of rows to check from the top to find a header
     row.
 
-    Returns
-    -------
-    Tuple[bool, int]: First index - True if a header row is found, False otherwise.
-                      Second index - The index of the header row if found, otherwise -1.
+    :returns: First index - True if a header row is found, False otherwise.
+              Second index - The index of the header row if found, otherwise -1.
     """
     with open(file_path, "r") as f:
         reader = csv.reader(f)
@@ -51,9 +49,7 @@ def has_header(file_path: StringOrPath, max_rows_to_check: int = 5) -> bool:
     max_rows_to_check (int): The number of rows to check from the top to find a header
     row.
 
-    Returns
-    -------
-    bool:  True if a header row is found, False otherwise.
+    :returns:  True if a header row is found, False otherwise.
     """
     return find_header(file_path, max_rows_to_check)[0]
 
@@ -65,9 +61,7 @@ def get_headers(file_path: StringOrPath) -> Tuple[List[str], int]:
 
     :param file_path: Path to the CSV file.
 
-    Returns
-    -------
-    Tuple[List[str], int]: List of column names from the CSV file, and the index of the
+    :returns: List of column names from the CSV file, and the index of the
     header row.
     """
     headers = []
@@ -83,13 +77,9 @@ def read_row(file_path: StringOrPath, row_idx: int = 0) -> List[str]:
     :param file_path: The file path to the CSV file.
     :param row_idx: The index of the row from which to read the headers. Defaults to 0.
 
-    Returns
-    -------
-    List[str]: The contents of a row
+    :returns: The contents of a row
 
-    Raises
-    ------
-    ValueError: If the file is empty or does not contain enough rows.
+    :raises ValueError: If the file is empty or does not contain enough rows.
     """
     row = []
     with open(file_path, newline="") as f:
@@ -110,9 +100,7 @@ def get_csv_dict_reader(file: TextIO, start_row: int) -> csv.DictReader:
     :param start_row: The row number to start reading from (0-indexed). This row will be
     used as the header.
 
-    Returns
-    -------
-    csv.DictReader: A DictReader instance for the remaining rows in the file, using the
+    :returns: A DictReader instance for the remaining rows in the file, using the
     specified row as the header.
     """
     reader = csv.reader(file)
@@ -138,9 +126,7 @@ def read_to_dict(
                                This row will be used as the header.
                                Defaults to 0.
 
-    Returns
-    -------
-    List[Dict[str, str]]: List of dictionaries representing the CSV file.
+    :returns: List of dictionaries representing the CSV file.
     """
     with open(file_path, mode="r") as infile:
         dict_reader = get_csv_dict_reader(infile, start_row)
@@ -162,10 +148,8 @@ def read_to_dict_n_rows(
                                This row will be used as the header.
                                Defaults to 0.
 
-    Returns
-    -------
-    List[Dict[str, str]]: A list of dictionaries, where each dictionary represents
-    a row from the CSV file.
+    :returns: A list of dictionaries, where each dictionary represents a row from the
+    CSV file.
     """
     with open(file_path, mode="r") as infile:
         dict_reader = get_csv_dict_reader(infile, start_row)
