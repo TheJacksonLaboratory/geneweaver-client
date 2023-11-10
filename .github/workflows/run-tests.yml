@@ -1,0 +1,54 @@
+name: Lint Code and Run Tests
+on:
+  pull_request:
+    branches: [ main ]
+jobs:
+  format-lint:
+    uses: ./.github/workflows/_format-lint-action.yml
+    with:
+      python-version: '3.9'
+  test:
+    needs: format-lint
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ['3.9', '3.10', '3.11']
+    uses: ./.github/workflows/_run-tests-action.yml
+    with:
+      runner-os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+  comment-coverage-report:
+    needs: [ test ]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Download coverage report artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage-report
+      - name: Read coverage report
+        id: read-coverage
+        run: |
+          echo "COVERAGE_REPORT<<EOF" >> $GITHUB_ENV
+          cat coverage_report.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+      - name: Find Comment
+        uses: peter-evans/find-comment@v2
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '### Test Coverage Report'
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          edit-mode: replace
+          body: |
+            ### Test Coverage Report
+            ```
+            ${{ env.COVERAGE_REPORT }}
+            ```
