@@ -38,7 +38,7 @@ jobs:
       - name: Test with pytest
         run: |
           poetry run pytest tests \
-          --cov=geneweaver.tools.boolean_algebra \
+          --cov=geneweaver.client \
           --cov-report=term \
           --cov-fail-under=75 > coverage_report.txt
       - name: Upload coverage report
