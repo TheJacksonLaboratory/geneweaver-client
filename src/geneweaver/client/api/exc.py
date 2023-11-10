@@ -1,8 +1,8 @@
 """Exception classes relating to calling the Geneweaver API."""
-from geneweaver.core.exc import GeneweaverException
+from geneweaver.core.exc import GeneweaverError
 
 
-class GeneweaverAPIException(GeneweaverException):
+class GeneweaverAPIError(GeneweaverError):
     """Base class for exceptions in the Geneweaver API."""
 
     pass

@@ -3,7 +3,7 @@ from contextlib import contextmanager
 from typing import Any
 
 import requests
-from geneweaver.client.api.exc import GeneweaverAPIException
+from geneweaver.client.api.exc import GeneweaverAPIError
 
 
 def _raise_for_status_hook(
@@ -32,4 +32,4 @@ def sessionmanager() -> requests.Session:
             err_str = (
                 f"There was a problem calling the Geneweaver API: {err.response.text}"
             )
-            raise GeneweaverAPIException(err_str) from err
+            raise GeneweaverAPIError(err_str) from err

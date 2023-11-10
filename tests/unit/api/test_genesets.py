@@ -4,7 +4,7 @@ import datetime
 
 import pytest
 from geneweaver.client.api import genesets
-from geneweaver.client.api.exc import GeneweaverAPIException
+from geneweaver.client.api.exc import GeneweaverAPIError
 from geneweaver.core.enum import GenesetAccess, GenesetScoreType
 from geneweaver.core.schema.geneset import BatchUpload, GenesetUpload
 
@@ -65,7 +65,7 @@ def test_post_geneset(config_sessionmanager_patch, geneset, response):
 def test_post_geneset_fails(config_sessionmanager_patch, error_status, geneset):
     """Test that the geneset upload API fails when the server returns an error."""
     config_sessionmanager_patch(status_code=error_status, resp_json={"error": "test"})
-    with pytest.raises(GeneweaverAPIException):
+    with pytest.raises(GeneweaverAPIError):
         _ = genesets.post("token", geneset)
 
 

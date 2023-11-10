@@ -4,6 +4,7 @@ from unittest.mock import patch
 
 import pytest
 from geneweaver.client.parser import general
+from geneweaver.core.parse.exceptions import UnsupportedFileTypeError
 
 
 @pytest.mark.parametrize(
@@ -13,13 +14,13 @@ from geneweaver.client.parser import general
         ("xlsx", ["xlsx_header1", "xlsx_header2"]),
     ],
 )
-@patch("geneweaver.client.parser.utils.get_file_type")
+@patch("geneweaver.client.parser.general.utils.get_file_type")
 @patch(
-    "geneweaver.client.parser.csv.get_headers",
+    "geneweaver.client.parser.general.csv.get_headers",
     return_value=(["csv_header1", "csv_header2"], []),
 )
 @patch(
-    "geneweaver.client.parser.xlsx.get_headers",
+    "geneweaver.client.parser.general.xlsx.get_headers",
     return_value=(["xlsx_header1", "xlsx_header2"], []),
 )
 def test_get_headers(
@@ -46,11 +47,11 @@ def test_get_headers(
     "file_type",
     ["tsv", "txt", "tiff"],
 )
-@patch("geneweaver.client.parser.utils.get_file_type")
+@patch("geneweaver.client.parser.general.utils.get_file_type")
 def test_get_headers_raises(mock_get_file_type, file_type):
     """Test the get_headers function raises an error for unsupported file types."""
     mock_get_file_type.return_value = file_type
-    with pytest.raises(ValueError, match="Unsupported") as e:
+    with pytest.raises(UnsupportedFileTypeError) as e:
         general.get_headers("dummy_path.txt")
 
     assert file_type in str(e.value)
@@ -74,13 +75,13 @@ EXPECTED_XLSX_RESULT_DICT = [
         ("xlsx", EXPECTED_XLSX_RESULT_DICT),
     ],
 )
-@patch("geneweaver.client.parser.utils.get_file_type")
+@patch("geneweaver.client.parser.general.utils.get_file_type")
 @patch(
-    "geneweaver.client.parser.csv.read_to_dict",
+    "geneweaver.client.parser.general.csv.read_to_dict",
     return_value=EXPECTED_CSV_RESULT_DICT,
 )
 @patch(
-    "geneweaver.client.parser.xlsx.read_to_dict",
+    "geneweaver.client.parser.general.xlsx.read_to_dict",
     return_value=EXPECTED_XLSX_RESULT_DICT,
 )
 def test_data_file_to_dict(
@@ -107,11 +108,11 @@ def test_data_file_to_dict(
     "file_type",
     ["tsv", "txt", "tiff"],
 )
-@patch("geneweaver.client.parser.utils.get_file_type")
+@patch("geneweaver.client.parser.general.utils.get_file_type")
 def test_data_file_to_dict_wrong_file_type(mock_get_file_type, file_type):
     """Test that data_file_to_dict raises an error for unsupported file types."""
     mock_get_file_type.return_value = file_type
-    with pytest.raises(ValueError, match="Unsupported") as e:
+    with pytest.raises(UnsupportedFileTypeError) as e:
         general.data_file_to_dict("dummy_path.txt")
 
     assert file_type in str(e.value)
@@ -124,13 +125,13 @@ def test_data_file_to_dict_wrong_file_type(mock_get_file_type, file_type):
         ("xlsx", EXPECTED_XLSX_RESULT_DICT),
     ],
 )
-@patch("geneweaver.client.parser.utils.get_file_type")
+@patch("geneweaver.client.parser.general.utils.get_file_type")
 @patch(
-    "geneweaver.client.parser.csv.read_to_dict_n_rows",
+    "geneweaver.client.parser.general.csv.read_to_dict_n_rows",
     return_value=EXPECTED_CSV_RESULT_DICT,
 )
 @patch(
-    "geneweaver.client.parser.xlsx.read_to_dict_n_rows",
+    "geneweaver.client.parser.general.xlsx.read_to_dict_n_rows",
     return_value=EXPECTED_XLSX_RESULT_DICT,
 )
 def test_data_file_to_dict_n_rows(
@@ -157,11 +158,11 @@ def test_data_file_to_dict_n_rows(
     "file_type",
     ["tsv", "txt", "tiff"],
 )
-@patch("geneweaver.client.parser.utils.get_file_type")
+@patch("geneweaver.client.parser.general.utils.get_file_type")
 def test_data_file_to_dict_n_rows_wrong_file_type(mock_get_file_type, file_type):
     """Test that data_file_to_dict_n_rows raises an error for unsupported file types."""
     mock_get_file_type.return_value = file_type
-    with pytest.raises(ValueError, match="Unsupported") as e:
+    with pytest.raises(UnsupportedFileTypeError) as e:
         general.data_file_to_dict_n_rows("dummy_path.txt", 2)
 
     assert file_type in str(e.value)

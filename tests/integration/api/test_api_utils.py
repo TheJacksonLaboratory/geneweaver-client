@@ -1,7 +1,7 @@
 """API Utilities integration tests."""
 # ruff: noqa: ANN001, ANN201
 import pytest
-from geneweaver.client.api.exc import GeneweaverAPIException
+from geneweaver.client.api.exc import GeneweaverAPIError
 from geneweaver.client.api.utils import sessionmanager
 
 from tests.unit.api.test_api_utils import CLIENT_ERROR, SERVER_ERROR, SUCCESS
@@ -15,7 +15,7 @@ from tests.unit.api.test_api_utils import CLIENT_ERROR, SERVER_ERROR, SUCCESS
 )
 def test_calling_raise_for_status_from_sessionmanager(status_code):
     """Test that sessionmanager raises an exception for non-2xx status codes."""
-    with pytest.raises(GeneweaverAPIException):  # noqa: PT012
+    with pytest.raises(GeneweaverAPIError):  # noqa: PT012
         with sessionmanager() as session:
             session.get(f"https://httpstat.us/{status_code}")
 

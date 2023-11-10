@@ -3,10 +3,14 @@
 import pkg_resources
 import typer
 
-from . import parser
+from geneweaver.client.cli import parser
+from geneweaver.client.cli import auth
+from geneweaver.client.cli import batch
 
 cli = typer.Typer(no_args_is_help=True)
 cli.add_typer(parser.cli, name="parse")
+cli.add_typer(auth.cli, name="auth")
+cli.add_typer(batch.cli, name="batch")
 
 
 def version_callback(version: bool) -> None:

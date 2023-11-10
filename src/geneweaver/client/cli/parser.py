@@ -2,8 +2,9 @@
 from pathlib import Path
 
 import typer
-from geneweaver.client.exceptions import EmptyFileError
-from geneweaver.client.parser import general, xlsx
+from geneweaver.client.parser import general
+from geneweaver.core.parse import xlsx
+from geneweaver.core.parse.exceptions import EmptyFileError, UnsupportedFileTypeError
 from rich import print
 from rich.console import Console
 from rich.table import Table
@@ -18,7 +19,7 @@ def get_headers(file_path: Path, sheet: str = None) -> None:
     headers = []
     try:
         headers = general.get_headers(file_path, sheet_name=sheet)
-    except (EmptyFileError, ValueError) as e:
+    except (EmptyFileError, ValueError, UnsupportedFileTypeError) as e:
         print(e)
         raise typer.Exit(code=1) from e
 
@@ -35,7 +36,10 @@ def preview(file_path: Path, rows_to_read: int = 5, sheet: str = None) -> None:
         rows = general.data_file_to_dict_n_rows(
             file_path, rows_to_read, headers_idx, sheet_name=sheet
         )
-    except (EmptyFileError, ValueError) as e:
+    except ValueError as e:
+        print("File is empty.")
+        raise typer.Exit(code=1) from e
+    except (EmptyFileError, UnsupportedFileTypeError) as e:
         print(e)
         raise typer.Exit(code=1) from e
 

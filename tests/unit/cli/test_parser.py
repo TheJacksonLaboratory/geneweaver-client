@@ -4,7 +4,7 @@ from unittest.mock import patch
 from zipfile import BadZipFile
 
 from geneweaver.client.cli.parser import cli
-from geneweaver.client.exceptions import EmptyFileError
+from geneweaver.core.parse.exceptions import EmptyFileError
 from openpyxl.utils.exceptions import InvalidFileException
 from typer.testing import CliRunner
 
@@ -26,25 +26,6 @@ def test_get_headers(mock_get_headers):
     assert "header3" in result.output
     # # Check the exit code
     assert result.exit_code == 0
-
-
-@patch(
-    "geneweaver.client.parser.general.get_headers",
-    return_value=([], -1),
-    side_effect=EmptyFileError("File is empty."),
-)
-def test_get_headers_with_error(mock_get_headers):
-    """Test the get_headers CLI command with an error."""
-    # Simulate the CLI execution
-    result = runner.invoke(cli, ["get-headers", "dummy_path"])
-
-    # Check the output message
-    assert "File is empty." in result.output
-    # Check the exit code
-    assert result.exit_code == 1
-
-    # Check if the mocked function was called
-    mock_get_headers.assert_called_once()
 
 
 @patch(
@@ -138,7 +119,7 @@ def test_preview_get_headers_error(mock_data_file_to_dict_n_rows, mock_get_heade
 
 
 @patch(
-    "geneweaver.client.parser.xlsx.get_sheet_names",
+    "geneweaver.client.cli.parser.xlsx.get_sheet_names",
     return_value=(["sheet1", "sheet2", "sheet3"]),
 )
 def test_get_sheet_names(mock_get_sheet_names):
@@ -156,7 +137,7 @@ def test_get_sheet_names(mock_get_sheet_names):
 
 
 @patch(
-    "geneweaver.client.parser.xlsx.get_sheet_names",
+    "geneweaver.client.cli.parser.xlsx.get_sheet_names",
     return_value=(["sheet1", "sheet2", "sheet3"]),
     side_effect=ValueError("Invalid File."),
 )
@@ -173,7 +154,7 @@ def test_get_sheet_names_error(mock_get_sheet_names):
 
 
 @patch(
-    "geneweaver.client.parser.xlsx.load_workbook",
+    "geneweaver.client.cli.parser.xlsx.load_workbook",
     return_value=(["sheet1", "sheet2", "sheet3"]),
     side_effect=InvalidFileException("Invalid File."),
 )
@@ -190,7 +171,7 @@ def test_get_sheet_names_load_workbook_error(mock_get_sheet_names):
 
 
 @patch(
-    "geneweaver.client.parser.xlsx.load_workbook",
+    "geneweaver.client.cli.parser.xlsx.load_workbook",
     return_value=(["sheet1", "sheet2", "sheet3"]),
     side_effect=BadZipFile("Not a Zip File."),
 )

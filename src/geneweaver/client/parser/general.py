@@ -1,8 +1,9 @@
 """A module that marshals access to specific file type parsing."""
 from typing import List, Optional
 
-from geneweaver.client.parser import csv, utils, xlsx
-from geneweaver.client.types import DictRow, StringOrPath
+from geneweaver.core.parse import csv, utils, xlsx
+from geneweaver.core.parse.exceptions import UnsupportedFileTypeError
+from geneweaver.core.types import DictRow, StringOrPath
 
 
 def get_headers(file_path: StringOrPath, sheet_name: Optional[str] = None) -> List[str]:
@@ -29,7 +30,7 @@ def get_headers(file_path: StringOrPath, sheet_name: Optional[str] = None) -> Li
         data, _ = xlsx.get_headers(file_path, sheet_name)
 
     else:
-        raise ValueError(f"Unsupported file type: {file_type}")
+        raise UnsupportedFileTypeError(f"Unsupported file type: {file_type}")
 
     return data
 
@@ -58,7 +59,7 @@ def data_file_to_dict(
         data = xlsx.read_to_dict(file_path, sheet_name)
 
     else:
-        raise ValueError(f"Unsupported file type: {file_type}")
+        raise UnsupportedFileTypeError(f"Unsupported file type: {file_type}")
 
     return data
 
@@ -76,6 +77,7 @@ def data_file_to_dict_n_rows(
 
     :param file_path: The file path to the CSV or Excel file.
     :param n: The number of rows of data to return.
+    :param start_row: The row to start reading from. Defaults to 0.
     :param sheet_name: Name of the sheet to read from (for Excel files). If not
     provided, the function will read from the active sheet. Ignored for CSV files.
 
@@ -91,6 +93,6 @@ def data_file_to_dict_n_rows(
         data = xlsx.read_to_dict_n_rows(file_path, n, start_row, sheet_name)
 
     else:
-        raise ValueError(f"Unsupported file type: {file_type}")
+        raise UnsupportedFileTypeError(f"Unsupported file type: {file_type}")
 
     return data
