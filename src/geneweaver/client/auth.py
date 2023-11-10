@@ -1,13 +1,12 @@
 import time
-import requests
+from typing import Any, Dict, Optional
+
 import jwt
-from typing import Dict, Any, Optional
-
+import requests
 from auth0.authentication.token_verifier import (
-    TokenVerifier,
     AsymmetricSignatureVerifier,
+    TokenVerifier,
 )
-
 from geneweaver.client.config import settings
 from geneweaver.client.core import app_dir
 from geneweaver.client.exceptions import AuthenticationError
@@ -21,8 +20,7 @@ def login():
 
 
 def get_id_token() -> Optional[str]:
-    """
-    Get the ID token from the authentication token file.
+    """Get the ID token from the authentication token file.
 
     :returns: The ID token.
     """
@@ -30,8 +28,7 @@ def get_id_token() -> Optional[str]:
 
 
 def get_access_token() -> Optional[str]:
-    """
-    Get the Access token from the authentication token file.
+    """Get the Access token from the authentication token file.
 
     :returns: The ID token.
     """
@@ -48,8 +45,7 @@ def _get_token_data_value_or_none(token_data_key: str) -> Optional[str]:
 
 
 def validate_token(token: str) -> None:
-    """
-    Verify the token and its precedence
+    """Verify the token and its precedence.
 
     :param token:
     """

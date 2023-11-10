@@ -1,15 +1,17 @@
-import requests, zipfile, io
+import io
+import zipfile
 from pathlib import Path
+
 import pandas as pd
+import requests
 
 
 class BaseDataset:
-
     URL = None
     DS_FOLDER = None
     UNZIPPED_LOC = None
 
-    def __init__(self, base_folder: str = 'data'):
+    def __init__(self, base_folder: str = "data") -> None:
         self.base_folder = Path(base_folder)
         self.dataset_skip_rows = 0
         self._pandas_df = None
@@ -39,6 +41,5 @@ class BaseDataset:
 
     def read_pandas(self) -> None:
         self._pandas_df = self._pandas_read_f(
-            self.dataset_path,
-            skiprows=self.dataset_skip_rows
+            self.dataset_path, skiprows=self.dataset_skip_rows
         )

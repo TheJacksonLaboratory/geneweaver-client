@@ -5,7 +5,7 @@ from geneweaver.core.schema.geneset import GenesetUpload
 
 
 def get_genesets(access_token: str) -> list:
-    """Get all visible genesets"""
+    """Get all visible genesets."""
     return requests.get(
         settings.api_v3_path() + "/genesets",
         headers={"Authorization": f"Bearer {access_token}"},
@@ -13,7 +13,7 @@ def get_genesets(access_token: str) -> list:
 
 
 def get_geneset(access_token: str, geneset_id: str):
-    """Get a specific geneset"""
+    """Get a specific geneset."""
     return requests.get(
         settings.api_v3_path() + f"/genesets/{geneset_id}",
         headers={"Authorization": f"Bearer {access_token}"},
@@ -21,7 +21,7 @@ def get_geneset(access_token: str, geneset_id: str):
 
 
 def upload_geneset(access_token: str, geneset: GenesetUpload) -> int:
-    """Upload a geneset"""
+    """Upload a geneset."""
     return requests.post(
         settings.api_v3_path() + "/genesets",
         headers={"Authorization": f"Bearer {access_token}"},

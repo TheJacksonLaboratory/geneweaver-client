@@ -1,4 +1,4 @@
-"""Code to interact with user configuration and state"""
+"""Code to interact with user configuration and state."""
 
 from pathlib import Path
 

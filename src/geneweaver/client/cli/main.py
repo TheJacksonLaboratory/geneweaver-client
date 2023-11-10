@@ -2,10 +2,7 @@
 # ruff: noqa: B008
 import pkg_resources
 import typer
-
-from geneweaver.client.cli import parser
-from geneweaver.client.cli import auth
-from geneweaver.client.cli import batch
+from geneweaver.client.cli import auth, batch, parser
 
 cli = typer.Typer(no_args_is_help=True)
 cli.add_typer(parser.cli, name="parse")

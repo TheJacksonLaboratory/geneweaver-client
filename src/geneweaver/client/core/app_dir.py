@@ -1,11 +1,10 @@
-"""Code to interact with user configuration and state"""
+"""Code to interact with user configuration and state."""
 
+import json
 from pathlib import Path
+from typing import Optional
 
 import typer
-import json
-
-from typing import Optional
 
 
 def get_config_dir() -> Path:

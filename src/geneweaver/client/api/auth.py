@@ -4,5 +4,8 @@ from geneweaver.client import auth
 
 
 class ApiClient:
-    def __init__(self):
+    """A client to the GeneWeaver API."""
+
+    def __init__(self) -> None:
+        """Initialize the ApiClient."""
         self.auth = auth

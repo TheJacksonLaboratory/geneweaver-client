@@ -32,7 +32,7 @@ VALID_GENESET_RESPONSES = [
 VALID_GENESET_UPLOADS = [
     GenesetUpload(
         **{
-            "score-type": GenesetScoreType.BINARY,
+            "score_type": GenesetScoreType.BINARY,
             "pubmed-id": "12345678",
             "access": GenesetAccess.PUBLIC,
             "groups": ["test"],
@@ -40,8 +40,8 @@ VALID_GENESET_UPLOADS = [
             "label": "test",
             "species": "test",
             "description": "test",
-            "gene-identifier": "test",
-            "gene-list": [{"gene-id": "test", "value": 1}],
+            "gene_identifier": "test",
+            "gene_list": [{"symbol": "test", "value": 1}],
         }
     ),
 ]

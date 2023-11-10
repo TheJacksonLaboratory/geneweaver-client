@@ -1,17 +1,18 @@
-"""Dataset definition for NCI60's: DNA__Combined_aCGH_gene_summary.xls"""
+"""Dataset definition for NCI60's: DNA__Combined_aCGH_gene_summary.xls."""
 import pandas as pd
 from geneweaver.client.datasets.base import BaseDataset
 
 
 class DNACombinedaCGHGeneSummary(BaseDataset):
-
-    URL = "https://discover.nci.nih.gov/cellminer/download/processeddataset/" \
-          "nci60_DNA__Combined_aCGH_gene_summary.zip"
+    URL = (
+        "https://discover.nci.nih.gov/cellminer/download/processeddataset/"
+        "nci60_DNA__Combined_aCGH_gene_summary.zip"
+    )
     DS_FOLDER = "nci60_DNA__Combined_aCGH_gene_summary"
     UNZIPPED_LOC = "output/DNA__Combined_aCGH_gene_summary.xls"
     LINKOUT = "https://discover.nci.nih.gov/cellminer/loadDownload.do"
 
-    def __init__(self, base_folder: str = 'data'):
+    def __init__(self, base_folder: str = "data") -> None:
         super().__init__(base_folder)
         self.download_zip_file()
         self.dataset_skip_rows = 10
@@ -31,13 +32,13 @@ class DNACombinedaCGHGeneSummary(BaseDataset):
     def intensity(self) -> pd.DataFrame:
         """Return the dataset's intensity values."""
         df = self.as_pandas().iloc[:, 6:]
-        df.replace('-', 0, inplace=True)
+        df = df.replace("-", 0)
         return df
 
     @property
     def intensity_type(self) -> str:
         """Return the dataset's intensity type."""
         return (
-            'Average log2 intensity values of the ratio of the cell line '
-            'DNA with respect to normal DNA.'
+            "Average log2 intensity values of the ratio of the cell line "
+            "DNA with respect to normal DNA."
         )
