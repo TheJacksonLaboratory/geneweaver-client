@@ -19,7 +19,7 @@ on:
       required-coverage:
         description: 'Required coverage percentage'
         default: 75
-        type: number
+        type: string
 jobs:
   run-tests:
     runs-on: ${{ inputs.runner-os }}
