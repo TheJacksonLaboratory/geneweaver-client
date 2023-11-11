@@ -16,6 +16,10 @@ on:
         description: 'Upload coverage results'
         default: true
         type: boolean
+      required-coverage:
+        description: 'Required coverage percentage'
+        default: 75
+        type: number
 jobs:
   run-tests:
     runs-on: ${{ inputs.runner-os }}
@@ -40,7 +44,7 @@ jobs:
           poetry run pytest tests \
           --cov=geneweaver.client \
           --cov-report=term \
-          --cov-fail-under=75 > coverage_report.txt
+          --cov-fail-under=${{ inputs.required-coverage }} > coverage_report.txt
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
         with:

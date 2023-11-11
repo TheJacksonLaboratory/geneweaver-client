@@ -17,6 +17,7 @@ jobs:
     with:
       runner-os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
+      required-coverage: ${{ vars.REQUIRED_COVERAGE }}
   comment-coverage-report:
     needs: [ test ]
     runs-on: ubuntu-latest
