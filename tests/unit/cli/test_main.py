@@ -31,7 +31,7 @@ def test_common():
 def test_common_w_arg():
     """Test the common callback with an argument."""
     # Now check when you pass an argument
-    result_with_args = runner.invoke(cli, ["parse", "--help"])
+    result_with_args = runner.invoke(cli, ["alpha", "parse", "--help"])
 
     # Check the exit code
     assert result_with_args.exit_code == 0

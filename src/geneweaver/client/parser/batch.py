@@ -32,7 +32,7 @@ def to_csv(
 
     csv_files = [
         write_geneset_to_csv(geneset, None, output_directory, prefix, gs_id)
-        for geneset, gs_id in zip(genesets, geneset_ids)
+        for geneset, gs_id in zip(genesets, geneset_ids)  # noqa: B905
     ]
 
     return csv_files
@@ -40,13 +40,14 @@ def to_csv(
 
 def to_csv_indexed(
     batch_file: Path, index_file: Path, output_directory: Optional[Path] = None
-):
+) -> List[Path]:
     """Convert a batch file to a CSV file, using the index file to name the CSV files.
 
     :param batch_file: The path to the batch file.
     :param index_file: The path to the index file.
     :param output_directory: The directory to write the CSV file to. If not provided,
     the CSV file will be written to the current working directory.
+    :return: A list of the paths to the created CSV files.
     """
     index_data = read_index_file(index_file)
 
@@ -75,6 +76,11 @@ def to_csv_indexed(
 
 
 def read_index_file(index_file: Path) -> Dict[str, List[str]]:
+    """Read the index file and return a dictionary of lists.
+
+    :param index_file: The path to the index file.
+    :return: A dictionary of lists.
+    """
     with open(index_file, "r", errors="replace") as tsvfile:
         header = next(tsvfile).strip().split("\t")
         data_dict = {col: [] for col in header}
@@ -101,7 +107,18 @@ def write_geneset_to_csv(
     prefix: Optional[str] = None,
     gs_id: Optional[str] = None,
     hash_header: bool = False,
-):
+) -> Path:
+    """Write a geneset to a CSV file.
+
+    :param geneset: The geneset to write to a CSV file.
+    :param uberon_id: The UBERON ID of the geneset.
+    :param output_directory: The directory to write the CSV file to. If not provided,
+    the CSV file will be written to the current working directory.
+    :param prefix: A prefix to add to the CSV file name.
+    :param gs_id: The ID of the geneset.
+    :param hash_header: Whether to prefix the header with a hash.
+    :return: The name of the CSV file.
+    """
     if not gs_id:
         filename = geneset.abbreviation.replace(" ", "_").lower() + ".csv"
     else:
@@ -120,7 +137,9 @@ def write_geneset_to_csv(
         for key, value in geneset.dict(exclude={"values"}).items()
     ]
     header.append((f"{header_prefix}uberon_id", uberon_id))
-    geneset_values = [(value.symbol, value.value) for value in geneset.values]
+    geneset_values = [
+        (value.symbol, value.value) for value in geneset.values  # noqa: PD011
+    ]
 
     # Write headers to a CSV file
     with open(output_path, "w", newline="") as file:

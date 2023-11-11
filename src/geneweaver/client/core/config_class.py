@@ -18,12 +18,13 @@ class Settings(BaseSettings):
     API_V3_PATH: str = "/api/v3"
     API_PATH: Optional[dict] = None
 
-    def api_v3_path(self):
+    def api_v3_path(self) -> str:
+        """Construct the API v3 path."""
         return self.API_HOST + self.API_V3_PATH
 
     @validator("API_PATH")
     def validate_api_path(
-        cls: Type["ClientSettings"], v: Optional[dict], values: dict  # noqa: N805
+        cls: Type["Settings"], v: Optional[dict], values: dict  # noqa: N805
     ) -> dict:
         """Construct the API URL if not explicitly set."""
         if not v:
