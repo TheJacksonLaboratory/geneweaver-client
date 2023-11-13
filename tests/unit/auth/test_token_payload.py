@@ -1,3 +1,4 @@
+"""Test the auth._token_payload function."""
 from unittest.mock import patch
 
 import pytest

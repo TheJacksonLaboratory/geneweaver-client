@@ -36,6 +36,7 @@ from geneweaver.client.auth import (
     ],
 )
 def test_current_user_mock(expected_user, auth_algorithms, mock_id_token):
+    """Test the current_user function with mock data."""
     # Mock jwt.decode and settings.AUTH_ALGORITHMS
     with patch("geneweaver.client.auth.jwt.decode") as mock_jwt_decode, patch(
         "geneweaver.client.auth.settings.AUTH_ALGORITHMS", auth_algorithms
@@ -92,6 +93,7 @@ def test_current_user_mock(expected_user, auth_algorithms, mock_id_token):
     ],
 )
 def test_current_user_decode(mock_id_token, example_user):
+    """Test the current_user function with a real token."""
     # Call current_user with the example token
     result = current_user(mock_id_token)
 

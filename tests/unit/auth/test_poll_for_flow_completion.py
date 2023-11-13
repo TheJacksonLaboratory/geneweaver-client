@@ -96,6 +96,7 @@ def test_poll_for_flow_completion(
 def test_poll_for_flow_completion_sleep(
     token_response_data, status_code, sleep_calls, expected_sleep_arg
 ):
+    """Test the _poll_for_flow_completion function using mocks."""
     device_code_data = {
         "device_code": "device_code_123",
         "interval": expected_sleep_arg,

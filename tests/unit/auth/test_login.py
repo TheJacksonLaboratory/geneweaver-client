@@ -6,6 +6,7 @@ from geneweaver.client.auth import login
 
 
 def test_login():
+    """Test the login function."""
     with patch(
         "geneweaver.client.auth._get_device_code_data"
     ) as mock_get_device_code_data, patch(

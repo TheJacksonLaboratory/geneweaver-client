@@ -1,3 +1,4 @@
+"""Unit tests for the auth.get_id_token function."""
 from unittest.mock import patch
 
 import pytest
@@ -14,6 +15,7 @@ from geneweaver.client.auth import get_id_token
     ],
 )
 def test_get_id_token(token_data):
+    """Test the auth.get_id_token function using mocks."""
     with patch(
         "geneweaver.client.auth._get_token_data_value_or_none"
     ) as mock_get_token_data:

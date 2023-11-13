@@ -27,6 +27,7 @@ from geneweaver.client.auth import _print_device_code_instructions
     ],
 )
 def test_print_device_code_instructions(device_code_data):
+    """Test that the function prints the correct instructions."""
     with patch("builtins.print") as mock_print:
         # Call the function with mock data
         _print_device_code_instructions(device_code_data)
