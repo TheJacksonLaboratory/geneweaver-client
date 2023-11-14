@@ -2,8 +2,10 @@ name: Release to PyPI
 
 on:
   push:
-    branches: [ main ]
-    paths: ['pyproject.toml']
+    branches:
+      - 'main'
+    paths:
+      - 'pyproject.toml'
 
 permissions:
   contents: write
