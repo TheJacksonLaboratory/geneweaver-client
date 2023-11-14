@@ -427,13 +427,13 @@ pydantic = {version = ">=1.10.7,<2.0.0", extras = ["dotenv"]}
 
 [[package]]
 name = "geneweaver-testing"
-version = "0.0.1b0"
+version = "0.0.2b3"
 description = "A library to standardize testing of GeneWeaver pacakges."
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "geneweaver_testing-0.0.1b0-py3-none-any.whl", hash = "sha256:29bf5cb790fc5f788eb07bdd4df70a9edbeb9b84f467bce4b6e537b1cada3d47"},
-    {file = "geneweaver_testing-0.0.1b0.tar.gz", hash = "sha256:550b1490a3404357bbaf8dbdb361e3c70efe76f76966b8b03cdcc747c3e8e5e3"},
+    {file = "geneweaver_testing-0.0.2b3-py3-none-any.whl", hash = "sha256:488b8173ffae98904aeca89232cc76e84544303f038e84acec16362888010279"},
+    {file = "geneweaver_testing-0.0.2b3.tar.gz", hash = "sha256:9bb7af8322aa27f887e9d12f46060d0276a0b3a4fe730d9bd028aa28af18cb88"},
 ]
 
 [package.dependencies]
@@ -1103,4 +1103,4 @@ test = ["pytest", "pytest-cov"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "db49313ea8a91a5661193d093704840de36413768c47dde22b5f3be12a284ce8"
+content-hash = "b7ae610d23e5609777b58aa14c2d79acd0c4758fa682f18a53b4141b2acfd7c6"

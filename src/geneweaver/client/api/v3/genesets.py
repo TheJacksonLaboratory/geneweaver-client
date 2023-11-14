@@ -12,7 +12,7 @@ def get_genesets(access_token: str) -> list:
     ).json()
 
 
-def get_geneset(access_token: str, geneset_id: str):
+def get_geneset(access_token: str, geneset_id: str) -> str:
     """Get a specific geneset."""
     return requests.get(
         settings.api_v3_path() + f"/genesets/{geneset_id}",

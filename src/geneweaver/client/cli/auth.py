@@ -8,8 +8,8 @@ cli = typer.Typer()
 
 
 @cli.command()
-def login(reauth: bool = typer.Option(False, "--reauth")) -> None:
-    """Runs the device authorization flow.
+def login(reauth: bool = typer.Option(False, "--reauth")) -> None:  # noqa: B008
+    """Run the device authorization flow.
 
     :param reauth: Force a re-authentication
     """
@@ -21,4 +21,4 @@ def login(reauth: bool = typer.Option(False, "--reauth")) -> None:
         auth.login()
     except AuthenticationError as e:
         print(e)
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e

@@ -19,8 +19,15 @@ def to_csv(
     prefix: Optional[str] = None,
     geneset_ids: Optional[List[str]] = None,
 ) -> None:
-    print(geneset_ids)
+    """Export a batch file as a csv file.
 
+    :param batch_file: The batch file to create the csv file from.
+    :param output_directory: The output directory to write the csv file to.
+                             (default: current working directory)
+    :param prefix: A prefix to apply to the csv filename.
+    :param geneset_ids: The geneset ids that match those in the batch file (in order).
+    :return: The path to the csv file.
+    """
     output_files = batch.to_csv(batch_file, output_directory, prefix, geneset_ids)
 
     for file in output_files:
@@ -30,11 +37,23 @@ def to_csv(
 @cli.command()
 def to_csv_indexed(
     batch_file: Path, index_file: Path, output_directory: Optional[Path] = None
-) -> None:
+) -> list:
+    """Export a batch file as a csv file, using the index file to name the csv files.
+
+    (This is experimental)
+
+    :param batch_file: The batch file to create the csv file from.
+    :param index_file: The index file to use to name the csv files.
+    :param output_directory: Where to write the csv files to.
+                             (default: current working directory)
+    :return: A list of the paths to the created csv files.
+    """
     output_files = batch.to_csv_indexed(batch_file, index_file, output_directory)
 
     for file in output_files:
         print(f"Created {file}")
+
+    return output_files
 
 
 @cli.command()
@@ -44,8 +63,17 @@ def download_genesets(
     output_directory: Optional[Path] = None,
     hash_header: bool = False,
 ) -> None:
+    """Download genesets from the Geneweaver API.
+
+    (experimental)
+    :param index_file: The index file to use to name the csv files.
+    :param session: The session cookie to use to authenticate with the Geneweaver API.
+    :param output_directory: Where to write the csv files to.
+    :param hash_header: Whether to hash the header of the csv files.
+    :return: None
+    """
     # URL of the Flask app
-    BASE_URL = "https://geneweaver.org"
+    base_url = "https://geneweaver.org"
 
     index_data = batch.read_index_file(index_file)
     genesets = {}
@@ -57,7 +85,7 @@ def download_genesets(
         for index, gsid in enumerate(index_data["GW gene set id"]):
             if gsid != "NA":
                 disease = index_data["disease name"][index].lower().replace(" ", "_")
-                response = s.get(f"{BASE_URL}/exportBatch/{gsid[2:]}")
+                response = s.get(f"{base_url}/exportBatch/{gsid[2:]}")
                 if response.ok:
                     print(f"Found {gsid}")
                     genesets[gsid] = response.text

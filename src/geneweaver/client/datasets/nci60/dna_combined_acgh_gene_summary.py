@@ -4,6 +4,8 @@ from geneweaver.client.datasets.base import BaseDataset
 
 
 class DNACombinedaCGHGeneSummary(BaseDataset):
+    """Dataset definition for NCI60's: DNA__Combined_aCGH_gene_summary.xls."""
+
     URL = (
         "https://discover.nci.nih.gov/cellminer/download/processeddataset/"
         "nci60_DNA__Combined_aCGH_gene_summary.zip"
@@ -13,6 +15,7 @@ class DNACombinedaCGHGeneSummary(BaseDataset):
     LINKOUT = "https://discover.nci.nih.gov/cellminer/loadDownload.do"
 
     def __init__(self, base_folder: str = "data") -> None:
+        """Initialize the DNACombinedaCGHGeneSummary dataset."""
         super().__init__(base_folder)
         self.download_zip_file()
         self.dataset_skip_rows = 10
@@ -31,9 +34,9 @@ class DNACombinedaCGHGeneSummary(BaseDataset):
     @property
     def intensity(self) -> pd.DataFrame:
         """Return the dataset's intensity values."""
-        df = self.as_pandas().iloc[:, 6:]
-        df = df.replace("-", 0)
-        return df
+        intensity = self.as_pandas().iloc[:, 6:]
+        intensity = intensity.replace("-", 0)
+        return intensity
 
     @property
     def intensity_type(self) -> str:

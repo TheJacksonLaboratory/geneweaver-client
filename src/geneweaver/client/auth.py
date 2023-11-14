@@ -1,3 +1,4 @@
+"""Authentication code for the GeneWeaver client."""
 import time
 from typing import Any, Dict, Optional
 
@@ -12,7 +13,8 @@ from geneweaver.client.core import app_dir
 from geneweaver.client.exceptions import AuthenticationError
 
 
-def login():
+def login() -> None:
+    """Run the device authorization flow."""
     device_code_data = _get_device_code_data()
     _print_device_code_instructions(device_code_data)
     token_data = _poll_for_flow_completion(device_code_data)
@@ -59,6 +61,7 @@ def validate_token(token: str) -> None:
 
 
 def current_user(id_token: str) -> Dict[str, str]:
+    """Get the current user from the ID token."""
     return jwt.decode(
         id_token,
         algorithms=settings.AUTH_ALGORITHMS,
