@@ -12,6 +12,7 @@ jobs:
     with:
       required-coverage: ${{ vars.REQUIRED_COVERAGE }}
   comment-coverage-report:
+    needs: [ check-coverage ]
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     permissions:
