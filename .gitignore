@@ -1,3 +1,10 @@
+*.zip
+*.txt
+*.csv
+*.xlsx
+data/
+conn_tissue/
+
 alembic/
 .idea/
 .idea
