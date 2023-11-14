@@ -65,7 +65,6 @@ jobs:
           echo "Full release version detected"
           echo "{prerelease}={false}" >> $GITHUB_OUTPUT
         fi
-        echo ${{ steps.version_check.outputs.should_release }}
 
     - name: Install Poetry
       if: ${{ steps.version_check.outputs.should_release }} == 'true'
@@ -77,22 +76,27 @@ jobs:
       env:
         POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_API_TOKEN }}
       run: |
+        echo "Should Release: ${{ steps.version_check.outputs.should_release }}"
+        echo "Is Pre-release: ${{ steps.release_type.outputs.prerelease }}"
+        echo "v${{ steps.version_check.outputs.version }}"
         echo "$PATH"
         echo "$(python --version)"
         poetry build
         poetry publish
 
     - name: Create GitHub Release
-      uses: actions/create-release@v1
+      uses: softprops/action-gh-release@v1
       if: ${{ steps.version_check.outputs.should_release }} == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: v${{ steps.version_check.outputs.version }}
-        release_name: Release v${{ steps.version_check.outputs.version }}
+        name: Release v${{ steps.version_check.outputs.version }}
         draft: false
         prerelease: ${{ steps.release_type.outputs.prerelease }}
         body: |
           Release v${{ steps.version_check.outputs.version }}
           PyPI: https://pypi.org/project/geneweaver-boolean-algebra/${{ steps.version_check.outputs.version }}/
-
+        files: |
+          dist/*
+          LICENSE
