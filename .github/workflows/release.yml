@@ -65,14 +65,15 @@ jobs:
           echo "Full release version detected"
           echo "{prerelease}={false}" >> $GITHUB_OUTPUT
         fi
+        echo ${{ steps.version_check.outputs.should_release }}
 
     - name: Install Poetry
-      if: steps.version_check.outputs.should_release == 'true'
+      if: ${{ steps.version_check.outputs.should_release }} == 'true'
       run: |
         curl -sSL https://install.python-poetry.org | python3 -
 
     - name: Build and Publish to PyPI
-      if: steps.version_check.outputs.should_release == 'true'
+      if: ${{ steps.version_check.outputs.should_release }} == 'true'
       env:
         POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_API_TOKEN }}
       run: |
@@ -83,7 +84,7 @@ jobs:
 
     - name: Create GitHub Release
       uses: actions/create-release@v1
-      if: steps.version_check.outputs.should_release == 'true'
+      if: ${{ steps.version_check.outputs.should_release }} == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
