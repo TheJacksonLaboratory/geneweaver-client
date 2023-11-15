@@ -1,15 +1,13 @@
-name: 'Python Tests Definition'
+name: 'Test Coverage Definition'
 on:
   workflow_call:
     inputs:
       python-version:
         description: Python version to set up'
-        required: true
-        default: '3.9'
+        default: '3.11'
         type: string
       runner-os:
         description: 'Runner OS'
-        required: true
         default: 'ubuntu-latest'
         type: string
       upload-coverage:
@@ -18,7 +16,7 @@ on:
         type: boolean
       required-coverage:
         description: 'Required coverage percentage'
-        default: 75
+        default: 100
         type: string
 jobs:
   run-tests:
@@ -41,4 +39,19 @@ jobs:
         run: poetry install
       - name: Test with pytest
         run: |
-          poetry run pytest tests
+          poetry run pytest tests \
+          --tb=no \
+          --cov=geneweaver.client \
+          --cov-report=term \
+          --cov-report=html \
+          --cov-fail-under=${{ inputs.required-coverage }} > coverage_report.txt
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage_report.txt
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report-html
+          path: htmlcov
