@@ -3,7 +3,7 @@
 from unittest.mock import patch
 from zipfile import BadZipFile
 
-from geneweaver.client.cli.parser import cli
+from geneweaver.client.cli.alpha.parse import cli
 from geneweaver.core.parse.exceptions import EmptyFileError
 from openpyxl.utils.exceptions import InvalidFileException
 from typer.testing import CliRunner
@@ -17,7 +17,7 @@ runner = CliRunner()
 )
 def test_get_headers(mock_get_headers):
     """Test the get_headers CLI command."""
-    result = runner.invoke(cli, ["get-headers", "fake_path"])
+    result = runner.invoke(cli, ["utils", "get-headers", "fake_path"])
     print(result.output)
 
     # # Check the output message
@@ -35,7 +35,7 @@ def test_get_headers(mock_get_headers):
 def test_get_headers_with_value_error(mock_get_headers):
     """Test the get_headers CLI command with a ValueError."""
     # Simulate the CLI execution
-    result = runner.invoke(cli, ["get-headers", "dummy_path"])
+    result = runner.invoke(cli, ["utils", "get-headers", "dummy_path"])
 
     # Check the output message
     assert "Unsupported file type:" in result.output
@@ -57,7 +57,7 @@ def test_get_headers_with_value_error(mock_get_headers):
 def test_preview(mock_data_file_to_dict_n_rows, mock_get_headers):
     """Test the preview CLI command."""
     # Simulate the CLI execution
-    result = runner.invoke(cli, ["preview", "fake_path"])
+    result = runner.invoke(cli, ["utils", "preview", "fake_path"])
 
     print(result.output)
 
@@ -85,7 +85,7 @@ def test_preview(mock_data_file_to_dict_n_rows, mock_get_headers):
 def test_preview_get_data_error(mock_data_file_to_dict_n_rows, mock_get_headers):
     """Test the preview CLI command with an error."""
     # Simulate the CLI execution
-    result = runner.invoke(cli, ["preview", "fake_path"])
+    result = runner.invoke(cli, ["utils", "preview", "fake_path"])
 
     # Check the output message
     assert "File is empty." in result.output
@@ -106,7 +106,7 @@ def test_preview_get_data_error(mock_data_file_to_dict_n_rows, mock_get_headers)
 def test_preview_get_headers_error(mock_data_file_to_dict_n_rows, mock_get_headers):
     """Test the preview CLI command with a get_headers error."""
     # Simulate the CLI execution
-    result = runner.invoke(cli, ["preview", "fake_path"])
+    result = runner.invoke(cli, ["utils", "preview", "fake_path"])
 
     # Check the output message
     assert "File is empty." in result.output
@@ -119,13 +119,13 @@ def test_preview_get_headers_error(mock_data_file_to_dict_n_rows, mock_get_heade
 
 
 @patch(
-    "geneweaver.client.cli.parser.xlsx.get_sheet_names",
+    "geneweaver.client.cli.alpha.parse.utils.xlsx.get_sheet_names",
     return_value=(["sheet1", "sheet2", "sheet3"]),
 )
 def test_get_sheet_names(mock_get_sheet_names):
     """Test the get_sheet_names CLI command."""
     # Simulate the CLI execution
-    result = runner.invoke(cli, ["get-sheet-names", "fake_path"])
+    result = runner.invoke(cli, ["utils", "get-sheet-names", "fake_path"])
 
     # # Check the output message
     assert "sheet1" in result.output
@@ -137,14 +137,14 @@ def test_get_sheet_names(mock_get_sheet_names):
 
 
 @patch(
-    "geneweaver.client.cli.parser.xlsx.get_sheet_names",
+    "geneweaver.client.cli.alpha.parse.utils.xlsx.get_sheet_names",
     return_value=(["sheet1", "sheet2", "sheet3"]),
     side_effect=ValueError("Invalid File."),
 )
 def test_get_sheet_names_error(mock_get_sheet_names):
     """Test the get_sheet_names CLI command with an error."""
     # Simulate the CLI execution
-    result = runner.invoke(cli, ["get-sheet-names", "fake_path"])
+    result = runner.invoke(cli, ["utils", "get-sheet-names", "fake_path"])
 
     # # Check the output message
     assert "Invalid File." in result.output
@@ -154,14 +154,14 @@ def test_get_sheet_names_error(mock_get_sheet_names):
 
 
 @patch(
-    "geneweaver.client.cli.parser.xlsx.load_workbook",
+    "geneweaver.client.cli.alpha.parse.utils.xlsx.load_workbook",
     return_value=(["sheet1", "sheet2", "sheet3"]),
     side_effect=InvalidFileException("Invalid File."),
 )
 def test_get_sheet_names_load_workbook_error(mock_get_sheet_names):
     """Test the get_sheet_names CLI command with an InvalidFileException error."""
     # Simulate the CLI execution
-    result = runner.invoke(cli, ["get-sheet-names", "fake_path"])
+    result = runner.invoke(cli, ["utils", "get-sheet-names", "fake_path"])
 
     # # Check the output message
     assert "Invalid File." in result.output
@@ -171,14 +171,14 @@ def test_get_sheet_names_load_workbook_error(mock_get_sheet_names):
 
 
 @patch(
-    "geneweaver.client.cli.parser.xlsx.load_workbook",
+    "geneweaver.client.cli.alpha.parse.utils.xlsx.load_workbook",
     return_value=(["sheet1", "sheet2", "sheet3"]),
     side_effect=BadZipFile("Not a Zip File."),
 )
 def test_get_sheet_names_load_workbook_bad_zip_error(mock_get_sheet_names):
     """Test the get_sheet_names CLI command with a BadZipFile error."""
     # Simulate the CLI execution
-    result = runner.invoke(cli, ["get-sheet-names", "fake_path"])
+    result = runner.invoke(cli, ["utils", "get-sheet-names", "fake_path"])
 
     # # Check the output message
     assert "Not a Zip File." in result.output

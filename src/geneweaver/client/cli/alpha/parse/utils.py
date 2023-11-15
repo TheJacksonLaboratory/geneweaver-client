@@ -1,4 +1,4 @@
-"""CLI for parsing data files."""
+"""CLI for parsing utility functions."""
 from pathlib import Path
 
 import typer
