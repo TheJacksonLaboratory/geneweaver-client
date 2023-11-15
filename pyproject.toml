@@ -5,8 +5,8 @@ description = "A Python Client for the Geneweaver API"
 authors = ["Jax Computational Sciences <cssc@jax.org>"]
 readme = "README.md"
 license = "Apache-2.0"
-homepage = "https://bergsalex.github.io/geneweaver-docs/"
-repository = "https://bitbucket.org/jacksonlaboratory/geneweaver-client/"
+homepage = "https://thejacksonlaboratory.github.io/geneweaver-docs/"
+repository = "https://github.com/TheJacksonLaboratory/geneweaver-client"
 packages = [
     { from="src", include= "geneweaver/client"}
 ]
