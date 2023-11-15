@@ -98,7 +98,7 @@ jobs:
         prerelease: ${{ steps.release_type.outputs.prerelease }}
         body: |
           Release v${{ steps.version_check.outputs.version }}
-          PyPI: https://pypi.org/project/geneweaver-boolean-algebra/${{ steps.version_check.outputs.version }}/
+          PyPI: https://pypi.org/project/geneweaver-client/${{ steps.version_check.outputs.version }}/
         files: |
           dist/*
           LICENSE
