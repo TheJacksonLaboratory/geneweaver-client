@@ -1,12 +1,14 @@
 """A module that marshals access to specific file type parsing."""
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from geneweaver.core.parse import csv, utils, xlsx
 from geneweaver.core.parse.exceptions import UnsupportedFileTypeError
 from geneweaver.core.types import DictRow, StringOrPath
 
 
-def get_headers(file_path: StringOrPath, sheet_name: Optional[str] = None) -> List[str]:
+def get_headers(
+    file_path: StringOrPath, sheet_name: Optional[str] = None
+) -> Tuple[List[str], int]:
     """Retrieve the header row from a CSV or Excel file.
 
     This function first determines the file type (CSV or Excel) and then uses
@@ -24,15 +26,68 @@ def get_headers(file_path: StringOrPath, sheet_name: Optional[str] = None) -> Li
     file_type = utils.get_file_type(file_path)
 
     if file_type == "csv":
-        data, _ = csv.get_headers(file_path)
+        data, header_idx = csv.get_headers(file_path)
 
     elif file_type == "xlsx":
-        data, _ = xlsx.get_headers(file_path, sheet_name)
+        data, header_idx = xlsx.get_headers(file_path, sheet_name)
+
+    else:
+        raise UnsupportedFileTypeError(f"Unsupported file type: {file_type}")
+
+    return data, header_idx
+
+
+def read_rows(
+    file_path: StringOrPath,
+    n_rows: int,
+    sheet_name: Optional[str] = None,
+    start_row: int = 0,
+) -> List[List[str]]:
+    """Read n rows of data from a CSV or Excel file."""
+    data = []
+    file_type = utils.get_file_type(file_path)
+
+    if file_type == "csv":
+        for i in range(start_row, n_rows):
+            data.append(csv.read_row(file_path, i))
+
+    elif file_type == "xlsx":
+        for i in range(start_row, n_rows):
+            data.append(xlsx.read_row(file_path, i, sheet_name))
 
     else:
         raise UnsupportedFileTypeError(f"Unsupported file type: {file_type}")
 
     return data
+
+
+def read_metadata(
+    file_path: StringOrPath,
+    n_rows: int,
+    sheet_name: Optional[str] = None,
+    start_row: int = 0,
+) -> List[str]:
+    """Read the metadata from a CSV or Excel file.
+
+    :param file_path: The file path to the CSV or Excel file.
+    :param n_rows: The number of rows of metadata to read.
+    :param sheet_name: Name of the sheet to read from (for Excel files). If not
+    provided, the function will read from the active sheet. Ignored for CSV files.
+    :param start_row: The row to start reading from. Defaults to 0.
+
+    :returns: A list of strings representing the metadata from the CSV or Excel file.
+    """
+    rows = read_rows(file_path, n_rows, sheet_name, start_row)
+    return [
+        ",".join(
+            [
+                str(r).replace("\ufeff", "").strip()
+                for r in row
+                if r != "" and r is not None
+            ]
+        )
+        for row in rows
+    ]
 
 
 def data_file_to_dict(
