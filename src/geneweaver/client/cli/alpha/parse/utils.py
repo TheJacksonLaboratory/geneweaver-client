@@ -72,24 +72,22 @@ def get_metadata(file_path: Path, sheet: Optional[str] = None) -> None:
 @cli.command()
 @print_value_errors
 def preview(
-    file_path: Path, rows_to_read: int = 5, sheet: str = None, no_prompt: bool = False
+    file_path: Path, rows_to_read: int = 5, sheet: str = None, prompt: bool = True
 ) -> None:
     """Preview the data in a data file."""
     file_type = get_file_type(file_path)
     if file_type == "csv":
-        _preview_csv(file_path, rows_to_read, no_prompt)
+        _preview_csv(file_path, rows_to_read, prompt)
     elif file_type == "xlsx":
-        _preview_xlsx(file_path, rows_to_read, sheet, no_prompt)
+        _preview_xlsx(file_path, rows_to_read, sheet, prompt)
 
 
-def _preview_csv(
-    file_path: Path, rows_to_read: int = 5, no_prompt: bool = False
-) -> None:
+def _preview_csv(file_path: Path, rows_to_read: int = 5, prompt: bool = True) -> None:
     """Preview the data in a CSV file."""
     header, header_idx = csv.get_headers(file_path)
     _print_metadata_csv(file_path, header_idx)
 
-    if not no_prompt:
+    if prompt:
         typer.confirm("Do you want to preview data?", default=True, abort=True)
 
     rows = csv.read_to_dict_n_rows(file_path, rows_to_read, header_idx)
@@ -150,7 +148,7 @@ def _print_metadata_xlsx(
 
 
 def _preview_xlsx(
-    file_path: Path, rows_to_read: int = 5, sheet: str = None, no_prompt: bool = False
+    file_path: Path, rows_to_read: int = 5, sheet: str = None, prompt: bool = True
 ) -> None:
     sheet_names, sheet_metadata, headers, headers_idx, n_sheets = _get_metadata_xlsx(
         file_path, sheet
@@ -159,7 +157,7 @@ def _preview_xlsx(
     if not sheet:
         _print_metadata_xlsx(file_path, sheet_names, sheet_metadata, n_sheets)
 
-        if not no_prompt:
+        if prompt:
             typer.confirm("Do you want to preview data?", default=True, abort=True)
 
     zipped_data = zip(sheet_names, sheet_metadata, headers, headers_idx)  # noqa: B905
@@ -171,7 +169,7 @@ def _preview_xlsx(
         )
         _print_format_data(header, rows)
 
-        if not no_prompt and idx < n_sheets - 1:
+        if prompt and idx < n_sheets - 1:
             typer.confirm("Next sheet?", default=True, abort=True)
 
 
