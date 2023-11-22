@@ -130,7 +130,7 @@ def _get_metadata_xlsx(
 
         sheet_metadata = [
             general.read_metadata(file_path, h, sheet_name=s)
-            for s, h in zip(sheet_names, headers_idx, strict=True)
+            for s, h in zip(sheet_names, headers_idx)  # noqa: B905
         ]
         n_sheets = len(sheet_names)
 
@@ -145,7 +145,7 @@ def _print_metadata_xlsx(
 ) -> None:
     print(f"{file_path} contains {n_sheets} sheets:")
 
-    for name, metadata in zip(sheet_names, sheet_metadata, strict=True):
+    for name, metadata in zip(sheet_names, sheet_metadata):  # noqa: B905
         print(f" - {name} - {metadata}")
 
 
@@ -162,7 +162,7 @@ def _preview_xlsx(
         if not no_prompt:
             typer.confirm("Do you want to preview data?", default=True, abort=True)
 
-    zipped_data = zip(sheet_names, sheet_metadata, headers, headers_idx, strict=True)
+    zipped_data = zip(sheet_names, sheet_metadata, headers, headers_idx)  # noqa: B905
 
     for idx, (sheet_name, metadata, header, header_idx) in enumerate(zipped_data):
         print(f"Data for sheet - {sheet_name} - {metadata}")
