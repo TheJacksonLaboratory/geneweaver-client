@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 import typer
+from geneweaver.client.cli.utils import print_value_errors
 from geneweaver.client.parser import general
 from geneweaver.core.parse import csv, xlsx
 from geneweaver.core.parse.exceptions import EmptyFileError, UnsupportedFileTypeError
@@ -17,6 +18,7 @@ console = Console()
 
 
 @cli.command()
+@print_value_errors
 def infer_file_format(file_path: Path) -> None:
     """Infer the file format of a data file."""
     file_type = get_file_type(file_path)
@@ -24,6 +26,7 @@ def infer_file_format(file_path: Path) -> None:
 
 
 @cli.command()
+@print_value_errors
 def get_headers(file_path: Path, sheet: str = None) -> None:
     """Get the headers from a data file."""
     try:
@@ -37,6 +40,7 @@ def get_headers(file_path: Path, sheet: str = None) -> None:
 
 
 @cli.command()
+@print_value_errors
 def get_sheet_names(file_path: Path) -> None:
     """Get the sheet names from an Excel file."""
     try:
@@ -50,6 +54,7 @@ def get_sheet_names(file_path: Path) -> None:
 
 
 @cli.command()
+@print_value_errors
 def get_metadata(file_path: Path, sheet: Optional[str] = None) -> None:
     """Get the metadata from a data file."""
     file_type = get_file_type(file_path)
@@ -65,12 +70,12 @@ def get_metadata(file_path: Path, sheet: Optional[str] = None) -> None:
 
 
 @cli.command()
+@print_value_errors
 def preview(
     file_path: Path, rows_to_read: int = 5, sheet: str = None, no_prompt: bool = False
 ) -> None:
     """Preview the data in a data file."""
     file_type = get_file_type(file_path)
-
     if file_type == "csv":
         _preview_csv(file_path, rows_to_read, no_prompt)
     elif file_type == "xlsx":
