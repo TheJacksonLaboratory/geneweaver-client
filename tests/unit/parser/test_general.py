@@ -10,8 +10,8 @@ from geneweaver.core.parse.exceptions import UnsupportedFileTypeError
 @pytest.mark.parametrize(
     ("file_type", "expected_result"),
     [
-        ("csv", ["csv_header1", "csv_header2"]),
-        ("xlsx", ["xlsx_header1", "xlsx_header2"]),
+        ("csv", (["csv_header1", "csv_header2"], [])),
+        ("xlsx", (["xlsx_header1", "xlsx_header2"], [])),
     ],
 )
 @patch("geneweaver.client.parser.general.utils.get_file_type")
