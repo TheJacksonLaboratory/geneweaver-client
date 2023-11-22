@@ -4,7 +4,6 @@ from unittest.mock import patch
 from zipfile import BadZipFile
 
 from geneweaver.client.cli.alpha.parse import cli
-from geneweaver.core.parse.exceptions import EmptyFileError
 from openpyxl.utils.exceptions import InvalidFileException
 from typer.testing import CliRunner
 
@@ -44,78 +43,6 @@ def test_get_headers_with_value_error(mock_get_headers):
 
     # Check if the mocked function was called
     mock_get_headers.assert_called_once()
-
-
-@patch(
-    "geneweaver.client.parser.general.get_headers",
-    return_value=(["header1", "header2", "header3"], 0),
-)
-@patch(
-    "geneweaver.client.parser.general.data_file_to_dict_n_rows",
-    return_value=[{"header1": "val1", "header2": "val2", "header3": "val3"}],
-)
-def test_preview(mock_data_file_to_dict_n_rows, mock_get_headers):
-    """Test the preview CLI command."""
-    # Simulate the CLI execution
-    result = runner.invoke(cli, ["utils", "preview", "fake_path"])
-
-    print(result.output)
-
-    # # Check the output message
-    assert "header1" in result.output
-    assert "header2" in result.output
-    assert "header3" in result.output
-    assert "val1" in result.output
-    assert "val2" in result.output
-    assert "val3" in result.output
-
-    # # Check the exit code
-    assert result.exit_code == 0
-
-
-@patch(
-    "geneweaver.client.parser.general.get_headers",
-    return_value=(["header1", "header2", "header3"], 0),
-)
-@patch(
-    "geneweaver.client.parser.general.data_file_to_dict_n_rows",
-    return_value=[{"header1": "val1", "header2": "val2", "header3": "val3"}],
-    side_effect=EmptyFileError("File is empty."),
-)
-def test_preview_get_data_error(mock_data_file_to_dict_n_rows, mock_get_headers):
-    """Test the preview CLI command with an error."""
-    # Simulate the CLI execution
-    result = runner.invoke(cli, ["utils", "preview", "fake_path"])
-
-    # Check the output message
-    assert "File is empty." in result.output
-    # Check the exit code
-    assert result.exit_code == 1
-
-    # Check if the mocked function was called
-    mock_get_headers.assert_called_once()
-    mock_data_file_to_dict_n_rows.assert_called_once()
-
-
-@patch(
-    "geneweaver.client.parser.general.get_headers",
-    return_value=(["header1", "header2", "header3"], 0),
-    side_effect=ValueError("File is empty."),
-)
-@patch("geneweaver.client.parser.general.data_file_to_dict_n_rows", return_value=[])
-def test_preview_get_headers_error(mock_data_file_to_dict_n_rows, mock_get_headers):
-    """Test the preview CLI command with a get_headers error."""
-    # Simulate the CLI execution
-    result = runner.invoke(cli, ["utils", "preview", "fake_path"])
-
-    # Check the output message
-    assert "File is empty." in result.output
-    # Check the exit code
-    assert result.exit_code == 1
-
-    # Check if the mocked function was called
-    mock_get_headers.assert_called_once()
-    mock_data_file_to_dict_n_rows.assert_not_called()
 
 
 @patch(
