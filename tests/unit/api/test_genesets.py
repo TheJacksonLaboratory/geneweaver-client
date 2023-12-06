@@ -5,7 +5,7 @@ import datetime
 import pytest
 from geneweaver.client.api import genesets
 from geneweaver.client.api.exc import GeneweaverAPIError
-from geneweaver.core.enum import GenesetAccess, GenesetScoreType
+from geneweaver.core.enum import GenesetAccess, ScoreType
 from geneweaver.core.schema.geneset import BatchUpload, GenesetUpload
 
 from .test_api_utils import CLIENT_ERROR, SERVER_ERROR
@@ -32,7 +32,7 @@ VALID_GENESET_RESPONSES = [
 VALID_GENESET_UPLOADS = [
     GenesetUpload(
         **{
-            "score_type": GenesetScoreType.BINARY,
+            "score_type": ScoreType.BINARY,
             "pubmed-id": "12345678",
             "access": GenesetAccess.PUBLIC,
             "groups": ["test"],
