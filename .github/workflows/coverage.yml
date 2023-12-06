@@ -14,7 +14,7 @@ jobs:
   comment-coverage-report:
     needs: [ check-coverage ]
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    if: ${{always() && github.event_name == 'pull_request'}}
     permissions:
       pull-requests: write
     steps:

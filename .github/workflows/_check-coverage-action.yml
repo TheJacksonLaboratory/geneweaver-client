@@ -10,10 +10,6 @@ on:
         description: 'Runner OS'
         default: 'ubuntu-latest'
         type: string
-      upload-coverage:
-        description: 'Upload coverage results'
-        default: true
-        type: boolean
       required-coverage:
         description: 'Required coverage percentage'
         default: 100
@@ -44,13 +40,16 @@ jobs:
           --cov=geneweaver.client \
           --cov-report=term \
           --cov-report=html \
-          --cov-fail-under=${{ inputs.required-coverage }} > coverage_report.txt
+          --cov-fail-under=${{ inputs.required-coverage }} \
+          | awk '/- coverage: /{flag=1} flag' > coverage_report.txt
       - name: Upload coverage report
+        if: '!cancelled()'
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report
           path: coverage_report.txt
       - name: Upload coverage report
+        if: '!cancelled()'
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report-html
