@@ -105,7 +105,12 @@ def format_enum_name(enum_class: Type[Enum]) -> str:
     :param enum_class (Type[Enum]): The class of the enumeration.
     :return (str): The name of the enum class without the 'Geneset' or 'Type' suffix.
     """
-    return enum_class.__name__.replace("Geneset", "").replace("Type", "").strip()
+    return (
+        enum_class.__name__.replace("Geneset", "")
+        .replace("Type", "")
+        .replace("Enum", "")
+        .strip()
+    )
 
 
 def _enum_member_by_index(enum_class: Type[E], index: int) -> E:
