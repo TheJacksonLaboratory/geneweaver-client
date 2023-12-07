@@ -5,7 +5,7 @@ from typing import List
 
 import typer
 from geneweaver.client.utils.cli.prompt.pydantic import prompt_for_missing_fields
-from geneweaver.core.parse import xlsx
+from geneweaver.core.parse import xlsx, csv
 from geneweaver.core.parse.utils import get_file_type
 from geneweaver.core.render.batch import format_batch_file
 from geneweaver.core.schema.batch import BatchUploadGeneset
@@ -25,10 +25,18 @@ class CovertFileType(str, Enum):
 def convert(
     file_path: Path,
     value_header: Annotated[str, typer.Option(prompt=True)],
+    id_header: Annotated[str, typer.Option(prompt=True)],
     to: CovertFileType = CovertFileType.BATCH,
-    id_header: str = "symbol",
 ) -> None:
-    """Convert files from one format to another."""
+    """Convert files from one format to another.
+
+    :param file_path: The path to the file to convert.
+    :param value_header: The name of the column containing the gene values.
+    :param id_header: The name of the column containing the gene IDs.
+    :param to: The file type to convert to.
+
+    :raises ValueError: If the file type is not supported.
+    """
     file_type = get_file_type(file_path)
     out_file = file_path.with_suffix(f".{to.value}")
     print(f"Converting {file_path} to {out_file}")
@@ -37,6 +45,8 @@ def convert(
 
     if file_type == "xlsx":
         genesets = _convert_excel(file_path, id_header, value_header)
+    elif file_type == "csv":
+        genesets = _covert_csv(file_path, id_header, value_header)
 
     with open(out_file, "w") as f:
         f.write(format_batch_file(genesets))
@@ -47,7 +57,12 @@ def convert(
 def _convert_excel(
     file_path: Path, id_header: str, value_header: str
 ) -> List[BatchUploadGeneset]:
-    """Convert an Excel file to a batch file."""
+    """Convert an Excel file to a batch file.
+
+    :param file_path: The path to the Excel file.
+    :param id_header: The name of the column containing the gene IDs.
+    :param value_header: The name of the column containing the gene values.
+    """
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
@@ -74,6 +89,37 @@ def _convert_excel(
 
     return genesets
 
+def _covert_csv(
+    file_path: Path, id_header: str, value_header: str
+) -> List[BatchUploadGeneset]:
+    """Convert a CSV file to a batch file.
+
+    :param file_path: The path to the CSV file.
+    :param id_header: The name of the column containing the gene IDs.
+    :param value_header: The name of the column containing the gene values.
+    """
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        transient=True,
+    ) as progress:
+        progress.add_task(description="Loading document...", total=None)
+        headers, header_idx = csv.get_headers(file_path)
+        data = csv.read_to_dict(file_path, header_idx)
+
+        file_name = file_path.name.split(".")[0]
+
+        gs_name = file_name
+        gs_abbreviation = gs_name.replace(" ", "").replace("-", "_").capitalize()
+        gs_description = gs_name
+        geneset = _build_geneset(
+            name=gs_name, abbreviation=gs_abbreviation, description=gs_description
+        )
+        geneset.values = _parse_gene_list(  # noqa: PD011
+            data, id_header, value_header
+        )
+
+    return [geneset]
 
 def _parse_excel(file_path: Path) -> List[tuple]:
     """Parse an Excel file.

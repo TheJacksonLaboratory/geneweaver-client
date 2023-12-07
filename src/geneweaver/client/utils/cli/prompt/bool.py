@@ -7,7 +7,10 @@ T = TypeVar("T")
 
 
 def is_bool(field_type: T) -> bool:
-    """Check if the field_type is a bool."""
+    """Check if the field_type is a bool.
+
+    :param field_type: The type to check.
+    """
     return field_type is bool
 
 
