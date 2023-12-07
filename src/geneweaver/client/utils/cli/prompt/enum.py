@@ -77,7 +77,7 @@ def prompt_for_enum_selection(
 
 def _format_enum_selection(enum_class: Type[Enum], enum_type: Union[str, int]) -> str:
     """Format the enum selection prompt string."""
-    enum_name = _enum_name(enum_class)
+    enum_name = format_enum_name(enum_class)
     strs = [f"\nAvailable Geneset {enum_name} Types:"]
     for index, member in enumerate(enum_class):
         display_name = member.name.capitalize() + " "
@@ -94,12 +94,12 @@ def _format_enum_type_selection(enums: Iterable[Type[Enum]]) -> str:
     """
     strs = ["\nPlease Select one of: "]
     for index, enum_class in enumerate(enums):
-        enum_name = _enum_name(enum_class)
+        enum_name = format_enum_name(enum_class)
         strs.append(f"    {enum_name.ljust(30, '-')} {index}")
     return "\n".join(strs)
 
 
-def _enum_name(enum_class: Type[Enum]) -> str:
+def format_enum_name(enum_class: Type[Enum]) -> str:
     """Return the name of the enum class without the 'Geneset' or 'Type' suffix.
 
     :param enum_class (Type[Enum]): The class of the enumeration.

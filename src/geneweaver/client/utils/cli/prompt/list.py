@@ -15,7 +15,7 @@ def prompt_for_list_selection(field_type: T, allow_none: bool = False) -> List[T
     """
     origin_type = get_origin(field_type)
     if origin_type != list:
-        raise ValueError("Expected a typing.List type")
+        raise TypeError("Expected a typing.List type")
 
     # Extract the type of the list's elements
     element_type = get_args(field_type)[0]
@@ -34,7 +34,6 @@ def prompt_for_list_selection(field_type: T, allow_none: bool = False) -> List[T
         if not item:
             break
         items.append(item)
-    print(items)
     return items
 
 
