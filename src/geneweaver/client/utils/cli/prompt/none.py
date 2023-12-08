@@ -1,7 +1,11 @@
 """Utility functions for prompting when allowing None values."""
-from typing import Any
+from typing import Any, Optional, TypeVar
+
+import typer
 
 NONE_REPRS = ["--", "NONE"]
+
+T = TypeVar("T")
 
 
 def value_represents_none(value: Any) -> bool:  # noqa: ANN401
@@ -25,3 +29,17 @@ def allow_none_str() -> str:
     :return: A string describing the allowed None values.
     """
     return f" (or {'/'.join(NONE_REPRS)} to leave blank)"
+
+
+def prompt_if_none(field_name: str, value: Optional[T] = None) -> Optional[T]:
+    """Prompt the user to enter a value if the value is None.
+
+    :param value: The value to check.
+    :param field_name: The name of the field to prompt for.
+    :return: The value entered by the user.
+    """
+    if value is None:
+        value = typer.prompt(
+            f"Please enter a value for {field_name.capitalize()}"
+        ).strip()
+    return value

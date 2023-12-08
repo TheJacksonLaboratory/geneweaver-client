@@ -608,13 +608,13 @@ files = [
 
 [[package]]
 name = "geneweaver-core"
-version = "0.8.0a0"
+version = "0.8.0a1"
 description = "The core of the Jax-Geneweaver Python library"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "geneweaver_core-0.8.0a0-py3-none-any.whl", hash = "sha256:01a70f8dc9407def33a706cced4e4946de66b10f61e828d69d2b686b39a5a197"},
-    {file = "geneweaver_core-0.8.0a0.tar.gz", hash = "sha256:b4fc0373f3ac21914278a9d9961942deef2130e230ac336d5414591db8f25f2c"},
+    {file = "geneweaver_core-0.8.0a1-py3-none-any.whl", hash = "sha256:cc779cd36b00542384b79cafc87e110c581e28c6bd96bc3caba775f4d91b3e50"},
+    {file = "geneweaver_core-0.8.0a1.tar.gz", hash = "sha256:f0db3e3154737a84f8a2ebd728d1499417618f53f52ddcffe47ec7426e811304"},
 ]
 
 [package.dependencies]
@@ -1503,4 +1503,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "cefa4a45db18f978d47775465b3cd094761d468ea79de3da6278add10cb02251"
+content-hash = "297114a169115d9567340962b0b49699a67ac8ea35b22b2ce543c8bcd3a7a184"
