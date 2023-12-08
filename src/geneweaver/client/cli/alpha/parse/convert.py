@@ -93,11 +93,11 @@ def _convert_excel(
         gs_name = f"{file_name} - {sheet_name}"
         gs_abbreviation = gs_name.replace(" ", "").replace("-", "_").capitalize()
         gs_description = gs_name + " " + ", ".join(sheet_metadata)
+        id_header = prompt_if_none_or_ask_to_keep("ID Header", id_header)
+        value_header = prompt_if_none_or_ask_to_keep("Value Header", value_header)
         geneset = _build_geneset(
             name=gs_name, abbreviation=gs_abbreviation, description=gs_description
         )
-        value_header = prompt_if_none_or_ask_to_keep("Value Header", value_header)
-        id_header = prompt_if_none_or_ask_to_keep("ID Header", id_header)
         geneset.values = _parse_gene_list(  # noqa: PD011
             sheet_data, id_header, value_header
         )
@@ -129,11 +129,11 @@ def _covert_csv(
         gs_name = file_name
         gs_abbreviation = gs_name.replace(" ", "").replace("-", "_").capitalize()
         gs_description = gs_name
+        id_header = prompt_if_none("id_header", id_header)
+        value_header = prompt_if_none("value_header", value_header)
         geneset = _build_geneset(
             name=gs_name, abbreviation=gs_abbreviation, description=gs_description
         )
-        value_header = prompt_if_none("value_header", value_header)
-        id_header = prompt_if_none("id_header", id_header)
         geneset.values = _parse_gene_list(data, id_header, value_header)  # noqa: PD011
 
     return [geneset]
