@@ -1,18 +1,21 @@
 """Convert data files."""
 from enum import Enum
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
-import typer
+from geneweaver.client.utils.cli.prompt.generic import (
+    prompt_if_none,
+    prompt_if_none_or_ask_to_keep,
+)
 from geneweaver.client.utils.cli.prompt.pydantic import prompt_for_missing_fields
-from geneweaver.core.parse import xlsx, csv
+from geneweaver.core.parse import csv, xlsx
 from geneweaver.core.parse.utils import get_file_type
 from geneweaver.core.render.batch import format_batch_file
+from geneweaver.core.render.csv import format_csv_file
 from geneweaver.core.schema.batch import BatchUploadGeneset
 from geneweaver.core.schema.gene import GeneValue
 from pydantic import ValidationError
 from rich.progress import Progress, SpinnerColumn, TextColumn
-from typing_extensions import Annotated
 
 
 class CovertFileType(str, Enum):
@@ -24,8 +27,10 @@ class CovertFileType(str, Enum):
 
 def convert(
     file_path: Path,
-    value_header: Annotated[str, typer.Option(prompt=True)],
-    id_header: Annotated[str, typer.Option(prompt=True)],
+    # value_header: Annotated[str, typer.Option(prompt=True)],
+    # id_header: Annotated[str, typer.Option(prompt=True)],
+    value_header: Optional[str] = None,
+    id_header: Optional[str] = None,
     to: CovertFileType = CovertFileType.BATCH,
 ) -> None:
     """Convert files from one format to another.
@@ -48,14 +53,23 @@ def convert(
     elif file_type == "csv":
         genesets = _covert_csv(file_path, id_header, value_header)
 
-    with open(out_file, "w") as f:
-        f.write(format_batch_file(genesets))
+    if to == CovertFileType.CSV:
+        for geneset in genesets:
+            this_out_file = out_file.with_name(
+                f"{out_file}_{geneset.abbreviation}.{to.value}"
+            )
+            with open(this_out_file, "w") as f:
+                f.write(format_csv_file(geneset))
+            print(f"Converted {file_path} to {this_out_file}")
+    else:
+        with open(out_file, "w") as f:
+            f.write(format_batch_file(genesets))
 
         print(f"Converted {file_path} to {out_file}")
 
 
 def _convert_excel(
-    file_path: Path, id_header: str, value_header: str
+    file_path: Path, id_header: Optional[str] = None, value_header: Optional[str] = None
 ) -> List[BatchUploadGeneset]:
     """Convert an Excel file to a batch file.
 
@@ -82,6 +96,8 @@ def _convert_excel(
         geneset = _build_geneset(
             name=gs_name, abbreviation=gs_abbreviation, description=gs_description
         )
+        value_header = prompt_if_none_or_ask_to_keep("Value Header", value_header)
+        id_header = prompt_if_none_or_ask_to_keep("ID Header", id_header)
         geneset.values = _parse_gene_list(  # noqa: PD011
             sheet_data, id_header, value_header
         )
@@ -89,8 +105,9 @@ def _convert_excel(
 
     return genesets
 
+
 def _covert_csv(
-    file_path: Path, id_header: str, value_header: str
+    file_path: Path, id_header: Optional[str] = None, value_header: Optional[str] = None
 ) -> List[BatchUploadGeneset]:
     """Convert a CSV file to a batch file.
 
@@ -115,11 +132,12 @@ def _covert_csv(
         geneset = _build_geneset(
             name=gs_name, abbreviation=gs_abbreviation, description=gs_description
         )
-        geneset.values = _parse_gene_list(  # noqa: PD011
-            data, id_header, value_header
-        )
+        value_header = prompt_if_none("value_header", value_header)
+        id_header = prompt_if_none("id_header", id_header)
+        geneset.values = _parse_gene_list(data, id_header, value_header)  # noqa: PD011
 
     return [geneset]
+
 
 def _parse_excel(file_path: Path) -> List[tuple]:
     """Parse an Excel file.
