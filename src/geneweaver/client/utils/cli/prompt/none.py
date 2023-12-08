@@ -39,5 +39,7 @@ def prompt_if_none(field_name: str, value: Optional[T] = None) -> Optional[T]:
     :return: The value entered by the user.
     """
     if value is None:
-        value = typer.prompt(f"Please enter a value for {field_name.capitalize()}")
+        value = typer.prompt(
+            f"Please enter a value for {field_name.capitalize()}"
+        ).strip()
     return value
