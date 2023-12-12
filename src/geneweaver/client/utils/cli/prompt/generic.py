@@ -77,5 +77,5 @@ def prompt_if_none_or_ask_to_keep(
     if value is None:
         value = prompt_if_none(field_name, value)
     elif not prompt_to_keep_field(field_name, value, default=default):
-        value = prompt_if_none(field_name, value)
+        value = prompt_if_none(field_name, None)
     return value
