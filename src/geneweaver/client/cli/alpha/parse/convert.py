@@ -129,12 +129,12 @@ def _covert_csv(
         gs_name = file_name
         gs_abbreviation = gs_name.replace(" ", "").replace("-", "_").capitalize()
         gs_description = gs_name
-        id_header = prompt_if_none("id_header", id_header)
-        value_header = prompt_if_none("value_header", value_header)
-        geneset = _build_geneset(
-            name=gs_name, abbreviation=gs_abbreviation, description=gs_description
-        )
-        geneset.values = _parse_gene_list(data, id_header, value_header)  # noqa: PD011
+    id_header = prompt_if_none("id_header", id_header)
+    value_header = prompt_if_none("value_header", value_header)
+    geneset = _build_geneset(
+        name=gs_name, abbreviation=gs_abbreviation, description=gs_description
+    )
+    geneset.values = _parse_gene_list(data, id_header, value_header)  # noqa: PD011
 
     return [geneset]
 
