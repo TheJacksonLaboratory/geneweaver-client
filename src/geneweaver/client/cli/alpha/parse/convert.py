@@ -131,7 +131,7 @@ def _covert_csv(
         prompt_if_list_contains_duplicates(
             headers,
             "WARNING: Possible duplicate headers."
-            "Please use CAUTION. Consider renaming headers and trying again."
+            "Please use CAUTION. Consider renaming headers and trying again.",
         )
 
         data = csv.read_to_dict(file_path, header_idx)
@@ -165,7 +165,7 @@ def _parse_excel(file_path: Path) -> List[tuple]:
         prompt_if_list_contains_duplicates(
             h,
             f"WARNING: Possible duplicate headers on sheet {s}. "
-            f"Please use CAUTION. Consider renaming headers and trying again."
+            f"Please use CAUTION. Consider renaming headers and trying again.",
         )
         if h_idx == -1:
             typer.echo(f"WARNING: Could not find header row for sheet {s}. Skipping.")
