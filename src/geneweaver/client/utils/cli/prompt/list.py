@@ -1,5 +1,5 @@
 """Utility functions for prompting the user to enter a list of values."""
-from typing import List, TypeVar, get_args, get_origin
+from typing import List, Optional, TypeVar, get_args, get_origin
 
 import typer
 
@@ -50,3 +50,17 @@ def is_list_of_str_or_int(field_type: T) -> bool:
         # Check if the element type is str or int
         return element_type in [str, int]
     return False
+
+
+def prompt_if_list_contains_duplicates(
+    list_to_check: list, message: Optional[str]
+) -> None:
+    """Prompt the user if the given list contains duplicates.
+
+    :param list_to_check: The list to check for duplicates.
+    :param message: The message to display to the user.
+    """
+    if len(list_to_check) != len(set(list_to_check)):
+        if message is None:
+            message = "The list contains duplicates. Please try again."
+        typer.echo(message)

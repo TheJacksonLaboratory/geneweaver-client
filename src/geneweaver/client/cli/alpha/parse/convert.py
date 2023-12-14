@@ -3,10 +3,12 @@ from enum import Enum
 from pathlib import Path
 from typing import List, Optional
 
+import typer
 from geneweaver.client.utils.cli.prompt.generic import (
     prompt_if_none,
     prompt_if_none_or_ask_to_keep,
 )
+from geneweaver.client.utils.cli.prompt.list import prompt_if_list_contains_duplicates
 from geneweaver.client.utils.cli.prompt.pydantic import prompt_for_missing_fields
 from geneweaver.core.parse import csv, xlsx
 from geneweaver.core.parse.utils import get_file_type
@@ -122,6 +124,16 @@ def _covert_csv(
     ) as progress:
         progress.add_task(description="Loading document...", total=None)
         headers, header_idx = csv.get_headers(file_path)
+        if header_idx == -1:
+            typer.echo("Could not find header row. Aborting.")
+            typer.Exit()
+
+        prompt_if_list_contains_duplicates(
+            headers,
+            "WARNING: Possible duplicate headers."
+            "Please use CAUTION. Consider renaming headers and trying again.",
+        )
+
         data = csv.read_to_dict(file_path, header_idx)
 
         file_name = file_path.name.split(".")[0]
@@ -129,12 +141,12 @@ def _covert_csv(
         gs_name = file_name
         gs_abbreviation = gs_name.replace(" ", "").replace("-", "_").capitalize()
         gs_description = gs_name
-        id_header = prompt_if_none("id_header", id_header)
-        value_header = prompt_if_none("value_header", value_header)
-        geneset = _build_geneset(
-            name=gs_name, abbreviation=gs_abbreviation, description=gs_description
-        )
-        geneset.values = _parse_gene_list(data, id_header, value_header)  # noqa: PD011
+    id_header = prompt_if_none("id_header", id_header)
+    value_header = prompt_if_none("value_header", value_header)
+    geneset = _build_geneset(
+        name=gs_name, abbreviation=gs_abbreviation, description=gs_description
+    )
+    geneset.values = _parse_gene_list(data, id_header, value_header)  # noqa: PD011
 
     return [geneset]
 
@@ -150,8 +162,16 @@ def _parse_excel(file_path: Path) -> List[tuple]:
     headers, headers_idx = [], []
     for s in sheet_names:
         h, h_idx = xlsx.get_headers(file_path, sheet_name=s)
-        headers.append(h)
-        headers_idx.append(h_idx)
+        prompt_if_list_contains_duplicates(
+            h,
+            f"WARNING: Possible duplicate headers on sheet {s}. "
+            f"Please use CAUTION. Consider renaming headers and trying again.",
+        )
+        if h_idx == -1:
+            typer.echo(f"WARNING: Could not find header row for sheet {s}. Skipping.")
+        else:
+            headers.append(h)
+            headers_idx.append(h_idx)
 
     sheet_metadata = [
         xlsx.read_metadata(file_path, header_idx, sheet_name=sheet)
