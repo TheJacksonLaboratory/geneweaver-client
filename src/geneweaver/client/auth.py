@@ -8,8 +8,8 @@ from auth0.authentication.token_verifier import (
     AsymmetricSignatureVerifier,
     TokenVerifier,
 )
-from geneweaver.client.config import settings
 from geneweaver.client.core import app_dir
+from geneweaver.client.core.config import settings
 from geneweaver.client.exceptions import AuthenticationError
 
 

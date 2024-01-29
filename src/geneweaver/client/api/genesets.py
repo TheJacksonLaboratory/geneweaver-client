@@ -1,11 +1,12 @@
 """Functions that wrap the GeneWeaver API on /genesets endpoints."""
 from typing import Optional
 
+import requests
 from geneweaver.client.api.utils import sessionmanager
-from geneweaver.client.config import settings
+from geneweaver.client.core.config import settings
 from geneweaver.core.schema import geneset as geneset_schema
 
-ENDPOINT = "/genesets/"
+ENDPOINT = "/genesets"
 
 
 def post(
@@ -34,11 +35,19 @@ def post_batch(
     return geneset_schema.Geneset(**resp.json())
 
 
-def get(token: str, geneset_id: int) -> geneset_schema.Geneset:
+def get(token: str, geneset_id: int) -> dict:
     """Get a Geneset by ID."""
     with sessionmanager() as session:
         resp = session.get(
-            settings.API_URL + ENDPOINT + str(geneset_id),
-            headers={"Authorization": token},
+            settings.API_URL + ENDPOINT + "/" + str(geneset_id),
+            headers={"Authorization": f"Bearer {token}"},
         )
-    return geneset_schema.Geneset(**resp.json())
+    return resp.json()
+
+
+def get_genesets(access_token: str) -> list:
+    """Get all visible genesets."""
+    return requests.get(
+        settings.api_v3_path() + "/genesets",
+        headers={"Authorization": f"Bearer {access_token}"},
+    ).json()
