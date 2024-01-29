@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "geneweaver-client"
-version = "0.6.0"
+version = "0.7.0a0"
 description = "A Python Client for the Geneweaver API"
 authors = ["Jax Computational Sciences <cssc@jax.org>"]
 readme = "README.md"
@@ -19,9 +19,7 @@ gweaver = "geneweaver.client.cli.main:cli"
 python = "^3.9"
 requests = "^2.28.2"
 pydantic = {extras = ["dotenv"], version = "^1.10.7"}
-pytest = "^7.2.2"
-pytest-cov = "^4.0.0"
-geneweaver-core = "^0.8.0a1"
+geneweaver-core = "^0.8.0"
 typer = {extras = ["all"], version = "^0.9.0"}
 rich = "^13.4.2"
 openpyxl = "^3.1.2"
@@ -30,9 +28,7 @@ pandas = ">=1.5,<2.1"
 xlrd = "^2.0.1"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^7.2.0"
-pytest-cov = "^4.0.0"
-geneweaver-testing = "^0.0.2b3"
+geneweaver-testing = "^0.0.3"
 
 [tool.ruff]
 select = ['F', 'E', 'W', 'A', 'C90', 'N', 'B', 'ANN', 'D', 'I', 'ERA', 'PD', 'NPY', 'PT']
