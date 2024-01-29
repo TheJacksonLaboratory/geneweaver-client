@@ -12,16 +12,15 @@ def test_client_settings_schema():
     assert "API_PATH" in schema["properties"]
     assert "API_URL" in schema["properties"]
     assert "API_KEY" in schema["properties"]
-    assert "LEGACY_PATHS" in schema["properties"]
 
 
 # TODO: This test needs its settings instance to be provided and configured as
 #  a fixture so that we can override which .env files to use for testing.
 def test_client_settings_default():
     """Test the Settings class."""
-    assert settings.API_HOST == "https://geneweaver.org"
+    assert settings.API_HOST == "https://geneweaver-prod.jax.org"
     assert settings.API_PATH == "/api/v2"
-    assert settings.API_URL == "https://geneweaver.org/api/v2"
+    assert settings.API_URL == "https://geneweaver-prod.jax.org/api"
     # TODO: See comment above.
     # assert settings.API_KEY is None
 
