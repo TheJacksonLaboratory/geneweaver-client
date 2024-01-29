@@ -19,7 +19,7 @@ def test_client_settings_schema():
 def test_client_settings_default():
     """Test the Settings class."""
     assert settings.API_HOST == "https://geneweaver-prod.jax.org"
-    assert settings.API_PATH == "/api/v2"
+    assert settings.API_PATH == "/api"
     assert settings.API_URL == "https://geneweaver-prod.jax.org/api"
     # TODO: See comment above.
     # assert settings.API_KEY is None
