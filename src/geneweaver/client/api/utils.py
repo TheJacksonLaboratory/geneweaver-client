@@ -26,9 +26,7 @@ def sessionmanager(token: Optional[str] = None) -> requests.Session:
     with requests.Session() as session:
         session.hooks = {"response": _raise_for_status_hook}
         if token is not None:
-            session.headers.update(
-                {"Authorization": f"Bearer {token}", "accept": "application/json"}
-            )
+            session.headers.update({"Authorization": f"Bearer {token}"})
         try:
             yield session
         except requests.exceptions.RequestException as err:

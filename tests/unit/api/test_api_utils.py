@@ -1,10 +1,16 @@
 """Tests for API utilities."""
 # ruff: noqa: B905, ANN001, ANN201
 from itertools import chain
+from unittest.mock import patch, Mock
 
 import pytest
 import requests
-from geneweaver.client.api.utils import _raise_for_status_hook, sessionmanager
+from geneweaver.client.api.exc import GeneweaverAPIError
+from geneweaver.client.api.utils import (
+    _raise_for_status_hook,
+    format_endpoint,
+    sessionmanager,
+)
 
 INFO = list(range(100, 104))
 SUCCESS = list(chain(range(200, 209), (226,)))
@@ -26,3 +32,41 @@ def test_sessionmanager_sets_raise_for_status():
     """Test that sessionmanager sets the raise_for_status hook."""
     with sessionmanager() as session:
         assert session.hooks["response"] == _raise_for_status_hook
+
+
+def test_sessionmanager_sets_auth_header():
+    """Test that the sessionmanager sets the Authorization header."""
+    with sessionmanager(token="test") as session:
+        assert "Authorization" in session.headers
+        assert session.headers["Authorization"] == "Bearer test"
+
+
+def test_sessionmanager_catches_requests_exceptions():
+    """Test that the sessionmanager catches requests exceptions."""
+    mock_response = Mock()
+    mock_response.text = "test"
+    with pytest.raises(GeneweaverAPIError):
+        with sessionmanager() as session:
+            with patch.object(
+                session,
+                "get",
+                side_effect=requests.exceptions.RequestException(
+                    response=mock_response
+                ),
+            ):
+                session.get("http://example.com")
+
+
+@pytest.mark.parametrize(
+    ("parts", "expected"),
+    [
+        (("foo", "bar"), "foo/bar"),
+        (("foo", "bar", "baz"), "foo/bar/baz"),
+        (["foo", "bar", "foo", "bar"], "foo/bar/foo/bar"),
+        (["foo", "foo", "bar", "bar", "baz", "baz"], "foo/foo/bar/bar/baz/baz"),
+    ],
+)
+def test_format_endpoint(parts, expected):
+    """Test that format_endpoint formats the endpoint correctly."""
+    assert type(format_endpoint(*parts)) == str
+    assert format_endpoint(*parts).endswith(expected)
