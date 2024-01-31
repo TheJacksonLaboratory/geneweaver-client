@@ -1,7 +1,7 @@
 """Tests for API utilities."""
 # ruff: noqa: B905, ANN001, ANN201
 from itertools import chain
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
 
 import pytest
 import requests
@@ -45,7 +45,7 @@ def test_sessionmanager_catches_requests_exceptions():
     """Test that the sessionmanager catches requests exceptions."""
     mock_response = Mock()
     mock_response.text = "test"
-    with pytest.raises(GeneweaverAPIError):
+    with pytest.raises(GeneweaverAPIError):  # noqa: PT012
         with sessionmanager() as session:
             with patch.object(
                 session,
