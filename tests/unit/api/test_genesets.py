@@ -1,78 +1,59 @@
-"""Tests for the Geneset API."""
-# ruff: noqa: ANN001, ANN201
-import datetime
+"""Test the genesets API client functions."""
+from unittest.mock import patch
 
 import pytest
 from geneweaver.client.api import genesets
-from geneweaver.client.api.exc import GeneweaverAPIError
-from geneweaver.core.enum import GenesetAccess, ScoreType
-from geneweaver.core.schema.geneset import BatchUpload, GenesetUpload
+from geneweaver.core.enum import GeneIdentifier
 
-from .test_api_utils import CLIENT_ERROR, SERVER_ERROR
 
-VALID_GENESET_RESPONSES = [
-    {
-        "name": "test",
-        "abbreviation": "test",
-        "description": "test",
-        "count": 1,
-        "threshold_type": 0,
-        "threshold": "0",
-        "gene_id_type": 0,
-        "created": str(datetime.date.today()),
-        "admin_flag": "test",
-        "updated": str(datetime.datetime.now()),
-        "status": "test",
-        "gsv_qual": "test",
-        "attribution": 0,
-        "is_edgelist": False,
+@pytest.mark.parametrize(
+    ("geneset_id", "gene_id_type"),
+    [
+        (1, GeneIdentifier.MGI),
+        (123456, None),
+    ],
+)
+def test_get(geneset_id, gene_id_type):
+    """Test the get function."""
+    kwargs = {
+        "geneset_id": geneset_id,
     }
-]
+    if gene_id_type is not None:
+        kwargs["gene_id_type"] = GeneIdentifier(gene_id_type)
 
-VALID_GENESET_UPLOADS = [
-    GenesetUpload(
-        **{
-            "score_type": ScoreType.BINARY,
-            "pubmed-id": "12345678",
-            "access": GenesetAccess.PUBLIC,
-            "groups": ["test"],
-            "name": "test",
-            "label": "test",
-            "species": "test",
-            "description": "test",
-            "gene_identifier": "test",
-            "gene_list": [{"symbol": "test", "value": 1}],
+    with patch("geneweaver.client.api.genesets.sessionmanager") as mock_sessionmanager:
+        (
+            mock_sessionmanager.return_value.__enter__.return_value.get.return_value.json.return_value
+        ) = {
+            "geneset": {"geneset_id": geneset_id},
+            "geneset_values": [{"geneset_id": geneset_id}],
         }
-    ),
-]
-
-VALID_GENESET_BATCH_UPLOADS = [
-    BatchUpload(**{"batch_file": "test", "curation_group": ["test"]}),
-]
-
-
-@pytest.mark.parametrize("geneset", VALID_GENESET_UPLOADS)
-@pytest.mark.parametrize("response", VALID_GENESET_RESPONSES)
-def test_post_geneset(config_sessionmanager_patch, geneset, response):
-    """Test that the geneset upload API works."""
-    config_sessionmanager_patch(status_code=200, resp_json=response)
-    result = genesets.post("token", geneset)
-    assert result is not None
+        result = genesets.get("fake_access_token", geneset_id, gene_id_type)
+        assert result["geneset"]["geneset_id"] == geneset_id
+        assert result["geneset_values"][0]["geneset_id"] == geneset_id
+        assert (
+            mock_sessionmanager.return_value.__enter__.return_value.get.call_count == 1
+        )
+        assert (
+            mock_sessionmanager.return_value.__enter__.return_value.get.return_value.json.call_count
+            == 1
+        )
 
 
-@pytest.mark.parametrize("geneset", VALID_GENESET_UPLOADS)
-@pytest.mark.parametrize("error_status", CLIENT_ERROR + SERVER_ERROR)
-def test_post_geneset_fails(config_sessionmanager_patch, error_status, geneset):
-    """Test that the geneset upload API fails when the server returns an error."""
-    config_sessionmanager_patch(status_code=error_status, resp_json={"error": "test"})
-    with pytest.raises(GeneweaverAPIError):
-        _ = genesets.post("token", geneset)
-
-
-@pytest.mark.parametrize("geneset", VALID_GENESET_BATCH_UPLOADS)
-@pytest.mark.parametrize("response", VALID_GENESET_RESPONSES)
-def test_post_geneset_batch(config_sessionmanager_patch, geneset, response):
-    """Test that the geneset batch upload API works."""
-    config_sessionmanager_patch(status_code=200, resp_json=response)
-    result = genesets.post_batch("token", geneset)
-    assert result is not None
+def test_get_genesets():
+    """Test the get_genesets function."""
+    with patch("geneweaver.client.api.genesets.sessionmanager") as mock_sessionmanager:
+        (
+            mock_sessionmanager.return_value.__enter__.return_value.get.return_value.json.return_value
+        ) = [{"geneset_id": 1}, {"geneset_id": 2}]
+        result = genesets.get_genesets("fake_access_token")
+        assert len(result) == 2
+        assert result[0]["geneset_id"] == 1
+        assert result[1]["geneset_id"] == 2
+        assert (
+            mock_sessionmanager.return_value.__enter__.return_value.get.call_count == 1
+        )
+        assert (
+            mock_sessionmanager.return_value.__enter__.return_value.get.return_value.json.call_count
+            == 1
+        )

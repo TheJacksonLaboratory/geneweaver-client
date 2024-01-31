@@ -1,53 +1,39 @@
 """Functions that wrap the GeneWeaver API on /genesets endpoints."""
 from typing import Optional
 
-import requests
-from geneweaver.client.api.utils import sessionmanager
-from geneweaver.client.core.config import settings
-from geneweaver.core.schema import geneset as geneset_schema
+from geneweaver.client.api.utils import format_endpoint, sessionmanager
+from geneweaver.core.enum import GeneIdentifier
 
-ENDPOINT = "/genesets"
+ENDPOINT = "genesets"
 
 
-def post(
-    token: str, geneset: geneset_schema.GenesetUpload
-) -> Optional[geneset_schema.Geneset]:
-    """Create a new Geneset, with the genes specified in the request body."""
-    with sessionmanager() as session:
-        resp = session.post(
-            settings.API_URL + ENDPOINT,
-            json=geneset.dict(),
-            headers={"Authorization": token},
-        )
-    return geneset_schema.Geneset(**resp.json())
+def get(
+    access_token: str, geneset_id: int, gene_id_type: Optional[GeneIdentifier] = None
+) -> dict:
+    """Get a Geneset by ID.
 
+    :param access_token: User access token
+    :param geneset_id: Geneset ID (without the "GS" prefix).
+    :param gene_id_type: Gene ID type (one of GeneIdentifier).
 
-def post_batch(
-    token: str, geneset: geneset_schema.BatchUpload
-) -> geneset_schema.Geneset:
-    """Create a new Geneset using a batch upload file."""
-    with sessionmanager() as session:
-        resp = session.post(
-            settings.API_URL + ENDPOINT + "batch",
-            json=geneset.dict(),
-            headers={"Authorization": token},
-        )
-    return geneset_schema.Geneset(**resp.json())
-
-
-def get(token: str, geneset_id: int) -> dict:
-    """Get a Geneset by ID."""
-    with sessionmanager() as session:
+    :return: Geneset dict.
+    """
+    params = {} if gene_id_type is None else {"gene_id_type": int(gene_id_type)}
+    with sessionmanager(token=access_token) as session:
         resp = session.get(
-            settings.API_URL + ENDPOINT + "/" + str(geneset_id),
-            headers={"Authorization": f"Bearer {token}"},
+            format_endpoint(ENDPOINT, str(geneset_id)),
+            params=params,
         )
     return resp.json()
 
 
 def get_genesets(access_token: str) -> list:
-    """Get all visible genesets."""
-    return requests.get(
-        settings.api_v3_path() + "/genesets",
-        headers={"Authorization": f"Bearer {access_token}"},
-    ).json()
+    """Get all visible genesets.
+
+    :param access_token: User access token
+
+    :return: List of genesets dicts.
+    """
+    with sessionmanager(token=access_token) as session:
+        resp = session.get(format_endpoint(ENDPOINT))
+    return resp.json()

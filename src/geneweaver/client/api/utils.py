@@ -1,9 +1,10 @@
 """API related utilities, helpers, and other internal functions."""
 from contextlib import contextmanager
-from typing import Any
+from typing import Any, Optional
 
 import requests
 from geneweaver.client.api.exc import GeneweaverAPIError
+from geneweaver.client.core.config import settings
 
 
 def _raise_for_status_hook(
@@ -14,7 +15,7 @@ def _raise_for_status_hook(
 
 
 @contextmanager
-def sessionmanager() -> requests.Session:
+def sessionmanager(token: Optional[str] = None) -> requests.Session:
     """Context manager for a requests.Session object.
 
     This context manager will do everything that a requests.Session context manager
@@ -24,6 +25,8 @@ def sessionmanager() -> requests.Session:
     """
     with requests.Session() as session:
         session.hooks = {"response": _raise_for_status_hook}
+        if token is not None:
+            session.headers.update({"Authorization": f"Bearer {token}"})
         try:
             yield session
         except requests.exceptions.RequestException as err:
@@ -33,3 +36,10 @@ def sessionmanager() -> requests.Session:
                 f"There was a problem calling the Geneweaver API: {err.response.text}"
             )
             raise GeneweaverAPIError(err_str) from err
+        finally:
+            session.close()
+
+
+def format_endpoint(directory: str, *args: str) -> str:
+    """Format the endpoint with the API host and path."""
+    return "/".join([settings.API_URL, directory] + list(args))
