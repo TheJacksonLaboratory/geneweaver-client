@@ -15,7 +15,15 @@ def map_homologs(
     target_species: Optional[Species] = None,
     source_species: Optional[Species] = None,
 ) -> dict:
-    """Map homologs between species."""
+    """Map homologs between species.
+
+    :param access_token: User access token
+    :param source_ids: List of source gene IDs.
+    :param target_id_type: Target gene ID type (one of GeneIdentifier).
+    :param source_id_type: Source gene ID type (one of GeneIdentifier).
+    :param target_species: Target species (one of Species).
+    :param source_species: Source species (one of Species).
+    """
     post_args = {
         "source_ids": source_ids,
         "target_gene_id_type": int(target_id_type),
