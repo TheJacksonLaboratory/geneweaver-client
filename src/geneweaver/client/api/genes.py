@@ -38,6 +38,6 @@ def map_homologs(
         post_args["source_species"] = int(source_species)
 
     with sessionmanager(token=access_token) as session:
-        resp = session.post(format_endpoint(ENDPOINT, "homologous-ids"), json=post_args)
+        resp = session.post(format_endpoint(ENDPOINT, "homologs"), json=post_args)
 
     return resp.json()
