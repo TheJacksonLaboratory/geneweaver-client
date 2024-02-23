@@ -28,6 +28,7 @@ def test_token_payload(device_code):
             "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
             "device_code": device_code,
             "client_id": "mock_client_id",
+            "scope": "offline_access",
         }
 
         # Call the function and assert its return value
