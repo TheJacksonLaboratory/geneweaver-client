@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     AUTH_DOMAIN = "geneweaver.auth0.com"
     AUTH_CLIENT_ID = "tvcvnbBJQr15jFds8ZkwgHoqRJ0IuGJC"
     AUTH_ALGORITHMS = ["RS256"]
-    AUTH_SCOPES = ["openid", "profile", "email"]
+    AUTH_SCOPES = ["openid", "profile", "email", "offline_access"]
 
     API_HOST: str = "https://geneweaver-prod.jax.org"
     API_PATH: str = "/api"

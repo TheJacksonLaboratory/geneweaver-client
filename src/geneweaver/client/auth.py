@@ -34,7 +34,11 @@ def get_access_token() -> Optional[str]:
 
     :returns: The ID token.
     """
-    return _get_token_data_value_or_none("access_token")
+    token = _get_token_data_value_or_none("access_token")
+    if access_token_expired(token):
+        refresh_token()
+        token = _get_token_data_value_or_none("access_token")
+    return token
 
 
 def _get_token_data_value_or_none(token_data_key: str) -> Optional[str]:
@@ -58,6 +62,37 @@ def validate_token(token: str) -> None:
         signature_verifier=sv, issuer=issuer, audience=settings.AUTH_CLIENT_ID
     )
     tv.verify(token)
+
+
+def access_token_expired(access_token: str) -> bool:
+    """Check if the access token is unexpired."""
+    token_data = app_dir.get_auth_token()
+    try:
+        jwt.decode(
+            token_data["access_token"],
+            algorithms=settings.AUTH_ALGORITHMS,
+            options={"verify_signature": False},
+        )
+        return False
+    except jwt.ExpiredSignatureError:
+        return True
+
+
+def refresh_token() -> None:
+    """Refresh the access token."""
+    token_data = app_dir.get_auth_token()
+    refresh_token = token_data["refresh_token"]
+    payload = {
+        "grant_type": "refresh_token",
+        "client_id": settings.AUTH_CLIENT_ID,
+        "refresh_token": refresh_token,
+    }
+    response = requests.post(
+        "https://{}/oauth/token".format(settings.AUTH_DOMAIN), data=payload
+    )
+    token_data = response.json()
+    token_data["refresh_token"] = app_dir.get_auth_token()["refresh_token"]
+    app_dir.save_auth_token(token_data)
 
 
 def current_user(id_token: str) -> Dict[str, str]:
@@ -100,6 +135,7 @@ def _token_payload(device_code: str) -> Dict[str, str]:
     return {
         "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
         "device_code": device_code,
+        "scope": "offline_access",
         "client_id": settings.AUTH_CLIENT_ID,
     }
 
@@ -116,6 +152,7 @@ def _poll_for_flow_completion(
         )
 
         token_data = token_response.json()
+        print(token_data)
         if token_response.status_code == 200:
             print("Authenticated!")
             print("- Id Token: {}...".format(token_data["id_token"][:10]))
