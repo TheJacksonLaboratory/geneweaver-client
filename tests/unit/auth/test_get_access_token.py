@@ -47,7 +47,9 @@ def test_get_access_token(mock_refresh, mock_expired, mock_get_token, token_data
 @patch("geneweaver.client.auth._get_token_data_value_or_none")
 @patch("geneweaver.client.auth.access_token_expired")
 @patch("geneweaver.client.auth.refresh_token")
-def test_get_access_token_expired(mock_refresh, mock_expired, mock_get_token, token_data):
+def test_get_access_token_expired(
+    mock_refresh, mock_expired, mock_get_token, token_data
+):
     """Test the get_access_token function with mock data."""
     mock_expired.return_value = True
     mock_get_token.side_effect = [token_data, token_data]
