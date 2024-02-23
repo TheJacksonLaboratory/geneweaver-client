@@ -152,7 +152,6 @@ def _poll_for_flow_completion(
         )
 
         token_data = token_response.json()
-        print(token_data)
         if token_response.status_code == 200:
             print("Authenticated!")
             print("- Id Token: {}...".format(token_data["id_token"][:10]))
