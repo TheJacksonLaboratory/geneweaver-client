@@ -9,11 +9,13 @@ and shorter running operations, for instance to get orthologs.
 This intentionally obfuscates the underlying graph database
 for the reasons of security and scalability.
 """
+# ruff: noqa: E501, N803
+import csv
+import json
 from enum import Enum
 from typing import Optional
+
 import requests
-import json
-import csv
 
 Source = Enum("Source", ["BAYLOR", "HOMOLOGENE" "ENSEMBL"])
 """
@@ -37,10 +39,11 @@ SearchType = Enum(
 
 
 class SearchRequest:
-    """
+    """A class to hold the search request properties.
+
     This is just a type to give a prospective search
     subroutine user a fighting chance at knowing the
-    available properties
+    available properties.
     """
 
     def __init__(
@@ -54,7 +57,8 @@ class SearchRequest:
         tissue: Optional[str] = None,
         studyId: Optional[str] = None,
         source: Optional[Source] = None,
-    ):
+    ) -> None:
+        """Initialize a SearchRequest object."""
         # Defaulted properties
         self.searchType: SearchType = searchType
         self.delimiter: str = delimiter
@@ -70,13 +74,18 @@ class SearchRequest:
 
 
 class Position:
-    def __init__(self, bp, chr):
+    """A class to hold a position on a chromosome."""
+
+    def __init__(self, bp: str, chr: str) -> None:  # noqa: A002
+        """Initialize a Position object."""
         self.bp = bp
         self.chr = chr
 
 
 class VariantGraphClient:
-    def __init__(self, url: str = "https://graph-api.geneweaver.org/"):
+    """A client to wrap calling the variant graph API."""
+
+    def __init__(self, url: str = "https://graph-api.geneweaver.org/") -> None:
         """Create a VariantGraphClient from a URL.
 
         :param url: The URL to which we will connect when making graph server queries.
@@ -84,13 +93,13 @@ class VariantGraphClient:
         """
         self.url = url
 
-    def heartbeat(self):
+    def heartbeat(self) -> dict:
         """Check the server connection.
 
         Check if we are connected to a server which is in turn connected to a graph
         database.
 
-        :return a dict with parameters to define if connected and to where.
+        :return: a dict with parameters to define if connected and to where.
         """
         response = requests.get(self._get_connected_url())
         if not response.ok:
@@ -112,17 +121,16 @@ class VariantGraphClient:
         :param source: None, BAYLOR, HOMOLOGENE or ENSEMBL.
                         To get homologs use source = Source.HOMOLOGENE
 
-        :return all the orthologs found in the geneset which map.
+        :return: all the orthologs found in the geneset which map.
                 If there are geneids of the target species, these are not in the dict.
         """
-
         request = {
             "geneIds": geneset,
             "searchType": "ORTHOLOG",  # Even homologs are 'searchType' ORTHOLOG
             "species": species,
         }  # species to map to
 
-        if not source is None:
+        if source is not None:
             request["source"] = str(source)
 
         csv_lines = self.search(request)
@@ -137,9 +145,10 @@ class VariantGraphClient:
         return omap
 
     def search(self, request: SearchRequest) -> list:
-        """
+        """Perform a search.
+
         :param request: object with fields defining possible search.
-        :return list of csv values depending on the searchtype.
+        :return: list of csv values depending on the searchtype.
 
         Search using a SearchRequest to return as csv. In the returned
         results 'g' is the code for the gene, 'e' the eqtl, 'v' the variant and 'p'Â the peak.
@@ -186,10 +195,13 @@ class VariantGraphClient:
             }
 
             - 3. Given a peak type and peak location, find all variants in the peak.
-            TODO
 
+        Todo: Fill out more details here
+        ----
             - 4. Given an eQTL in b38 coordinates or rsid, find all peaks overlapping this variant.
-            TODO
+
+        Todo: Fill out more details here
+        ----
 
         """
         response = requests.post(self._get_search_url(), None, request)
@@ -199,8 +211,8 @@ class VariantGraphClient:
         csv_lines = response.text.split("\n")
         return csv_lines
 
-    def _get_search_url(self):
+    def _get_search_url(self) -> str:
         return self.url + "variant/graph/search"
 
-    def _get_connected_url(self):
+    def _get_connected_url(self) -> str:
         return self.url + "variant/graph/heartbeat"
