@@ -62,11 +62,13 @@ class GeneExpressionDatabaseClient():
     endpoint.
     """
     
-    def __init__(self, url: str = settings.GEDB):
+    def __init__(self, url: str = None):
        """
        Create a GeneExpressionDatabaseClient from a URL.
        @param url: The URL to which we will connect when making gedb server queries.
        """
+       if url is None:
+           url = settings.GEDB
        self.url = url
 
   
