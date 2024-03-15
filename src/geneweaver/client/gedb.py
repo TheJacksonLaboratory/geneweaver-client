@@ -91,7 +91,7 @@ class GeneExpressionDatabaseClient:
 
         # TODO Not sure if need to deal with typing here.
         # Need to write test to check.
-        return json.loads(response.text)
+        return response.json()
 
     def distinct(self, field: str) -> Set[str]:
         """
@@ -101,10 +101,10 @@ class GeneExpressionDatabaseClient:
         meta/distinct/strain.
         """
         url = "{}/{}".format(self._get_distinct_url(), field)
-        return json.loads(requests.get(url).text)
+        return requests.get(url).json()
 
     def _get_search_url(self):
-        return "{}{}".format(self.url, "gene/expression/search")
+        return "{}{}".format(self.url, "/gene/expression/search")
 
     def _get_distinct_url(self):
-        return "{}{}".format(self.url, "meta/distinct")
+        return "{}{}".format(self.url, "/meta/distinct")
