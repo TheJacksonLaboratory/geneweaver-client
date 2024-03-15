@@ -2,7 +2,7 @@
 This module contains a client API for interacting with the 
 gene expression service. The search operations on the db 
 are supported using a json object. This intentionally
-obfuscates the underlying BigQuery database for the reasons
+wraps the underlying BigQuery database for the reasons
 of security and scalability.
 """
 from dataclasses import dataclass
