@@ -7,6 +7,7 @@ of security and scalability.
 """
 from dataclasses import dataclass
 from typing import List
+from typing import Set
 
 from enum import Enum
 import requests
@@ -86,7 +87,7 @@ class GeneExpressionDatabaseClient():
         # Need to write test to check.
         return json.loads(response.text)
     
-    def distinct(self, field: str) -> List[str]:
+    def distinct(self, field: str) ->  Set[str]:
         """
         Get list of unique fields from metadata.
         For instance to get the strains return field = "tissue"
