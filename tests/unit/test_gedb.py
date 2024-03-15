@@ -40,10 +40,9 @@ class TestOrthologs():
         
     def test_get_stains(self, test_client):
         all_strains: Set[str] = test_client.distinct("strain")
-        assert "B6" in tissues, "Strains set must contain heart"
-        assert "CAST" in tissues, "Strains set must contain striatum"
+        assert "B6" in tissues, "Strains set must contain B6"
+        assert "CAST" in tissues, "Strains set must contain CAST"
 
-        
     def test_search_expressions(self, test_client):
         
         genes = self.get_genes("tests/unit/connective_tissue_disorder_log2fc_test.csv")
