@@ -16,8 +16,8 @@ class Settings(BaseSettings):
     API_PATH: str = "/api"
 
     API_URL: Optional[str] = None
-    
-    GEDB: str = "{}{}".format(API_HOST,"/gedb/")
+
+    GEDB: str = "{}{}".format(API_HOST, "/gedb/")
 
     @validator("API_URL")
     def validate_api_url(
@@ -29,6 +29,14 @@ class Settings(BaseSettings):
         return v
 
     API_KEY: Optional[str] = None
+
+    @validator("GEDB")
+    def validate_gedb_url(
+        cls: Type["Settings"], v: Optional[str], values: dict  # noqa: N805
+    ) -> str:
+        if not v:
+            return values["API_URL"] + "/gedb/"
+        return v
 
     class Config:
         """Settings configuration."""
