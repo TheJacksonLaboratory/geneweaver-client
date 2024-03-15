@@ -1,6 +1,6 @@
 *.zip
 *.txt
-*.csv
+# *.csv
 *.xlsx
 data/
 conn_tissue/
