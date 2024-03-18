@@ -1,4 +1,5 @@
 """Test the prompt_generic function."""
+
 from unittest.mock import Mock
 
 import pytest

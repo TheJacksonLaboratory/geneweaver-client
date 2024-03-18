@@ -1,4 +1,5 @@
 """Root of the alpha datasets subcommand."""
+
 import typer
 
 HELP_MESSAGE = """

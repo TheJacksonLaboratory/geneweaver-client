@@ -1,4 +1,5 @@
 """Unit tests for the auth.get_id_token function."""
+
 from unittest.mock import patch
 
 import pytest

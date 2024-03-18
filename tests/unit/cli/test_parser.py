@@ -1,4 +1,5 @@
 """Test the CLI parser."""
+
 # ruff: noqa: ANN001, ANN201
 from unittest.mock import patch
 from zipfile import BadZipFile

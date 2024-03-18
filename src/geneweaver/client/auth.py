@@ -1,4 +1,5 @@
 """Authentication code for the GeneWeaver client."""
+
 import time
 from typing import Any, Dict, Optional
 

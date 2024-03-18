@@ -1,4 +1,5 @@
 """A module that marshals access to specific file type parsing."""
+
 from typing import List, Optional, Tuple
 
 from geneweaver.core.parse import csv, utils, xlsx

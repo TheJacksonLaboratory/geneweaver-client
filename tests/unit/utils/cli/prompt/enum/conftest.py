@@ -1,4 +1,5 @@
 """Fixtures and mocks for the enum CLI prompt tests."""
+
 from enum import Enum
 
 

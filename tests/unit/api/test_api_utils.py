@@ -1,4 +1,5 @@
 """Tests for API utilities."""
+
 # ruff: noqa: B905, ANN001, ANN201
 from itertools import chain
 from unittest.mock import Mock, patch
@@ -68,5 +69,6 @@ def test_sessionmanager_catches_requests_exceptions():
 )
 def test_format_endpoint(parts, expected):
     """Test that format_endpoint formats the endpoint correctly."""
-    assert type(format_endpoint(*parts)) == str
+    assert type(format_endpoint(*parts)) == str  # noqa: E721
+    assert isinstance(format_endpoint(*parts), str)
     assert format_endpoint(*parts).endswith(expected)

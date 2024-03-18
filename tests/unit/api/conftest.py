@@ -1,4 +1,5 @@
 """Pytest fixtures for the API client unit tests."""
+
 # ruff: noqa: ANN001, ANN401
 import json
 from contextlib import contextmanager

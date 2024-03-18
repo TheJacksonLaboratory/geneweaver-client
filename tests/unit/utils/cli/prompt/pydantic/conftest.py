@@ -1,4 +1,5 @@
 """Fixtures and mocks for the pydantic CLI prompt tests."""
+
 from enum import Enum
 from itertools import chain, combinations
 from typing import List, Optional, Union

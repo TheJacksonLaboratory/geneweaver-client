@@ -1,4 +1,5 @@
 """Unit tests for the geneweaver.client.core.config module."""
+
 # ruff: noqa: ANN001, ANN201
 # TODO: This instance needs to be provided and configured as a fixture so that
 #  it can override which .env files to use for testing.

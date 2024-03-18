@@ -1,4 +1,5 @@
 """Utility functions for prompting the user related to enums."""
+
 from enum import Enum
 from typing import Any, Iterable, Type, TypeVar, Union, get_args
 

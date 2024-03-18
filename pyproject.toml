@@ -28,7 +28,7 @@ pandas = ">=1.5,<2.1"
 xlrd = "^2.0.1"
 
 [tool.poetry.group.dev.dependencies]
-geneweaver-testing = "^0.0.3"
+geneweaver-testing = "^0.1.2"
 
 [tool.ruff]
 select = ['F', 'E', 'W', 'A', 'C90', 'N', 'B', 'ANN', 'D', 'I', 'ERA', 'PD', 'NPY', 'PT']

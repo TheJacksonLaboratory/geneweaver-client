@@ -1,4 +1,5 @@
 """Functions that warp the Geneweaver /genes endpoint."""
+
 from typing import List, Optional
 
 from geneweaver.client.api.utils import format_endpoint, sessionmanager

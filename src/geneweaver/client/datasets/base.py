@@ -1,4 +1,5 @@
 """Base class for all datasets."""
+
 import io
 import zipfile
 from pathlib import Path

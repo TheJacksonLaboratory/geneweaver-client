@@ -1,4 +1,5 @@
 """API Utilities integration tests."""
+
 # ruff: noqa: ANN001, ANN201
 import pytest
 from geneweaver.client.api.exc import GeneweaverAPIError
