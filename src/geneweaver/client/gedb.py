@@ -67,16 +67,18 @@ class GeneExpressionDatabaseClient:
     endpoint.
     """
 
-    def __init__(self, url: str = None):
+    def __init__(self, url: str = None, auth_proxy:str = None):
         """
         Create a GeneExpressionDatabaseClient from a URL.
-        @param url: The URL to which we will connect when making gedb server queries.
+        @param url: The optional URL to which we will connect when making gedb server queries.
+        @param auth_proxy: The optional value of a cookie to connect to https version of the API
         """
         if url is None:
             url = settings.GEDB
         self.url = url
+        self.auth_proxy = auth_proxy
 
-    def search(self, drequest: DataRequest) -> List[DataResult]:
+    def search(self, drequest: DataRequest):
         """
         Do a gene expression search on the Gene Expression Database
         using fields available in the DataRequest object.
@@ -84,8 +86,12 @@ class GeneExpressionDatabaseClient:
         to get results.
         """
         url = self._get_search_url()
+        
+        cookies = None
+        if self.auth_proxy is not None:
+            cookies = {"_oauth2_proxy" : self.auth_proxy}
 
-        response = requests.post(url, None, drequest.__dict__)
+        response = requests.post(url, None, drequest.__dict__, cookies=cookies)
         if not response.ok:
             response.raise_for_status()
 
@@ -101,7 +107,17 @@ class GeneExpressionDatabaseClient:
         meta/distinct/strain.
         """
         url = "{}/{}".format(self._get_distinct_url(), field)
-        return requests.get(url).json()
+        
+        cookies = None
+        if self.auth_proxy is not None:
+            cookies = {"_oauth2_proxy" : self.auth_proxy}
+
+        response = requests.get(url, cookies=cookies)
+        
+        if not response.ok:
+            response.raise_for_status()
+            
+        return response.json()
 
     def _get_search_url(self):
         return "{}{}".format(self.url, "/gene/expression/search")

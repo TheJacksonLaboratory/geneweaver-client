@@ -19,7 +19,19 @@ def test_client():
     """
     Yield a test client
     """
-    test_client = TestGeneExpressionDatabaseClient()
+    real_server: boolean = True # Should be false for CICD which then mocks
+    
+    if real_server:
+        # The auth here needs a cookie to connect to geneweaver-dev.jax.org when trying to 
+        # run these tests against a real server. To do this use:
+        # 1. Connect to swagger at https://geneweaver-dev.jax.org/gedb/
+        # 2. Make a call, for instance to distinct tissues
+        # 3. Press F12 and open developer tools, go to network
+        # 4. Copy value of "_oauth2_proxy" and use here
+        auth_proxy = "1nKmq1WwyMfrZsg9an5fRZrl7Tq6p8spGHsFRhCPEyMIZuQarOKZiXkg8tV1LRgXwgoQNDEKD2DvAp_xDk1XKoSoERJo-8kEeG2d3VVbqOU89HHaFqsWf9cVTXjsGkUYiNKZpNG6SmAPhumvVTOwwisk-2jGaTru-YeqNjKecjG-iNNdUa7JhWsBjGl6pExLmipBeDbvULyNYMGqxbG15gCyOPU2Bvbsc2NyjCwWuTJJcEpspblQ4v4_hydwROct-EV5dGlInnpzqjXxnzaqnSjf0S35CgXX2uVY_9H4vViJrsgv0dpfC3m2xgCBd1wx32wHbpAnbN7rdKavpAnNPbREeaVmv_cGQTqmgvWgjCZnMTStUG8Efh_oolFVBlt0e6w7NYNyAmKOzBCdDLA_lT4hfrsV48wngaJ9KaGocSmLXIgTL31wHCPBaVfwYC9Quh-4zKlRpMbM_lD9NLaFzua_Ct30ZLx1AAG4bv4TvjXqNvFK-WPcegTRUlzMXYxaFnMYN4GC4F1GLKq7yTIWmm6153HLWJocqpYHDacBhNFcvnJ5JZgzaXRuKY10-Mn6xn2lK6KesW86u5oVCRt8jScS4lRSrtkRp4ICf2cmFmsDjOZyf-tEqT44smlQVtSWn2Phhoj1SS-gJ1r11FlHUnDfFFlWKV2nY_DSRJwEfWKiAwqHYALDe2iszBjDifEetwBEPW-KYNuDihS5XY6BKwYGXOdmN-fjtXIrKKAMvvcEMa88Hylz0_NqZwZOgEa75oQEf02yRebaAGH4tN4rF8VwmOdfi7AcE5JAgqtkyONrz9u7NK8s3Rhik6xBIeVqdUp2FVNMtRxnXgehvXZi2uvTcFV9h12usgcim7k7XIDqoEPq0CVfusJgllunstVmLH-wkXuPe-eggyNwk4dcXSu4XJ-jmVmV8GMeJz7ME7fAU46I22j2ZeK7jdx5O8AgPatG7GDczXCXUbWEOmGbHLbn8PQqIykuWjo4fq7gIiWglqtvFEAa4qVX7eKNU7NFoBwHtqZGXIrteOhs9NzxxShK_hNv_SyTRM3lILXkwp4jtj-rQAg6YvfLU823SX7iiuxJ23Ff11s3uULv2S7t7vGjdZipP0uZ9iw5XsfOb5Nn-lDBn7FEA2lTkAG_tm-dqy2gMDIJZ_u3aPc-wQIhlVuZpQ_I1SsTjnm4zL71HTTY6EfhRAtqpfZN8KS0v74zQEf5HfHTiT1qh-BzkChwWzXUfLgwhRcSoRC3rJcdDqW8QXYW5vNi5aI2O73N5ticS94kCs_63RC3ZpXCvszClVIaR4W5MeXtf9oQWtRdqm1BDnHEVPTk6mRWCv8SKgtVBVRIXFS4AW0CXvdMQthLJQe0BKeuYI3oZUGTOImDDGJIzX8OC9kM5R4_b-Twp11KzByCNrMQaHGZvEjAJB-9ddafOu8EyBF5078QLiIQ-yXZ_wluauecBLcwa4qM7k94g7lpyfR5MoaAS50V8kY2AhtiN9cUO44be9TJUd1lPpYUy2ZqhEcpGkdWEG1TxqibXbwCzDcjQFc9yYzPBxRrT47NKCleVSh46xYd0G37_AZW_iU9_nSyV2IlUisjNwNsP_YZ-OZ969XnYhulrJlAvEbSK6OoVVyeX8yuKSBadojvvk_5Stm5Jtbjhwk1sbFkBphw1Xmi0FXZ8EB88xgknDy4WuL9SBTXtprQuUkX69dBJX2PUT83fQkVKgZ9ZwY8dMTPlPB02-TeTovWuOBu48dS49JZ95aDp3oKv0Ht6Qv1oupNvV849woNj6EksK1ePfelLgXuVFKhiXHwTni7TQ6-agzMCVSTyAUaL4Zci2l0V2guMp8Fu1eFhSSWYfcuLi4wWkQA0sreRn1sNNMXot01Yp4JUmczmqM9NsjDmtz-uUX695IoQP2xvUl8IyE3OcUhpmRDIOxCMalRVo5Kz9kGmifN9c94MTcESldAAcRccZ-Y8X1PVNJKEgDXevFZn4tiLhA0R4lBxyO6LWDRy00oUFnZ3HRLLLHTp8HEiKaB1TyhfdtVgw-T_C7-cMItHnyEbgN7C2lA_BFWXMfOYTCYqJPmMmVUJRGKgag-OK5PZnfdtyF8NhGfU5nXrJ_S-1yfdUwFGCJc_uVyM6LziYGVwbD8-yFJ7jbb-WAZh-Bvpo_LHyAPW56_e5RhrAOp5IyODUPDt_jxDSUvLY0bEAAvwl0TTn7z2Di6wXQ96jCVwGQ3Qww458rQOyUkcMR2VMziZDqLQxjeIt8B8HjLIUkJmUHpg0FXuawun8jEA_ILXhilia6-NP4WTApKk9mLvzBRYGXCbz6GK8U-FSWeuw0Fv1945OjdT3Rh_hKE1GASU4BhsIrfTVAQ5V9txU--Xh0bIe37WGVcOkygYIJtwTYLUIavZMUC2ASc_iDhPCSNj7IJ0ma0JGKuuY2AWBrMFdGl2cK3fEmlIntoJCPrtAYJWaAOUtYjdkIUZpRHZ5pK9iNRIRtVVIRu1MKd-lIsciNjTTc5uTvUMsfhsd5CVItlIYH_F5BaHmfFEsuEnoqq45lgHfEg|1710437090|f9oHFkdfgJXlhx1kbSgz5Lst_klm5RK49A8-cozuJN8="
+        test_client = GeneExpressionDatabaseClient(url="https://geneweaver-dev.jax.org/gedb", auth_proxy=auth_proxy)
+    else:
+        test_client = MockGeneExpressionDatabaseClient()
     yield test_client
         
     
@@ -38,10 +50,14 @@ class TestOrthologs():
         assert "heart" in tissues, "Tissue set must contain heart"
         assert "striatum" in tissues, "Tissue set must contain striatum"
         
-    def test_get_stains(self, test_client):
-        all_strains: Set[str] = test_client.distinct("strain")
+    def test_get_strains(self, test_client):
+        tissues: Set[str] = test_client.distinct("strain")
         assert "B6" in tissues, "Strains set must contain B6"
         assert "CAST" in tissues, "Strains set must contain CAST"
+
+    def test_get_not_there(self, test_client):
+        with pytest.raises(Exception):
+            empty: Set[str] = test_client.distinct("NOT-THERE")
 
     def test_search_expressions(self, test_client):
         
@@ -53,7 +69,7 @@ class TestOrthologs():
         
         js: str = json.dumps(drequest.__dict__)
         print(js)
-        imputations: List[DataResult] = test_client.search(drequest, test=True)    
+        imputations = test_client.search(drequest)    
     
         print(imputations)
         # TODO Test result
@@ -79,7 +95,7 @@ class TestOrthologs():
         return gene_values
 
 
-class TestGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
+class MockGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
     """
     We mock out some of the methods used in the test, badly.
     TODO Find better way of doing this.
@@ -88,10 +104,10 @@ class TestGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
     
     """
     
-    def search(self, drequest: DataRequest, test=False):
+    
+    def search(self, drequest: DataRequest):
         
-        # Likely to fail with auth.
-        return GeneExpressionDatabaseClient.search(self, drequest)
+        raise Exception("Not mocked!")    
     
     def distinct(self, field: str) -> Set[str]:
         
@@ -117,15 +133,4 @@ class TestGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
             "BXD101/RwwJ","BXD38/TyJ","BXD173","BXD168/RwwJ","BXD226","BXD65b/RwwJ","BXD16/TyJ",\
             "BXD74/RwwJ","BXD202/RwwJ"]')
         
-        # Likely to fail with auth.
-        return GeneExpressionDatabaseClient.distinct(self, field)
-    
-# Example data request
-'''
-# Get using curl
-curl --header "Content-Type: application/json" \
-  --request POST \
-  --data '{"geneIds": ["ENSMUSG00000000782", "ENSMUSG00000003279", "ENSMUSG00000005373", "ENSMUSG00000006014", "ENSMUSG00000006522", "ENSMUSG00000006800", "ENSMUSG00000018819", "ENSMUSG00000019838", "ENSMUSG00000020053", "ENSMUSG00000020218", "ENSMUSG00000020388", "ENSMUSG00000020866", "ENSMUSG00000021057", "ENSMUSG00000021136", "ENSMUSG00000021200", "ENSMUSG00000022440", "ENSMUSG00000022899", "ENSMUSG00000023034", "ENSMUSG00000024190", "ENSMUSG00000024697", "ENSMUSG00000024812", "ENSMUSG00000024968", "ENSMUSG00000024990", "ENSMUSG00000025027", "ENSMUSG00000026304", "ENSMUSG00000026360", "ENSMUSG00000026414", "ENSMUSG00000027204", "ENSMUSG00000027254"], "strains": ["*"], "sourceType": "IMPUTED"}' \
-  https://geneweaver-dev.jax.org/gedb/gene/expression/search
-
-'''
+        raise Exception("Not mocked!")
