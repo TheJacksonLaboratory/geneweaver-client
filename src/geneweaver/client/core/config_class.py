@@ -34,8 +34,9 @@ class Settings(BaseSettings):
     def validate_gedb_url(
         cls: Type["Settings"], v: Optional[str], values: dict  # noqa: N805
     ) -> str:
+        """Construct the GEDB if not explicitly set."""
         if not v:
-            return values["API_URL"] + "/gedb/"
+            return values["API_HOST"] + "/gedb/"
         return v
 
     class Config:
