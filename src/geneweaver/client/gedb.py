@@ -34,9 +34,9 @@ class DataRequest:
     These are a subset of the fields. TODO (low priority): Add all.
     """
 
-    geneIds: List[str] = None # noqa: N815
-    strains: List[str] = None # noqa: N815
-    sourceType: SourceType = None # noqa: N815
+    geneIds: List[str] = None  # noqa: N815
+    strains: List[str] = None  # noqa: N815
+    sourceType: SourceType = None  # noqa: N815
 
 
 # TODO Should data access objects go in api?
@@ -50,11 +50,11 @@ class DataResult:
     These are a subset of the fields. TODO (low priority): Add all.
     """
 
-    values: List[float] = None # noqa: N815
-    weights: List[float] = None # noqa: N815
-    geneIds: List[str] = None # noqa: N815
-    strains: List[str] = None # noqa: N815
-    tissue: str = None # noqa: N815
+    values: List[float] = None  # noqa: N815
+    weights: List[float] = None  # noqa: N815
+    geneIds: List[str] = None  # noqa: N815
+    strains: List[str] = None  # noqa: N815
+    tissue: str = None  # noqa: N815
 
 
 class GeneExpressionDatabaseClient:

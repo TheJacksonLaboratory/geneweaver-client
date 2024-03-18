@@ -59,8 +59,8 @@ class TestOrthologs:
     """
 
     def test_init_client_no_args(self) -> None:
-       client = GeneExpressionDatabaseClient()
-       assert client is not None, "Unexpectedly cannot make a client with no args"
+        client = GeneExpressionDatabaseClient()
+        assert client is not None, "Unexpectedly cannot make a client with no args"
 
     def test_init_client_on_dev(self):
         client = GeneExpressionDatabaseClient("https://geneweaver-dev.jax.org/gedb")
@@ -90,9 +90,7 @@ class TestOrthologs:
         imputations = self._connective_tissue_disorder(test_client)
         srtd = test_client.sort("strain", imputations)
         # There are 657 strains in this list of results.
-        assert len(srtd) == 657, "The size of the strains map is {}".format(
-            len(srtd)
-        )
+        assert len(srtd) == 657, "The size of the strains map is {}".format(len(srtd))
 
     def _connective_tissue_disorder(self, test_client) -> List[DataResult]:
         genes = test_client.get_genes(
