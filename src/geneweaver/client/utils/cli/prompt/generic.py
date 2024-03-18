@@ -1,4 +1,5 @@
 """Utility functions for prompting for generic values."""
+
 from typing import Optional, Type, TypeVar
 
 import typer

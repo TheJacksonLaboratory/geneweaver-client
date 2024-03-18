@@ -1,4 +1,5 @@
 """Root of the beta cli subcommand."""
+
 import typer
 from geneweaver.client.cli.beta import auth
 

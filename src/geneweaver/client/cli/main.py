@@ -1,4 +1,5 @@
 """The main entrypoint to the GeneWeaver CLI client."""
+
 # ruff: noqa: B008
 import pkg_resources
 import typer

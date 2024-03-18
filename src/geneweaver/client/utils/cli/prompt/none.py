@@ -1,4 +1,5 @@
 """Utility functions for prompting when allowing None values."""
+
 from typing import Any, Optional, TypeVar
 
 import typer

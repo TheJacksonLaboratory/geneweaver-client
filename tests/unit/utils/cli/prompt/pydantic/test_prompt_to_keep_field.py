@@ -1,4 +1,5 @@
 """Test the prompt_to_keep_field function."""
+
 from unittest.mock import Mock
 
 import pytest

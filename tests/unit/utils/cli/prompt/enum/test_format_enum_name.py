@@ -1,4 +1,5 @@
 """Test the format_enum_name function."""
+
 from enum import Enum
 
 import pytest

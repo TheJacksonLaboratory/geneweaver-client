@@ -1,4 +1,5 @@
 """Tests for the auth CLI command."""
+
 from unittest.mock import patch
 
 import pytest

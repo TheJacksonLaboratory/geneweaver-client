@@ -1,4 +1,5 @@
 """Test the prompt_for_list_selection function."""
+
 import typing
 from unittest.mock import Mock
 

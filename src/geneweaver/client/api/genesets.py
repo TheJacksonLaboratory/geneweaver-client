@@ -1,4 +1,5 @@
 """Functions that wrap the GeneWeaver API on /genesets endpoints."""
+
 from typing import Optional
 
 from geneweaver.client.api.utils import format_endpoint, sessionmanager

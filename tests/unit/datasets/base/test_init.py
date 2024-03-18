@@ -1,4 +1,5 @@
 """Tests for the BaseDataset class init method."""
+
 from pathlib import Path
 
 import pandas as pd

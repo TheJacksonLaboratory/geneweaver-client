@@ -1,4 +1,5 @@
 """Test the BaseDataset as_pandas method."""
+
 from unittest.mock import patch
 
 import pandas as pd

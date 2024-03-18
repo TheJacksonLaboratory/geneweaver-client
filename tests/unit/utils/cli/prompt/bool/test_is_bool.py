@@ -1,4 +1,5 @@
 """Test the is_bool function."""
+
 import pytest
 from geneweaver.client.utils.cli.prompt.bool import is_bool
 

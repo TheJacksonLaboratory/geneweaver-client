@@ -1,4 +1,5 @@
 """Exception classes relating to calling the Geneweaver API."""
+
 from geneweaver.core.exc import GeneweaverError
 
 

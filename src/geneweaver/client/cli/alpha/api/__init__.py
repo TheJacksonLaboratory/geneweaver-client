@@ -1,4 +1,5 @@
 """Root of the alpha api subcommand."""
+
 import typer
 from geneweaver.client.cli.alpha.api import genes, genesets
 

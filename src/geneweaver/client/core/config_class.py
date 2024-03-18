@@ -1,4 +1,5 @@
 """GeneWeaver Client configuration module."""
+
 from typing import Optional, Type
 
 from pydantic import BaseSettings, validator

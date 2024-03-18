@@ -1,4 +1,5 @@
 """Test the prompt_for_field_by_type function."""
+
 from unittest.mock import Mock
 
 import pytest
