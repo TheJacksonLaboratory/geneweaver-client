@@ -1,4 +1,5 @@
 """Utility functions for use with the CLI."""
+
 from typing import Any, Optional, Type
 
 import typer

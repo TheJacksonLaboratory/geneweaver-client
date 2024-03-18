@@ -1,4 +1,5 @@
 """Root command for the parse cli subcommand."""
+
 import typer
 from geneweaver.client.cli.alpha.parse import utils
 

@@ -1,4 +1,5 @@
 """Geneweaver API CLI for Geneset endpoints."""
+
 # ruff: noqa: B008
 import json
 from typing import Optional

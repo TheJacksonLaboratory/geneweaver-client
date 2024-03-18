@@ -1,4 +1,5 @@
 """Test the auth._poll_for_flow_completion function."""
+
 from unittest.mock import MagicMock, patch
 
 import pytest

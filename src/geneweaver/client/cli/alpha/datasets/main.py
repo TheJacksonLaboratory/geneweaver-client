@@ -1,4 +1,5 @@
 """Module containing the CLI for the datasets subcommand."""
+
 import typer
 
 cli = typer.Typer()

@@ -1,4 +1,5 @@
 """Utility functions for prompting the user to enter a list of values."""
+
 from typing import List, Optional, TypeVar, get_args, get_origin
 
 import typer

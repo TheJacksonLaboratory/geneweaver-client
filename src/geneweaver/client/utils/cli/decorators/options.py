@@ -1,4 +1,5 @@
 """Utility functions for adding CLI Options."""
+
 # ruff: noqa: ANN001, ANN002, ANN003, ANN201, ANN202
 import functools
 from inspect import Parameter, signature

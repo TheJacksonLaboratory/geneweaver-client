@@ -1,4 +1,5 @@
 """Test the genes API client functions."""
+
 from unittest.mock import patch
 
 import pytest

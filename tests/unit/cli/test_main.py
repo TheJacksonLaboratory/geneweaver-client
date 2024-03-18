@@ -1,4 +1,5 @@
 """Test the main entrypoint to the GeneWeaver CLI client."""
+
 # ruff: noqa: ANN001, ANN201
 from geneweaver.client.cli.main import cli
 from typer.testing import CliRunner

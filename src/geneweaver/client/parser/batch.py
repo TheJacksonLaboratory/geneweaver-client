@@ -1,4 +1,5 @@
 """A module for parsing batch files."""
+
 import csv
 from pathlib import Path
 from typing import Dict, List, Optional

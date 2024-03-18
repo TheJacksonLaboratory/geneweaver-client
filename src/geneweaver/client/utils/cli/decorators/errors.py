@@ -1,4 +1,5 @@
 """Utility functions for use with the CLI."""
+
 import functools
 from typing import Callable
 

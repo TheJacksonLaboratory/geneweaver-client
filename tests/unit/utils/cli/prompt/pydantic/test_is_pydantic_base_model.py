@@ -1,4 +1,5 @@
 """Test the is_pydantic_base_model function."""
+
 import pytest
 from geneweaver.client.utils.cli.prompt.pydantic import is_pydantic_base_model
 from geneweaver.core.schema.batch import BatchUploadGeneset

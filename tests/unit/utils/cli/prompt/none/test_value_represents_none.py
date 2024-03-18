@@ -1,4 +1,5 @@
 """Test the value_represents_none function."""
+
 # ruff: noqa: ANN101
 import pytest
 from geneweaver.client.utils.cli.prompt.none import value_represents_none

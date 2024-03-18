@@ -1,4 +1,5 @@
 """Test the format field name function."""
+
 import pytest
 from geneweaver.client.utils.cli.prompt.pydantic import format_field_name
 
