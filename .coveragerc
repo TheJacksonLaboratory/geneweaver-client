@@ -5,3 +5,4 @@ omit =
     src/geneweaver/client/**/*legacy*
     src/geneweaver/client/*legacy*
     src/geneweaver/client/cli/alpha/*
+    src/geneweaver/client/api/graph/*
