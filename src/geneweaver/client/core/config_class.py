@@ -18,7 +18,7 @@ class Settings(BaseSettings):
 
     API_URL: Optional[str] = None
 
-    GEDB: str = "{}{}".format(API_HOST, "/gedb/")
+    GEDB: Optional[str] = None
 
     @validator("API_URL")
     def validate_api_url(
