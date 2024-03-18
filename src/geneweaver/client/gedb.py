@@ -8,6 +8,8 @@ of security and scalability.
 from dataclasses import dataclass
 from typing import List
 from typing import Set
+from typing import Mapping
+from collections import OrderedDict
 
 from enum import Enum
 import requests
@@ -78,7 +80,7 @@ class GeneExpressionDatabaseClient:
         self.url = url
         self.auth_proxy = auth_proxy
 
-    def search(self, drequest: DataRequest):
+    def search(self, drequest: DataRequest) -> List[DataResult]:
         """
         Do a gene expression search on the Gene Expression Database
         using fields available in the DataRequest object.
@@ -102,7 +104,7 @@ class GeneExpressionDatabaseClient:
     def distinct(self, field: str) -> Set[str]:
         """
         Get list of unique fields from metadata.
-        For instance to get the strains return field = "tissue"
+        @param field: For instance to get the strains return field = "tissue"
         Available fields are listed in swagger e.g. https://geneweaver-dev.jax.org/gedb/ under
         meta/distinct/strain.
         """
@@ -119,8 +121,54 @@ class GeneExpressionDatabaseClient:
             
         return response.json()
 
+    
+    def sort(self, property: str, expressions: List[DataResult]) -> Mapping[str,List[DataResult]]:
+        """
+        Sort the data results by any of their properties. 
+        @param property: String e.g. "strain" to sort by strain
+        @param the raw list of data results returned from a 'search' call.
+        """
+        
+        ret = {}
+        for dataResult in expressions:
+            
+            strain = dataResult.get(property)
+            
+            collection = ret.get(strain, None)
+            if collection is None:
+                collection = []
+                ret[strain] = collection
+            collection.append(dataResult)
+    
+        return ret
+
     def _get_search_url(self):
         return "{}{}".format(self.url, "/gene/expression/search")
 
     def _get_distinct_url(self):
         return "{}{}".format(self.url, "/meta/distinct")
+
+
+    def get_genes(self, path: str) -> Mapping[str,str]:
+        """
+        Reads first two columns of csv file into a 
+        dictionary of gene: log2fc for use in concordance calc.
+        @param path: Path to read.s
+        """
+        
+        # We keep the keys in order here as
+        # it is easier to use the debugger and
+        # check the dict
+        gene_values = OrderedDict()
+        with open(path,'r') as file:
+     
+            # reading each line from original text file
+            for line in file.readlines():
+                
+                line = line.strip()
+                if not (line.startswith('#')):
+                    sa = line.split(',')
+                    # Ingore other columns, just use first two.
+                    gene_values[sa[0]] = sa[1]
+                    
+        return gene_values
