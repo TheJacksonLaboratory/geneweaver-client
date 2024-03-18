@@ -53,7 +53,8 @@ class TestOrthologs:
     # noqa: D102
     """Test Orthologs.
 
-    A test class
+    A very basic test class which should be improved to
+    include more error conditions.
     """
 
     def test_init_client_no_args(self) -> None:
