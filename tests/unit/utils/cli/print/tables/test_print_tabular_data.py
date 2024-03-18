@@ -1,4 +1,5 @@
 """Test the tables.print_tabular_data function."""
+
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest

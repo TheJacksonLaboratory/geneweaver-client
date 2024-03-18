@@ -1,4 +1,5 @@
 """Test the auth._print_device_code_instructions function."""
+
 from unittest.mock import patch
 
 import pytest

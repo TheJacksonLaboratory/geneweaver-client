@@ -1,4 +1,5 @@
 """Authentication CLI commands."""
+
 import typer
 from geneweaver.client import auth
 from geneweaver.client.auth import get_access_token, get_id_token

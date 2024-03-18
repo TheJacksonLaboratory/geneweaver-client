@@ -1,4 +1,5 @@
 """Utility functions for printing tables."""
+
 from typing import List
 
 from geneweaver.core.types import DictRow

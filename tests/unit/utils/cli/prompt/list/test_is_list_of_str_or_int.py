@@ -1,4 +1,5 @@
 """Test the is_list_of_str_or_int function."""
+
 from typing import Any, List, Tuple, Union
 
 import pytest

@@ -1,4 +1,5 @@
 """Test the auth._get_token_data_value_or_none function."""
+
 from unittest.mock import patch
 
 import pytest

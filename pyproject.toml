@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "geneweaver-client"
-version = "0.7.0a3"
+version = "0.7.0a4"
 description = "A Python Client for the Geneweaver API"
 authors = ["Jax Computational Sciences <cssc@jax.org>"]
 readme = "README.md"
@@ -28,7 +28,7 @@ pandas = ">=1.5,<2.1"
 xlrd = "^2.0.1"
 
 [tool.poetry.group.dev.dependencies]
-geneweaver-testing = "^0.0.3"
+geneweaver-testing = "^0.1.2"
 
 [tool.ruff]
 select = ['F', 'E', 'W', 'A', 'C90', 'N', 'B', 'ANN', 'D', 'I', 'ERA', 'PD', 'NPY', 'PT']

@@ -1,4 +1,5 @@
 """Test the is_enum_or_enum_union function."""
+
 from typing import Type, Union
 
 import pytest

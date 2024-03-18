@@ -1,4 +1,5 @@
 """Test the file_info.print_metadata_csv function."""
+
 from pathlib import Path
 from unittest.mock import Mock
 

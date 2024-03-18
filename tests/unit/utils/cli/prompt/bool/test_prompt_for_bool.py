@@ -1,4 +1,5 @@
 """Test the prompt_for_bool function."""
+
 from unittest.mock import Mock
 
 import pytest

@@ -1,4 +1,5 @@
 """Test the allow_none_str function."""
+
 import pytest
 from geneweaver.client.utils.cli.prompt.generic import allow_none_str
 

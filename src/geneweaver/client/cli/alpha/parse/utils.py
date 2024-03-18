@@ -1,4 +1,5 @@
 """CLI for parsing utility functions."""
+
 from pathlib import Path
 from typing import Optional
 

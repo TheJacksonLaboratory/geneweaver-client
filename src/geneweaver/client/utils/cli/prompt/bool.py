@@ -1,4 +1,5 @@
 """Utility functions for prompting boolean values."""
+
 from typing import Optional, TypeVar
 
 import typer
