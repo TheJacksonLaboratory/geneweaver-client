@@ -9,6 +9,7 @@ and shorter running operations, for instance to get orthologs.
 This intentionally obfuscates the underlying graph database
 for the reasons of security and scalability.
 """
+
 # ruff: noqa: E501, N803
 import csv
 import json
