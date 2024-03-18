@@ -5,16 +5,14 @@ import json
 from typing import List, Set
 
 import pytest
-from requests.exceptions import HTTPError
-from typer.testing import CliRunner
-
 from geneweaver.client.gedb import (
     DataRequest,
     DataResult,
     GeneExpressionDatabaseClient,
     SourceType,
 )
-
+from requests.exceptions import HTTPError
+from typer.testing import CliRunner
 
 runner = CliRunner()
 
@@ -59,34 +57,41 @@ class TestOrthologs:
     """
 
     def test_init_client_no_args(self) -> None:
+        """Test client no args."""
         client = GeneExpressionDatabaseClient()
         assert client is not None, "Unexpectedly cannot make a client with no args"
 
     def test_init_client_on_dev(self):
+        """Test client on dev."""
         client = GeneExpressionDatabaseClient("https://geneweaver-dev.jax.org/gedb")
         assert client is not None, "Unexpectedly cannot make a client with dev uri"
 
     def test_get_tissues(self, test_client):
+        """Test get tissues."""
         tissues: Set[str] = test_client.distinct("tissue")
         assert "heart" in tissues, "Tissue set must contain heart"
         assert "striatum" in tissues, "Tissue set must contain striatum"
 
     def test_get_strains(self, test_client):
+        """Test get strains."""
         tissues: Set[str] = test_client.distinct("strain")
         assert "B6" in tissues, "Strains set must contain B6"
         assert "CAST" in tissues, "Strains set must contain CAST"
 
     def test_get_not_there(self, test_client):
+        """Test not there."""
         with pytest.raises(HTTPError):
             test_client.distinct("NOT-THERE")
 
     def test_search_expressions(self, test_client):
+        """Test get tissues."""
         imputations = self._connective_tissue_disorder(test_client)
         assert (
             len(imputations) == 122859
         ), "The length of the imputations array is {}".format(len(imputations))
 
     def test_sort_results(self, test_client):
+        """Test sort results."""
         imputations = self._connective_tissue_disorder(test_client)
         srtd = test_client.sort("strain", imputations)
         # There are 657 strains in this list of results.
