@@ -8,13 +8,14 @@ from geneweaver.client.gedb import (
     DataResult,
     GeneExpressionDatabaseClient,
     SourceType,
+    Metadata,
 )
 from typing import List, Set
 from requests.exceptions import HTTPError
 
 @pytest.fixture(scope="session", autouse=True)
 def test_client():
-    """Yield a test client."""
+    """Yield a test client for the GEDB."""
     local_server: bool = False  # Should be false for CICD which then mocks
     cs_server: bool = False  # Should be false for CICD which then mocks
 
@@ -95,4 +96,14 @@ class MockGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
             "BXD74/RwwJ","BXD202/RwwJ"]'
             )
 
+        raise HTTPError("Not mocked!")
+
+    def get_meta(self, tissue: str) -> List[Metadata]:
+        
+        if "maxilla" is tissue:
+            return json.loads('[{"ingestid": "95c8aa44-5d5a-42d9-9f10-33a20904ad1e", \
+            "modelversion": "ridge_v1_2_1", "population": "GenomeMUSter_v2", \
+            "tissue": "maxilla", "sourcetype": "IMPUTED", "species": "Mus musculus", \
+            "uberon": "0002397"}]')
+            
         raise HTTPError("Not mocked!")

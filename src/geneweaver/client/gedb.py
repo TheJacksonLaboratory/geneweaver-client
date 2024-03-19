@@ -10,8 +10,15 @@ from collections import OrderedDict
 from dataclasses import dataclass
 from enum import Enum
 from typing import List, Mapping, Set
+import pandas
+from pandas import DataFrame
+import numpy
+
+from contextlib import closing
 
 import requests
+import csv
+import io
 from geneweaver.client.core.config import settings
 
 SourceType = Enum("Source", ["IMPUTED", "EXPERIMENT"])
@@ -51,10 +58,27 @@ class DataResult:
     """
 
     values: List[float] = None  # noqa: N815
+    names: List[str] = None  # noqa: N815
     weights: List[float] = None  # noqa: N815
     geneIds: List[str] = None  # noqa: N815
     strains: List[str] = None  # noqa: N815
     tissue: str = None  # noqa: N815
+
+# TODO Should data access objects go in api?
+@dataclass
+class Metadata:
+    """Object to contain Metadata.
+    
+    The Metadata is available for various properties by searching 
+    the database.
+    """
+    ingestid: str = None  # noqa: N815
+    modelversion: str = None  # noqa: N815
+    population: str = None  # noqa: N815
+    tissue: str = None  # noqa: N815
+    sourceType: SourceType = None
+    species: str = None  # noqa: N815
+    uberon: str = None  # noqa: N815
 
 
 class GeneExpressionDatabaseClient:
@@ -90,13 +114,7 @@ class GeneExpressionDatabaseClient:
         """
         url = self._get_search_url()
 
-        cookies = None
-        if self.auth_proxy is not None:
-            cookies = {"_oauth2_proxy": self.auth_proxy}
-
-        response = requests.post(url, None, drequest.__dict__, cookies=cookies)
-        if not response.ok:
-            response.raise_for_status()
+        response = self._post(url,drequest.__dict__)
 
         # TODO Not sure if need to deal with typing here.
         # Need to write test to check.
@@ -113,18 +131,30 @@ class GeneExpressionDatabaseClient:
         """
         url = "{}/{}".format(self._get_distinct_url(), field)
 
-        cookies = None
-        if self.auth_proxy is not None:
-            cookies = {"_oauth2_proxy": self.auth_proxy}
-
-        response = requests.get(url, cookies=cookies)
-
-        if not response.ok:
-            response.raise_for_status()
+        response = self._get(url)
 
         return response.json()
+        
+    def get_meta(self, tissue: str) -> List[Metadata]:
+        """Get metadata from database."""
+        url = "{}/{}".format(self._get_meta_url(), tissue)
+        response = self._get(url)
+        return response.json()
+    
+    def read_expression_data(self, ingest_id:str) -> DataFrame:
+        """Get expression data from database.
+        
+        Reads full data for a given ingest_id, very inefficient
+        """
+        url = "{}/{}".format(self._get_bulk_url(), ingest_id)
+       
+        with requests.Session() as s:
+            download = s.get(url)
+            decoded_content = download.content.decode('utf-8')
+            frame: DataFrame = pandas.read_csv(io.StringIO(decoded_content))
+            return frame
 
-    def sort(
+    def sort_by_field(
         self, prop: str, expressions: List[DataResult]
     ) -> Mapping[str, List[DataResult]]:
         """Sort the data results by any of their properties.
@@ -134,21 +164,118 @@ class GeneExpressionDatabaseClient:
         """
         ret = {}
         for dr in expressions:
-            strain = dr.get(prop)
+            pvalue = dr.get(prop)
 
-            collection = ret.get(strain, None)
+            collection = ret.get(pvalue, None)
             if collection is None:
                 collection = []
-                ret[strain] = collection
+                ret[pvalue] = collection
             collection.append(dr)
 
         return ret
+
+    def sort_by_field_then_name(
+        self, prop: str, expressions: List[DataResult]
+    ) -> Mapping[str, List]:
+        """Sort the data results by property then group the genes and individual names.
+
+        @param property: String e.g. "strain" to sort by strain
+        @param the raw list of data results returned from a 'search' call.
+        """
+        ret = {}
+        for dr in expressions:
+            pvalue = dr.get(prop)
+
+            gene_id = dr.get("geneIds")[0]
+            # Map of values by indiv name
+            indivs = ret.get(pvalue, None)
+            if indivs is None:
+                indivs = {}
+                ret[pvalue] = indivs
+            
+            names: List[str] = dr.get("names")
+            values: List[float] = dr.get("values")
+            
+            for (name,value) in zip(names,values):
+                geneset = indivs.get(name)
+                if geneset is None:
+                    geneset = OrderedDict()
+                    indivs[name] = geneset
+                
+                geneset[gene_id] = value
+
+        return ret
+    
+    def expression_frame(self, data: dict, strain: str, indiv_name: str):
+        """Convert a dictionary of gene expression to frame."""
+        ar = numpy.array(list(data[strain][indiv_name].items()))
+        return DataFrame(ar, columns=["gene_id", "expr"])
+    
+    def sort_as_frame(
+        self, expressions: List[DataResult]
+    ) -> Mapping[str, List]:
+        """Put the expressions in one big frame from which rows can be dropped.
+
+        @param expressions: the DataResults from the server.
+        """
+        data = []
+        for dr in expressions:
+            
+            row = [0,0,0,0]
+            row[0] = dr.get("strain")
+            row[2] = dr.get("geneIds")[0]
+            
+            names: List[str] = dr.get("names")
+            values: List[float] = dr.get("values")
+            
+            for (name,value) in zip(names,values):
+                row[1] = name
+                row[3] = value
+                data.append(row.copy())
+
+        df: DataFrame = DataFrame(data, columns=["strain", "indiv_name", "gene_id", "expr"]) 
+        return df
 
     def _get_search_url(self) -> str:
         return "{}{}".format(self.url, "/gene/expression/search")
 
     def _get_distinct_url(self) -> str:
         return "{}{}".format(self.url, "/meta/distinct")
+
+    def _get_meta_url(self) -> str:
+        return "{}{}".format(self.url, "/meta/where/tissue/is")
+    
+    def _get_bulk_url(self) -> str:
+        return "{}{}".format(self.url, "/bulk/all/where/ingest/is")
+
+
+    def _post(self, url: str, postable_object):
+        
+        cookies = None
+        if self.auth_proxy is not None:
+            cookies = {"_oauth2_proxy": self.auth_proxy}
+        
+        with requests.Session() as s:
+            response = s.post(url, None, postable_object, cookies=cookies)
+        
+            if not response.ok:
+                response.raise_for_status()
+    
+            return response
+
+    def _get(self, url: str):
+        
+        cookies = None
+        if self.auth_proxy is not None:
+            cookies = {"_oauth2_proxy": self.auth_proxy}
+
+        with requests.Session() as s:
+            response = s.get(url, cookies=cookies)
+    
+            if not response.ok:
+                response.raise_for_status()
+    
+            return response
 
     def get_genes(self, path: str) -> Mapping[str, str]:
         """Will read first two columns of csv file.
