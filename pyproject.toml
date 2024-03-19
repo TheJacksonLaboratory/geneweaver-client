@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "geneweaver-client"
-version = "0.7.0a6"
+version = "0.7.0a7"
 description = "A Python Client for the Geneweaver API"
 authors = ["Jax Computational Sciences <cssc@jax.org>"]
 readme = "README.md"
