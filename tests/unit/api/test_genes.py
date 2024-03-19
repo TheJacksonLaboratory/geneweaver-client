@@ -18,8 +18,8 @@ from geneweaver.core.enum import GeneIdentifier, Species
     [
         (["MGI:1918914"], "MGI", None, None, None),
         (["MGI:1918914"], "MGI", "MGI", None, None),
-        (["MGI:1918914"], "MGI", "MGI", "Mus musculus", None),
-        (["MGI:1918914"], "MGI", "MGI", "Mus musculus", "Mus musculus"),
+        (["MGI:1918914"], "MGI", "MGI", "Mus Musculus", None),
+        (["MGI:1918914"], "MGI", "MGI", "Mus Musculus", "Mus Musculus"),
     ],
 )
 def test_map_homologs(
