@@ -67,7 +67,7 @@ class TestOrthologs:
     def test_sort_results_by_individual_name(self, test_client: GeneExpressionDatabaseClient):
         """Test sort results."""
         imputations = self._connective_tissue_disorder(test_client)
-        data = test_client.sort_by_field_then_name("strain", imputations)
+        data = test_client.sort_for_concordance("strain", imputations)
         
         # By strain=C57BL/6J and indiv_name=s1 should give example table.
         df = test_client.expression_frame(data, 'C57BL/6J', 's1')

@@ -174,7 +174,7 @@ class GeneExpressionDatabaseClient:
 
         return ret
 
-    def sort_by_field_then_name(
+    def sort_for_concordance(
         self, prop: str, expressions: List[DataResult]
     ) -> Mapping[str, List]:
         """Sort the data results by property then group the genes and individual names.
@@ -222,7 +222,6 @@ class GeneExpressionDatabaseClient:
     
     def _get_bulk_url(self) -> str:
         return "{}{}".format(self.url, "/bulk/all/where/ingest/is")
-
 
     def _post(self, url: str, postable_object):
         
