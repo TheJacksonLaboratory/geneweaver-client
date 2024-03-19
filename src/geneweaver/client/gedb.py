@@ -211,31 +211,6 @@ class GeneExpressionDatabaseClient:
         ar = numpy.array(list(data[strain][indiv_name].items()))
         return DataFrame(ar, columns=["gene_id", "expr"])
     
-    def sort_as_frame(
-        self, expressions: List[DataResult]
-    ) -> Mapping[str, List]:
-        """Put the expressions in one big frame from which rows can be dropped.
-
-        @param expressions: the DataResults from the server.
-        """
-        data = []
-        for dr in expressions:
-            
-            row = [0,0,0,0]
-            row[0] = dr.get("strain")
-            row[2] = dr.get("geneIds")[0]
-            
-            names: List[str] = dr.get("names")
-            values: List[float] = dr.get("values")
-            
-            for (name,value) in zip(names,values):
-                row[1] = name
-                row[3] = value
-                data.append(row.copy())
-
-        df: DataFrame = DataFrame(data, columns=["strain", "indiv_name", "gene_id", "expr"]) 
-        return df
-
     def _get_search_url(self) -> str:
         return "{}{}".format(self.url, "/gene/expression/search")
 
