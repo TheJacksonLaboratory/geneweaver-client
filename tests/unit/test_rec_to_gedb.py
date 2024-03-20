@@ -2,6 +2,7 @@
 
 from typing import List
 
+import pytest
 from geneweaver.client.gedb import (
     GeneExpressionDatabaseClient,
     Metadata,
@@ -17,12 +18,14 @@ class TestRecommenderDataStructures:
     include more error conditions.
     """
 
+    @pytest.mark.usefixtures("test_client")
     def test_fixture_works(self, test_client: GeneExpressionDatabaseClient) -> None:
         """Test fixture works."""
         assert (
             test_client is not None
         ), "Unexpectedly cannot make a test_client using fixture"
 
+    @pytest.mark.usefixtures("test_client")
     def test_get_meta_for_tissue(
         self, test_client: GeneExpressionDatabaseClient
     ) -> None:
