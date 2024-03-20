@@ -1,17 +1,18 @@
 """Unit tests for the geneweaver client."""
 
-import json
 import gzip
+import json
+from typing import List, Set
+
 import pytest
 from geneweaver.client.gedb import (
     DataRequest,
-    DataResult,
     GeneExpressionDatabaseClient,
-    SourceType,
     Metadata,
+    SourceType,
 )
-from typing import List, Set
 from requests.exceptions import HTTPError
+
 
 @pytest.fixture(scope="session", autouse=True)
 def test_client():
@@ -99,11 +100,13 @@ class MockGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
         raise HTTPError("Not mocked!")
 
     def get_meta(self, tissue: str) -> List[Metadata]:
-        
-        if "maxilla" is tissue:
-            return json.loads('[{"ingestid": "95c8aa44-5d5a-42d9-9f10-33a20904ad1e", \
+        """Mock get metadata."""
+        if "maxilla" == tissue:
+            return json.loads(
+                '[{"ingestid": "95c8aa44-5d5a-42d9-9f10-33a20904ad1e", \
             "modelversion": "ridge_v1_2_1", "population": "GenomeMUSter_v2", \
             "tissue": "maxilla", "sourcetype": "IMPUTED", "species": "Mus musculus", \
-            "uberon": "0002397"}]')
-            
+            "uberon": "0002397"}]'
+            )
+
         raise HTTPError("Not mocked!")

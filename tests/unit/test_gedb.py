@@ -3,17 +3,15 @@
 from typing import List, Set
 
 import pytest
-from pandas import DataFrame
-
 from geneweaver.client.gedb import (
     DataRequest,
     DataResult,
     GeneExpressionDatabaseClient,
     SourceType,
 )
+from pandas import DataFrame
 from requests.exceptions import HTTPError
 
-from tests.unit import test_client
 
 class TestOrthologs:
     # noqa: D102
@@ -64,24 +62,28 @@ class TestOrthologs:
         # There are 657 strains in this list of results.
         assert len(srtd) == 657, "The size of the strains map is {}".format(len(srtd))
 
-    def test_sort_results_by_individual_name(self, test_client: GeneExpressionDatabaseClient):
+    def test_sort_results_by_individual_name(
+        self, test_client: GeneExpressionDatabaseClient
+    ):
         """Test sort results."""
         imputations = self._connective_tissue_disorder(test_client)
-        data = test_client.sort_for_concordance("strain", imputations)
-        
+        data: List = test_client.sort_for_concordance("strain", imputations)
+
         # By strain=C57BL/6J and indiv_name=s1 should give example table.
-        df = test_client.expression_frame(data, 'C57BL/6J', 's1')
+        df: DataFrame = test_client.expression_frame(data, "C57BL/6J", "s1")
         assert len(df) == 29, "The size of the frame is {}".format(len(df))
 
         # By strain=BALB/cByJ and indiv_name=s8 should give example table.
-        df = test_client.expression_frame(data, 'BALB/cByJ', 's8')
+        df = test_client.expression_frame(data, "BALB/cByJ", "s8")
         assert len(df) == 29, "The size of the frame is {}".format(len(df))
 
         # By strain=BXD24/TyJ and indiv_name=s147 should give example table.
-        df = test_client.expression_frame(data, 'BXD24/TyJ', 's147')
+        df = test_client.expression_frame(data, "BXD24/TyJ", "s147")
         assert len(df) == 29, "The size of the frame is {}".format(len(df))
 
-    def _connective_tissue_disorder(self, test_client: GeneExpressionDatabaseClient) -> List[DataResult]:
+    def _connective_tissue_disorder(
+        self, test_client: GeneExpressionDatabaseClient
+    ) -> List[DataResult]:
         genes = test_client.get_genes(
             "tests/unit/connective_tissue_disorder_log2fc_test.csv"
         )
