@@ -93,7 +93,7 @@ class TestOrthologs:
         """Generate random expression results to be used in rho calculation."""
         
         metas: List[Metadata] = test_client.get_meta("maxilla")
-        id: str = metas[0].get('ingestid')
+        id: str = metas[0].ingestid
         rand1: DataFrame = test_client.random(id, 25)
         assert len(rand1) == 25, "The size of the frame is {}".format(
             len(rand1)

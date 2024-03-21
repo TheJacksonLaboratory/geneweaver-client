@@ -8,7 +8,7 @@ of security and scalability.
 """
 import io
 from collections import OrderedDict
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 from enum import Enum
 from typing import List, Mapping, Set
 
@@ -88,6 +88,7 @@ class Bulk:
     exprnames: List[str] = None # noqa: N815
     exprvalues: List[float] = None # noqa: N815
     weightvalues: List[float] = None # noqa: N815
+    ingestid: str = None # noqa: N815
 
 class GeneExpressionDatabaseClient:
     """Gene Expression Database Client.
@@ -147,8 +148,13 @@ class GeneExpressionDatabaseClient:
         """Get metadata from database."""
         url = "{}/{}".format(self._get_meta_url(), tissue)
         response = self._get(url)
-        return response.json()
-
+        return [self._classFromArgs(Metadata, item) for item in response.json()]
+    
+    def _classFromArgs(self, className, argDict):
+        fieldSet = {f.name for f in fields(className) if f.init}
+        filteredArgDict = {k : v for k, v in argDict.items() if k in fieldSet}
+        return className(**filteredArgDict)
+    
     def read_expression_data(self, ingest_id: str) -> DataFrame:
         """Get expression data from database.
 
@@ -224,8 +230,8 @@ class GeneExpressionDatabaseClient:
         """Get a random gene expression frame."""
         url = "{}/{}?gsize={}".format(self._get_random_url(), ingest_id, size)
         response = self._get(url)
-        random: List[Bulk] = [Bulk(*item) for item in response.json()]
         
+        randoms: List[Bulk] = [self._classFromArgs(Bulk, item) for item in response.json()]
         return self._frame(randoms)
     
     def _frame(self, randoms: List[Bulk]) -> DataFrame:

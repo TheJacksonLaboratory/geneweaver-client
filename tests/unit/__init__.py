@@ -108,12 +108,13 @@ class MockGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
     def get_meta(self, tissue: str) -> List[Metadata]:
         """Mock get metadata."""
         if "maxilla" == tissue:
-            return json.loads(
+            jsons: List = json.loads(
                 '[{"ingestid": "95c8aa44-5d5a-42d9-9f10-33a20904ad1e", \
             "modelversion": "ridge_v1_2_1", "population": "GenomeMUSter_v2", \
             "tissue": "maxilla", "sourcetype": "IMPUTED", "species": "Mus musculus", \
             "uberon": "0002397"}]'
             )
+            return [self._classFromArgs(Metadata, item) for item in jsons]
 
         raise HTTPError("Not mocked!")
 
