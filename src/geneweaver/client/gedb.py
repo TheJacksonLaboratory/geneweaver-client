@@ -42,6 +42,7 @@ class DataRequest:
     geneIds: List[str] = None  # noqa: N815
     strains: List[str] = None  # noqa: N815
     sourceType: SourceType = None  # noqa: N815
+    tissue: str = None  # noqa: N815
 
 
 # TODO Should data access objects go in api?
@@ -80,6 +81,13 @@ class Metadata:
     species: str = None  # noqa: N815
     uberon: str = None  # noqa: N815
 
+@dataclass
+class Bulk:
+    genename: str = None # noqa: N815
+    geneid : str = None # noqa: N815
+    exprnames: List[str] = None # noqa: N815
+    exprvalues: List[float] = None # noqa: N815
+    weightvalues: List[float] = None # noqa: N815
 
 class GeneExpressionDatabaseClient:
     """Gene Expression Database Client.
@@ -145,6 +153,7 @@ class GeneExpressionDatabaseClient:
         """Get expression data from database.
 
         Reads full data for a given ingest_id, inefficient and slow.
+        Do not use, too slow, use search and 
         """
         url = "{}/{}".format(self._get_bulk_url(), ingest_id)
 
@@ -206,10 +215,28 @@ class GeneExpressionDatabaseClient:
 
         return ret
 
-    def expression_frame(self, data: dict, strain: str, indiv_name: str) -> DataFrame:
+    def frame(self, data: dict, strain: str, indiv_name: str) -> DataFrame:
         """Convert a dictionary of gene expression to frame."""
         ar = numpy.array(list(data[strain][indiv_name].items()))
         return DataFrame(ar, columns=["gene_id", "expr"])
+
+    def random(self, ingest_id: str, size: int) -> DataFrame:
+        """Get a random gene expression frame."""
+        url = "{}/{}?gsize={}".format(self._get_random_url(), ingest_id, size)
+        response = self._get(url)
+        random: List[Bulk] = [Bulk(*item) for item in response.json()]
+        
+        return self._frame(randoms)
+    
+    def _frame(self, randoms: List[Bulk]) -> DataFrame:
+        # Make them into a frame.
+        name: str = randoms[0].exprnames[0]
+        rows = []
+        for dr in randoms:
+            row = {'gene_id':dr.geneid, name: dr.exprvalues[0]}
+            rows.append(row)
+        
+        return DataFrame(rows)
 
     def _get_search_url(self) -> str:
         return "{}{}".format(self.url, "/gene/expression/search")
@@ -222,6 +249,9 @@ class GeneExpressionDatabaseClient:
 
     def _get_bulk_url(self) -> str:
         return "{}{}".format(self.url, "/bulk/all/where/ingest/is")
+
+    def _get_random_url(self) -> str:
+        return "{}{}".format(self.url, "/bulk/random/where/ingest/is")
 
     def _post(self, url: str, postable_object: dict) -> Response:
 
@@ -251,7 +281,7 @@ class GeneExpressionDatabaseClient:
 
             return response
 
-    def get_genes(self, path: str) -> Mapping[str, str]:
+    def read_scores(self, path: str) -> Mapping[str, str]:
         """Will read first two columns of csv file.
 
         into a dictionary of gene: log2fc for use in concordance calc.

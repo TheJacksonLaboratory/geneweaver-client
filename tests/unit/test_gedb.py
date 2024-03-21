@@ -11,7 +11,7 @@ from geneweaver.client.gedb import (
 )
 from pandas import DataFrame
 from requests.exceptions import HTTPError
-
+import json
 
 class TestOrthologs:
     # noqa: D102
@@ -31,21 +31,18 @@ class TestOrthologs:
         client = GeneExpressionDatabaseClient("https://geneweaver-dev.jax.org/gedb")
         assert client is not None, "Unexpectedly cannot make a client with dev uri"
 
-    @pytest.mark.usefixtures("test_client")
     def test_get_tissues(self, test_client: GeneExpressionDatabaseClient):
         """Test get tissues."""
         tissues: Set[str] = test_client.distinct("tissue")
         assert "heart" in tissues, "Tissue set must contain heart"
         assert "striatum" in tissues, "Tissue set must contain striatum"
 
-    @pytest.mark.usefixtures("test_client")
     def test_get_strains(self, test_client: GeneExpressionDatabaseClient):
         """Test get strains."""
         tissues: Set[str] = test_client.distinct("strain")
         assert "B6" in tissues, "Strains set must contain B6"
         assert "CAST" in tissues, "Strains set must contain CAST"
 
-    @pytest.mark.usefixtures("test_client")
     def test_get_not_there(self, test_client: GeneExpressionDatabaseClient):
         """Test not there."""
         with pytest.raises(HTTPError):
@@ -55,10 +52,9 @@ class TestOrthologs:
         """Test get tissues."""
         imputations = self._connective_tissue_disorder(test_client)
         assert (
-            len(imputations) == 122859
+            len(imputations) == 16425
         ), "The length of the imputations array is {}".format(len(imputations))
 
-    @pytest.mark.usefixtures("test_client")
     def test_sort_results_by_strain(self, test_client: GeneExpressionDatabaseClient):
         """Test sort results."""
         imputations = self._connective_tissue_disorder(test_client)
@@ -66,42 +62,54 @@ class TestOrthologs:
         # There are 657 strains in this list of results.
         assert len(srtd) == 657, "The size of the strains map is {}".format(len(srtd))
 
-    @pytest.mark.usefixtures("test_client")
-    def test_sort_results_by_individual_name(
+    def test_expression_results(
         self, test_client: GeneExpressionDatabaseClient
     ):
-        """Test sort results."""
+        """Test sort results into form used by recommender code."""
         imputations = self._connective_tissue_disorder(test_client)
         data: List = test_client.sort_for_concordance("strain", imputations)
 
         # By strain=C57BL/6J and indiv_name=s1 should give example table.
-        c57_strain: DataFrame = test_client.expression_frame(data, "C57BL/6J", "s1")
-        assert len(c57_strain) == 29, "The size of the frame is {}".format(
+        c57_strain: DataFrame = test_client.frame(data, "C57BL/6J", "s1")
+        assert len(c57_strain) == 25, "The size of the frame is {}".format(
             len(c57_strain)
         )
 
         # By strain=BALB/cByJ and indiv_name=s8 should give example table.
-        balb_frame = test_client.expression_frame(data, "BALB/cByJ", "s8")
-        assert len(balb_frame) == 29, "The size of the frame is {}".format(
+        balb_frame: DataFrame = test_client.frame(data, "BALB/cByJ", "s8")
+        assert len(balb_frame) == 25, "The size of the frame is {}".format(
             len(balb_frame)
         )
 
         # By strain=BXD24/TyJ and indiv_name=s147 should give example table.
-        bxd_frame = test_client.expression_frame(data, "BXD24/TyJ", "s147")
-        assert len(bxd_frame) == 29, "The size of the frame is {}".format(
+        bxd_frame: DataFrame = test_client.frame(data, "BXD24/TyJ", "s147")
+        assert len(bxd_frame) == 25, "The size of the frame is {}".format(
             len(bxd_frame)
+        )
+
+    def test_random_results(
+        self, test_client: GeneExpressionDatabaseClient
+    ):
+        """Generate random expression results to be used in rho calculation."""
+        
+        metas: List[Metadata] = test_client.get_meta("maxilla")
+        id: str = metas[0].get('ingestid')
+        rand1: DataFrame = test_client.random(id, 25)
+        assert len(rand1) == 25, "The size of the frame is {}".format(
+            len(rand1)
         )
 
     def _connective_tissue_disorder(
         self, test_client: GeneExpressionDatabaseClient
     ) -> List[DataResult]:
-        genes = test_client.get_genes(
+        genes = test_client.read_scores(
             "tests/unit/connective_tissue_disorder_log2fc_test.csv"
         )
         drequest = DataRequest(
             geneIds=list(genes.keys()),
             strains=["*"],  # All strains if not searching on limited set.
             sourceType=SourceType.IMPUTED.name,
+            tissue="maxilla"
         )
 
         # This is a larger search size. When connected to a real database
