@@ -154,7 +154,7 @@ class GeneExpressionDatabaseClient:
         response = self._get(url)
         return [self._class_from_args(Metadata, item) for item in response.json()]
 
-    def _class_from_args(self, class_name: Object, arg_dict: dict) -> Object:
+    def _class_from_args(self, class_name: object, arg_dict: dict) -> object:
         field_set = {f.name for f in fields(class_name) if f.init}
         filtered = {k: v for k, v in arg_dict.items() if k in field_set}
         return class_name(**filtered)
