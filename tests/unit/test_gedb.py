@@ -11,7 +11,7 @@ from geneweaver.client.gedb import (
 )
 from pandas import DataFrame
 from requests.exceptions import HTTPError
-import json
+
 
 class TestOrthologs:
     # noqa: D102
@@ -62,9 +62,7 @@ class TestOrthologs:
         # There are 657 strains in this list of results.
         assert len(srtd) == 657, "The size of the strains map is {}".format(len(srtd))
 
-    def test_expression_results(
-        self, test_client: GeneExpressionDatabaseClient
-    ):
+    def test_expression_results(self, test_client: GeneExpressionDatabaseClient):
         """Test sort results into form used by recommender code."""
         imputations = self._connective_tissue_disorder(test_client)
         data: List = test_client.sort_for_concordance("strain", imputations)
@@ -87,17 +85,12 @@ class TestOrthologs:
             len(bxd_frame)
         )
 
-    def test_random_results(
-        self, test_client: GeneExpressionDatabaseClient
-    ):
+    def test_random_results(self, test_client: GeneExpressionDatabaseClient):
         """Generate random expression results to be used in rho calculation."""
-        
         metas: List[Metadata] = test_client.get_meta("maxilla")
         id: str = metas[0].ingestid
         rand1: DataFrame = test_client.random(id, 25)
-        assert len(rand1) == 25, "The size of the frame is {}".format(
-            len(rand1)
-        )
+        assert len(rand1) == 25, "The size of the frame is {}".format(len(rand1))
 
     def _connective_tissue_disorder(
         self, test_client: GeneExpressionDatabaseClient
@@ -109,7 +102,7 @@ class TestOrthologs:
             geneIds=list(genes.keys()),
             strains=["*"],  # All strains if not searching on limited set.
             sourceType=SourceType.IMPUTED.name,
-            tissue="maxilla"
+            tissue="maxilla",
         )
 
         # This is a larger search size. When connected to a real database

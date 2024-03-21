@@ -2,21 +2,20 @@
 
 import gzip
 import json
+import random
 from typing import List, Set
 
 import pytest
 from geneweaver.client.gedb import (
+    Bulk,
     DataRequest,
-    DataResult,
     GeneExpressionDatabaseClient,
     Metadata,
     SourceType,
-    Bulk
 )
-from requests.exceptions import HTTPError
 from pandas import DataFrame
-import math
-import random
+from requests.exceptions import HTTPError
+
 
 @pytest.fixture(scope="session", autouse=True)
 def test_client():
@@ -62,9 +61,11 @@ class MockGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
 
     def search(self, drequest: DataRequest):
         """Mock search."""
-        if drequest.sourceType is SourceType.IMPUTED.name \
-            and drequest.tissue is "maxilla":
-            
+        if (
+            drequest.sourceType is SourceType.IMPUTED.name
+            and drequest.tissue == "maxilla"
+        ):
+
             # Read file and return json
             with gzip.open("tests/unit/imputations.json.gz", "rb") as f:
                 file_content = f.read()
@@ -121,17 +122,17 @@ class MockGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
     def random(self, ingest_id: str, size: int) -> DataFrame:
         """Get a random gene expression frame."""
         randoms: List[Bulk] = []
-        
-        name: str = "s{}".format(round(random.random()*1000))
+
+        name: str = "s{}".format(round(random.random() * 1000))
         for i in range(size):
             r: Bulk = self._random_data_result(name)
             randoms.append(r)
-        
+
         return self._frame(randoms)
 
     def _random_data_result(self, name: str) -> Bulk:
         r: Bulk = Bulk()
         r.exprnames = [name]
-        r.exprvalues = [(random.random()*2) - 1]
-        r.geneid = "ESNMUSTEST{}".format(round(random.random()*1000))
+        r.exprvalues = [(random.random() * 2) - 1]
+        r.geneid = "ESNMUSTEST{}".format(round(random.random() * 1000))
         return r

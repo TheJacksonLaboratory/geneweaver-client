@@ -81,14 +81,16 @@ class Metadata:
     species: str = None  # noqa: N815
     uberon: str = None  # noqa: N815
 
+
 @dataclass
 class Bulk:
-    genename: str = None # noqa: N815
-    geneid : str = None # noqa: N815
-    exprnames: List[str] = None # noqa: N815
-    exprvalues: List[float] = None # noqa: N815
-    weightvalues: List[float] = None # noqa: N815
-    ingestid: str = None # noqa: N815
+    genename: str = None  # noqa: N815
+    geneid: str = None  # noqa: N815
+    exprnames: List[str] = None  # noqa: N815
+    exprvalues: List[float] = None  # noqa: N815
+    weightvalues: List[float] = None  # noqa: N815
+    ingestid: str = None  # noqa: N815
+
 
 class GeneExpressionDatabaseClient:
     """Gene Expression Database Client.
@@ -149,17 +151,17 @@ class GeneExpressionDatabaseClient:
         url = "{}/{}".format(self._get_meta_url(), tissue)
         response = self._get(url)
         return [self._classFromArgs(Metadata, item) for item in response.json()]
-    
+
     def _classFromArgs(self, className, argDict):
         fieldSet = {f.name for f in fields(className) if f.init}
-        filteredArgDict = {k : v for k, v in argDict.items() if k in fieldSet}
+        filteredArgDict = {k: v for k, v in argDict.items() if k in fieldSet}
         return className(**filteredArgDict)
-    
+
     def read_expression_data(self, ingest_id: str) -> DataFrame:
         """Get expression data from database.
 
         Reads full data for a given ingest_id, inefficient and slow.
-        Do not use, too slow, use search and 
+        Do not use, too slow, use search and
         """
         url = "{}/{}".format(self._get_bulk_url(), ingest_id)
 
@@ -230,18 +232,20 @@ class GeneExpressionDatabaseClient:
         """Get a random gene expression frame."""
         url = "{}/{}?gsize={}".format(self._get_random_url(), ingest_id, size)
         response = self._get(url)
-        
-        randoms: List[Bulk] = [self._classFromArgs(Bulk, item) for item in response.json()]
+
+        randoms: List[Bulk] = [
+            self._classFromArgs(Bulk, item) for item in response.json()
+        ]
         return self._frame(randoms)
-    
+
     def _frame(self, randoms: List[Bulk]) -> DataFrame:
         # Make them into a frame.
         name: str = randoms[0].exprnames[0]
         rows = []
         for dr in randoms:
-            row = {'gene_id':dr.geneid, name: dr.exprvalues[0]}
+            row = {"gene_id": dr.geneid, name: dr.exprvalues[0]}
             rows.append(row)
-        
+
         return DataFrame(rows)
 
     def _get_search_url(self) -> str:
