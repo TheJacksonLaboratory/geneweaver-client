@@ -115,7 +115,7 @@ class MockGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
             "tissue": "maxilla", "sourcetype": "IMPUTED", "species": "Mus musculus", \
             "uberon": "0002397"}]'
             )
-            return [self._classFromArgs(Metadata, item) for item in jsons]
+            return [self._class_from_args(Metadata, item) for item in jsons]
 
         raise HTTPError("Not mocked!")
 
