@@ -124,7 +124,7 @@ class MockGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
         randoms: List[Bulk] = []
 
         name: str = "s{}".format(round(random.random() * 1000))
-        for i in range(size):
+        for _ in range(size):
             r: Bulk = self._random_data_result(name)
             randoms.append(r)
 

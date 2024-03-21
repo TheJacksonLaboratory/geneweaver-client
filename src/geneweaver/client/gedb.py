@@ -10,7 +10,7 @@ import io
 from collections import OrderedDict
 from dataclasses import dataclass, fields
 from enum import Enum
-from typing import List, Mapping, Set
+from typing import List, Mapping, Object, Set
 
 import numpy
 import pandas
@@ -84,6 +84,8 @@ class Metadata:
 
 @dataclass
 class Bulk:
+    """Object to contain Bulk expression data."""
+
     genename: str = None  # noqa: N815
     geneid: str = None  # noqa: N815
     exprnames: List[str] = None  # noqa: N815
@@ -150,12 +152,12 @@ class GeneExpressionDatabaseClient:
         """Get metadata from database."""
         url = "{}/{}".format(self._get_meta_url(), tissue)
         response = self._get(url)
-        return [self._classFromArgs(Metadata, item) for item in response.json()]
+        return [self._class_from_args(Metadata, item) for item in response.json()]
 
-    def _classFromArgs(self, className, argDict):
-        fieldSet = {f.name for f in fields(className) if f.init}
-        filteredArgDict = {k: v for k, v in argDict.items() if k in fieldSet}
-        return className(**filteredArgDict)
+    def _class_from_args(self, class_name: Object, arg_dict: dict) -> Object:
+        field_set = {f.name for f in fields(class_name) if f.init}
+        filtered = {k: v for k, v in arg_dict.items() if k in field_set}
+        return class_name(**filtered)
 
     def read_expression_data(self, ingest_id: str) -> DataFrame:
         """Get expression data from database.
@@ -234,7 +236,7 @@ class GeneExpressionDatabaseClient:
         response = self._get(url)
 
         randoms: List[Bulk] = [
-            self._classFromArgs(Bulk, item) for item in response.json()
+            self._class_from_args(Bulk, item) for item in response.json()
         ]
         return self._frame(randoms)
 

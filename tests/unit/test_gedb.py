@@ -7,6 +7,7 @@ from geneweaver.client.gedb import (
     DataRequest,
     DataResult,
     GeneExpressionDatabaseClient,
+    Metadata,
     SourceType,
 )
 from pandas import DataFrame
@@ -88,8 +89,8 @@ class TestOrthologs:
     def test_random_results(self, test_client: GeneExpressionDatabaseClient):
         """Generate random expression results to be used in rho calculation."""
         metas: List[Metadata] = test_client.get_meta("maxilla")
-        id: str = metas[0].ingestid
-        rand1: DataFrame = test_client.random(id, 25)
+        ingest_id: str = metas[0].ingestid
+        rand1: DataFrame = test_client.random(ingest_id, 25)
         assert len(rand1) == 25, "The size of the frame is {}".format(len(rand1))
 
     def _connective_tissue_disorder(
