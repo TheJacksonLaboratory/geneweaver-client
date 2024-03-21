@@ -10,7 +10,7 @@ import io
 from collections import OrderedDict
 from dataclasses import dataclass, fields
 from enum import Enum
-from typing import List, Mapping, Object, Set
+from typing import List, Mapping, Set
 
 import numpy
 import pandas
