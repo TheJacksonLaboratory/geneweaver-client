@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     ) -> str:
         """Construct the GEDB if not explicitly set."""
         if not v:
-            return values["API_HOST"] + "/gedb/"
+            return values["API_HOST"] + "/gedb"
         return v
 
     class Config:
