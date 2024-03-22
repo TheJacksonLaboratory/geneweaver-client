@@ -221,7 +221,7 @@ class GeneExpressionDatabaseClient:
                 ret[pvalue] = indivs
 
             names: List[str] = dr.names
-            values: List[float] = dr.values # noqa: PD011
+            values: List[float] = dr.values  # noqa: PD011
             sexes: List[str] = dr.sexes
 
             for name, value, sex in zip(names, values, sexes):
