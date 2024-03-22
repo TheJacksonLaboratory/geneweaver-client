@@ -9,6 +9,7 @@ import pytest
 from geneweaver.client.gedb import (
     Bulk,
     DataRequest,
+    DataResult,
     GeneExpressionDatabaseClient,
     Metadata,
     SourceType,
@@ -69,7 +70,10 @@ class MockGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
             # Read file and return json
             with gzip.open("tests/unit/imputations.json.gz", "rb") as f:
                 file_content = f.read()
-                return json.loads(file_content)
+                return [
+                    self._class_from_args(DataResult, item)
+                    for item in json.loads(file_content)
+                ]
 
         raise HTTPError("Not mocked!")
 

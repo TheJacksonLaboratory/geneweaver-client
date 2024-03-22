@@ -27,6 +27,12 @@ imputed sources are most often used.
 @usage: from org.jax.gedb import SourceType
 """
 
+Sex = Enum("Sex", ["Female", "Male", "Both"])
+"""
+The imputed sex field. This is not direct biological sex
+but a representation of the input sex(s) to the alg.
+"""
+
 
 # TODO Should data access objects go in api?
 @dataclass
@@ -61,7 +67,9 @@ class DataResult:
     weights: List[float] = None  # noqa: N815
     geneIds: List[str] = None  # noqa: N815
     strains: List[str] = None  # noqa: N815
+    strain: str = None  # noqa: N815
     tissue: str = None  # noqa: N815
+    sexes: List[str] = None  # noqa: N815
 
 
 # TODO Should data access objects go in api?
@@ -131,7 +139,7 @@ class GeneExpressionDatabaseClient:
 
         # TODO Not sure if need to deal with typing here.
         # Need to write test to check.
-        return response.json()
+        return [self._class_from_args(DataResult, item) for item in response.json()]
 
     def distinct(self, field: str) -> Set[str]:
         """Get list of unique fields from metadata.
@@ -203,31 +211,33 @@ class GeneExpressionDatabaseClient:
         """
         ret = {}
         for dr in expressions:
-            pvalue = dr.get(prop)
+            pvalue = dr.__dict__.get(prop)
 
-            gene_id = dr.get("geneIds")[0]
+            gene_id = dr.geneIds[0]
             # Map of values by indiv name
             indivs = ret.get(pvalue, None)
             if indivs is None:
                 indivs = {}
                 ret[pvalue] = indivs
 
-            names: List[str] = dr.get("names")
-            values: List[float] = dr.get("values")
+            names: List[str] = dr.names
+            values: List[float] = dr.values # noqa: PD011
+            sexes: List[str] = dr.sexes
 
-            for name, value in zip(names, values):
-                geneset = indivs.get(name)
+            for name, value, sex in zip(names, values, sexes):
+                key = (name, sex)
+                geneset = indivs.get(key)
                 if geneset is None:
                     geneset = OrderedDict()
-                    indivs[name] = geneset
+                    indivs[key] = geneset
 
                 geneset[gene_id] = value
 
         return ret
 
-    def frame(self, data: dict, strain: str, indiv_name: str) -> DataFrame:
+    def frame(self, data: dict, strain: str, indiv_name: str, sex: Sex) -> DataFrame:
         """Convert a dictionary of gene expression to frame."""
-        ar = numpy.array(list(data[strain][indiv_name].items()))
+        ar = numpy.array(list(data[strain][(indiv_name, sex.name)].items()))
         return DataFrame(ar, columns=["gene_id", "expr"])
 
     def random(self, ingest_id: str, size: int) -> DataFrame:
