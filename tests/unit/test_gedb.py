@@ -8,6 +8,7 @@ from geneweaver.client.gedb import (
     DataResult,
     GeneExpressionDatabaseClient,
     Metadata,
+    Sex,
     SourceType,
 )
 from pandas import DataFrame
@@ -69,19 +70,19 @@ class TestOrthologs:
         data: List = test_client.sort_for_concordance("strain", imputations)
 
         # By strain=C57BL/6J and indiv_name=s1 should give example table.
-        c57_strain: DataFrame = test_client.frame(data, "C57BL/6J", "s1")
+        c57_strain: DataFrame = test_client.frame(data, "C57BL/6J", "s1", Sex.Female)
         assert len(c57_strain) == 25, "The size of the frame is {}".format(
             len(c57_strain)
         )
 
         # By strain=BALB/cByJ and indiv_name=s8 should give example table.
-        balb_frame: DataFrame = test_client.frame(data, "BALB/cByJ", "s8")
+        balb_frame: DataFrame = test_client.frame(data, "BALB/cByJ", "s8", Sex.Female)
         assert len(balb_frame) == 25, "The size of the frame is {}".format(
             len(balb_frame)
         )
 
         # By strain=BXD24/TyJ and indiv_name=s147 should give example table.
-        bxd_frame: DataFrame = test_client.frame(data, "BXD24/TyJ", "s147")
+        bxd_frame: DataFrame = test_client.frame(data, "BXH8/TyJ", "s1752", Sex.Both)
         assert len(bxd_frame) == 25, "The size of the frame is {}".format(
             len(bxd_frame)
         )
