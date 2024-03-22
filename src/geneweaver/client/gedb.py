@@ -191,7 +191,7 @@ class GeneExpressionDatabaseClient:
         """
         ret = {}
         for dr in expressions:
-            pvalue = getattr(dr,prop)
+            pvalue = getattr(dr, prop)
 
             collection = ret.get(pvalue, None)
             if collection is None:
