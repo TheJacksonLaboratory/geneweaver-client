@@ -191,7 +191,7 @@ class GeneExpressionDatabaseClient:
         """
         ret = {}
         for dr in expressions:
-            pvalue = dr.get(prop)
+            pvalue = getattr(dr,prop)
 
             collection = ret.get(pvalue, None)
             if collection is None:
@@ -211,7 +211,7 @@ class GeneExpressionDatabaseClient:
         """
         ret = {}
         for dr in expressions:
-            pvalue = dr.__dict__.get(prop)
+            pvalue = getattr(dr, prop)
 
             gene_id = dr.geneIds[0]
             # Map of values by indiv name
