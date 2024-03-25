@@ -124,16 +124,18 @@ class MockGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
 
         raise HTTPError("Not mocked!")
 
-    def random(self, ingest_id: str, size: int) -> DataFrame:
+    def random(self, ingest_id: str, size: int, count: int = 1) -> DataFrame:
         """Get a random gene expression frame."""
         randoms: List[Bulk] = []
 
-        name: str = "s{}".format(round(random.random() * 1000))
-        for _ in range(size):
-            r: Bulk = self._random_data_result(name)
-            randoms.append(r)
+        for _ in range(count):
+            name: str = "s{}".format(round(random.random() * 1000))
+            for _ in range(size):
+                r: Bulk = self._random_data_result(name)
+                randoms.append(r)
 
-        return self._frame(randoms)
+        ret: List[List[Bulk]] = self._split_list(randoms, size)
+        return [self._frame(r) for r in ret]
 
     def _random_data_result(self, name: str) -> Bulk:
         r: Bulk = Bulk()

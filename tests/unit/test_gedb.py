@@ -87,12 +87,29 @@ class TestOrthologs:
             len(bxd_frame)
         )
 
-    def test_random_results(self, test_client: GeneExpressionDatabaseClient):
+    def test_random_results1(self, test_client: GeneExpressionDatabaseClient):
         """Generate random expression results to be used in rho calculation."""
         metas: List[Metadata] = test_client.get_meta("maxilla")
         ingest_id: str = metas[0].ingestid
-        rand1: DataFrame = test_client.random(ingest_id, 25)
-        assert len(rand1) == 25, "The size of the frame is {}".format(len(rand1))
+        rand1: List[DataFrame] = test_client.random(ingest_id, 25)
+        assert len(rand1) == 1, "The number of frames is {}".format(len(rand1))
+        assert len(rand1[0]) == 25, "The size of the frame is {}".format(len(rand1[0]))
+
+    def test_random_results2(self, test_client: GeneExpressionDatabaseClient):
+        """Generate random expression results to be used in rho calculation."""
+        metas: List[Metadata] = test_client.get_meta("maxilla")
+        ingest_id: str = metas[0].ingestid
+        rand1: List[DataFrame] = test_client.random(ingest_id, 5, 5)
+        assert len(rand1) == 5, "The number of frames is {}".format(len(rand1))
+        assert len(rand1[0]) == 5, "The size of the frame is {}".format(len(rand1[0]))
+
+    def test_random_results3(self, test_client: GeneExpressionDatabaseClient):
+        """Generate random expression results to be used in rho calculation."""
+        metas: List[Metadata] = test_client.get_meta("maxilla")
+        ingest_id: str = metas[0].ingestid
+        rand1: List[DataFrame] = test_client.random(ingest_id, 4, 1000)
+        assert len(rand1) == 1000, "The number of frames is {}".format(len(rand1))
+        assert len(rand1[0]) == 4, "The size of the frame is {}".format(len(rand1[0]))
 
     def _connective_tissue_disorder(
         self, test_client: GeneExpressionDatabaseClient
