@@ -240,15 +240,29 @@ class GeneExpressionDatabaseClient:
         ar = numpy.array(list(data[strain][(indiv_name, sex.name)].items()))
         return DataFrame(ar, columns=["gene_id", "expr"])
 
-    def random(self, ingest_id: str, size: int) -> DataFrame:
-        """Get a random gene expression frame."""
-        url = "{}/{}?gsize={}".format(self._get_random_url(), ingest_id, size)
+    def random(self, ingest_id: str, size: int, count: int = 1) -> List[DataFrame]:
+        """Get a random gene expression frame.
+
+        @param ingest_id: from which we ingested data
+        @param size: size of the geneset
+        """
+        url = "{}/{}?gsize={}&random_size={}".format(
+            self._get_random_url(), ingest_id, size, count
+        )
         response = self._get(url)
 
         randoms: List[Bulk] = [
             self._class_from_args(Bulk, item) for item in response.json()
         ]
-        return self._frame(randoms)
+
+        # We return them as one long array which should be faster on the BQ side.
+        # Then we split them into sections of size count
+        ret: List[List[Bulk]] = self._split_list(randoms, size)
+
+        return [self._frame(r) for r in ret]
+
+    def _split_list(self, lst: List[Bulk], chunk_size: int) -> List[List[Bulk]]:
+        return list(zip(*[iter(lst)] * chunk_size))
 
     def _frame(self, randoms: List[Bulk]) -> DataFrame:
         # Make them into a frame.
