@@ -30,6 +30,11 @@ xlrd = "^2.0"
 [tool.poetry.group.dev.dependencies]
 geneweaver-testing = "^0.1.2"
 
+
+[tool.poetry.group.test.dependencies]
+testcontainers-neo4j = "^0.0.1rc1"
+neomodel = "^5.2.1"
+
 [tool.ruff]
 select = ['F', 'E', 'W', 'A', 'C90', 'N', 'B', 'ANN', 'D', 'I', 'ERA', 'PD', 'NPY', 'PT']
 
