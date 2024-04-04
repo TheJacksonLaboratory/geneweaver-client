@@ -4,6 +4,8 @@ import os
 import subprocess
 import time
 
+import wget
+
 
 class GraphServer:
     """A *TEST* server which starts a known version of the graph server.
@@ -23,7 +25,7 @@ class GraphServer:
         self.user_name = user_name
         self.password = password
         self.bolt_url = bolt_url
-        self.server_exec = "graph-service-0.3.1-SNAPSHOT.jar"
+        self.server_exec = "graph-service-0.4.5.jar"
         self.process = None
         self.server_url = None
 
@@ -42,6 +44,14 @@ class GraphServer:
         user = "-DNEO4J_USER={}".format("neo4j")
         password = "-DNEO4J_PASS={}".format("password")
         bolt = "-DBOLT_URI={}".format(self.bolt_url)
+
+        if not os.path.exists("./{}".format(self.server_exec)):
+            url: str = (
+                "https://repo1.maven.org/maven2/org/geneweaver/graph-service/0.4.5/{}".format(
+                    self.server_exec
+                )
+            )
+            wget.download(url, out=".")
 
         # Start test server in disconnected storage mode. This means that large queries
         # will not store back to google storage. It is just for testing.

@@ -29,6 +29,7 @@ xlrd = "^2.0"
 
 [tool.poetry.group.dev.dependencies]
 geneweaver-testing = "^0.1.2"
+wget = "^3.2"
 
 
 [tool.poetry.group.test.dependencies]
