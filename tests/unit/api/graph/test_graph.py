@@ -84,6 +84,7 @@ def manager(server):
     manager.clear()
 
 
+@pytest.mark.skip(reason="We do not want java on the build server")
 class TestOrthologs:
     """The tests."""
 
@@ -138,6 +139,7 @@ class TestOrthologs:
             assert homs[hid] == mid
 
 
+@pytest.mark.skip(reason="We do not want java on the build server")
 class TestSearch:
     """Simple search tests."""
 
