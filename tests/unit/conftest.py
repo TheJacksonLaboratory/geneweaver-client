@@ -126,16 +126,16 @@ class MockGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
 
     def random(self, ingest_id: str, size: int, count: int = 1) -> DataFrame:
         """Get a random gene expression frame."""
-        randoms: List[Bulk] = []
+        randoms: List[str] = []
 
         for _ in range(count):
             name: str = "s{}".format(round(random.random() * 1000))
             for _ in range(size):
-                r: Bulk = self._random_data_result(name)
+                r: str = "{},{}".format(name, (random.random() * 2) - 1)
                 randoms.append(r)
 
-        ret: List[List[Bulk]] = self._split_list(randoms, size)
-        return [self._frame(r) for r in ret]
+        ret: List[List[str]] = self._split_list(randoms, size)
+        return [self._frame(list(r)) for r in ret]
 
     def _random_data_result(self, name: str) -> Bulk:
         r: Bulk = Bulk()

@@ -10,6 +10,7 @@ import io
 from collections import OrderedDict
 from dataclasses import dataclass, fields
 from enum import Enum
+from io import StringIO
 from typing import List, Mapping, Set
 
 import numpy
@@ -251,11 +252,11 @@ class GeneExpressionDatabaseClient:
         )
         response = self._get(url)
 
-        csvData: List[str] = list(response.text.split("\n"))
+        csv_data: List[str] = list(response.text.split("\n"))
 
         # We return them as one long array which should be faster on the BQ side.
         # Then we split them into sections of size count
-        ret: List[List[str]] = self._split_list(csvData, size)
+        ret: List[List[str]] = self._split_list(csv_data, size)
 
         return [self._frame(r) for r in ret]
 
@@ -264,7 +265,10 @@ class GeneExpressionDatabaseClient:
 
     def _frame(self, randoms: List[str]) -> DataFrame:
         # Make them into a frame.
-        return DataFrame.from_csv(randoms, headers=["indiv_name", "score"])
+        csv_content = "\n".join(randoms) + "\n"
+        csv_content = "{}{}".format("indiv_name,score\n", csv_content)
+        ret: DataFrame = pandas.read_csv(StringIO(csv_content))
+        return ret
 
     def _get_search_url(self) -> str:
         return "{}{}".format(self.url, "/gene/expression/search")
