@@ -10,6 +10,7 @@ import io
 from collections import OrderedDict
 from dataclasses import dataclass, fields
 from enum import Enum
+from io import StringIO
 from typing import List, Mapping, Set
 
 import numpy
@@ -251,28 +252,23 @@ class GeneExpressionDatabaseClient:
         )
         response = self._get(url)
 
-        randoms: List[Bulk] = [
-            self._class_from_args(Bulk, item) for item in response.json()
-        ]
+        csv_data: List[str] = list(response.text.split("\n"))
 
         # We return them as one long array which should be faster on the BQ side.
         # Then we split them into sections of size count
-        ret: List[List[Bulk]] = self._split_list(randoms, size)
+        ret: List[List[str]] = self._split_list(csv_data, size)
 
         return [self._frame(r) for r in ret]
 
-    def _split_list(self, lst: List[Bulk], chunk_size: int) -> List[List[Bulk]]:
+    def _split_list(self, lst: List, chunk_size: int) -> List[List]:
         return list(zip(*[iter(lst)] * chunk_size))
 
-    def _frame(self, randoms: List[Bulk]) -> DataFrame:
+    def _frame(self, randoms: List[str]) -> DataFrame:
         # Make them into a frame.
-        name: str = randoms[0].exprnames[0]
-        rows = []
-        for dr in randoms:
-            row = {"gene_id": dr.geneid, name: dr.exprvalues[0]}
-            rows.append(row)
-
-        return DataFrame(rows)
+        csv_content = "\n".join(randoms) + "\n"
+        csv_content = "{}{}".format("indiv_name,score\n", csv_content)
+        ret: DataFrame = pandas.read_csv(StringIO(csv_content))
+        return ret
 
     def _get_search_url(self) -> str:
         return "{}{}".format(self.url, "/gene/expression/search")
