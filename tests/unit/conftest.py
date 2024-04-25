@@ -2,9 +2,11 @@
 
 import gzip
 import json
+import os
 import random
 from typing import List, Set
 
+import numpy
 import pytest
 from geneweaver.client.gedb import (
     Bulk,
@@ -15,14 +17,18 @@ from geneweaver.client.gedb import (
     SourceType,
 )
 from geneweaver.testing.fixtures import *  # noqa: F403
+from numpy.random import Generator
 from pandas import DataFrame
 from requests.exceptions import HTTPError
-import os
+
 
 @pytest.fixture(scope="session", autouse=True)
 def test_client():
     """Yield a test client for the GEDB."""
     local_server: bool = False  # Should be false for CICD which then mocks
+
+    # IMPORTANT IT IS A GOOD IDEA TO SET THIS TO TRUE and set AUTH_PROXY
+    # in order to check your changes vs. the real expression database.
     cs_server: bool = False  # Should be false for CICD which then mocks
 
     if local_server:
@@ -124,7 +130,7 @@ class MockGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
 
         raise HTTPError("Not mocked!")
 
-    def random(self, ingest_id: str, size: int, count: int = 1) -> DataFrame:
+    def random(self, ingest_id: str, size: int, count: int = 1) -> List[DataFrame]:
         """Get a random gene expression frame."""
         randoms: List[str] = []
 
@@ -136,6 +142,14 @@ class MockGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
 
         ret: List[List[str]] = self._split_list(randoms, size)
         return [self._frame(list(r)) for r in ret]
+
+    def random_spearmanrho(
+        self, ingest_id: str, scores: [float], r_size: int = 1
+    ) -> List[float]:
+        """Mock."""
+        gen: Generator = numpy.random.default_rng()
+        rhos: List[float] = list(gen.random(r_size))
+        return rhos
 
     def _random_data_result(self, name: str) -> Bulk:
         r: Bulk = Bulk()

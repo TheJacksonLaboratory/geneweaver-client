@@ -73,6 +73,15 @@ class DataResult:
     sexes: List[str] = None  # noqa: N815
 
 
+@dataclass
+class NullVarianceRequest:
+    """Simple object for getting spearmanrho variance."""
+
+    id: str = None  # noqa: N815
+    scores: List[float] = None  # noqa: N815
+    rSz: int = 1000  # noqa: N815
+
+
 # TODO Should data access objects go in api?
 @dataclass
 class Metadata:
@@ -260,6 +269,24 @@ class GeneExpressionDatabaseClient:
 
         return [self._frame(r) for r in ret]
 
+    def random_spearmanrho(
+        self, ingest_id: str, scores: List[float], r_size: int = 1
+    ) -> List[float]:
+        """Get a random gene expression frame and process random rhos.
+
+        @param ingest_id: from which we ingested data
+        @param size: size of the geneset
+        """
+        url = self._get_random_spearmanrho_url()
+        nvr: NullVarianceRequest = NullVarianceRequest(
+            id=ingest_id, scores=list(scores), rSz=r_size
+        )
+        response = self._post(url, nvr.__dict__)
+
+        rhos: List[float] = response.json()
+
+        return rhos
+
     def _split_list(self, lst: List, chunk_size: int) -> List[List]:
         return list(zip(*[iter(lst)] * chunk_size))
 
@@ -284,6 +311,9 @@ class GeneExpressionDatabaseClient:
 
     def _get_random_url(self) -> str:
         return "{}{}".format(self.url, "/bulk/random/where/ingest/is")
+
+    def _get_random_spearmanrho_url(self) -> str:
+        return "{}{}".format(self.url, "/bulk/random/spearmanrho/")
 
     def _post(self, url: str, postable_object: dict) -> Response:
 
