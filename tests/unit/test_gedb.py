@@ -1,7 +1,9 @@
 # noqa: D100
 
+import time
 from typing import List, Set
 
+import numpy
 import pytest
 from geneweaver.client.gedb import (
     DataRequest,
@@ -11,6 +13,7 @@ from geneweaver.client.gedb import (
     Sex,
     SourceType,
 )
+from numpy.random import Generator
 from pandas import DataFrame
 from requests.exceptions import HTTPError
 
@@ -42,8 +45,8 @@ class TestOrthologs:
     def test_get_strains(self, test_client: GeneExpressionDatabaseClient):
         """Test get strains."""
         tissues: Set[str] = test_client.distinct("strain")
-        assert "B6" in tissues, "Strains set must contain B6"
-        assert "CAST" in tissues, "Strains set must contain CAST"
+        assert "C57BL/6J" in tissues, "Strains set must contain C57BL/6J"
+        assert "A/J" in tissues, "Strains set must contain A/J"
 
     def test_get_not_there(self, test_client: GeneExpressionDatabaseClient):
         """Test not there."""
@@ -107,9 +110,40 @@ class TestOrthologs:
         """Generate random expression results to be used in rho calculation."""
         metas: List[Metadata] = test_client.get_meta("maxilla")
         ingest_id: str = metas[0].ingestid
-        rand1: List[DataFrame] = test_client.random(ingest_id, 4, 1000)
-        assert len(rand1) == 1000, "The number of frames is {}".format(len(rand1))
+        rand1: List[DataFrame] = test_client.random(ingest_id, 4, 100)
+        assert len(rand1) == 100, "The number of frames is {}".format(len(rand1))
         assert len(rand1[0]) == 4, "The size of the frame is {}".format(len(rand1[0]))
+
+    def test_random_spearmanrho1(self, test_client: GeneExpressionDatabaseClient):
+        """Generate random expression results to be used in rho calculation."""
+        metas: List[Metadata] = test_client.get_meta("maxilla")
+        ingest_id: str = metas[0].ingestid
+
+        gen: Generator = numpy.random.default_rng()
+        gscores: List[float] = list(gen.random(10))
+        rands: List[float] = test_client.random_spearmanrho(
+            ingest_id=ingest_id, scores=gscores, r_size=100
+        )
+        assert len(rands) == 100, "The number of randoms is {}".format(len(rands))
+
+    def test_random_results_time(self, test_client: GeneExpressionDatabaseClient):
+        """Generate random expression results to be used in rho calculation."""
+        metas: List[Metadata] = test_client.get_meta("maxilla")
+        ingest_id: str = metas[0].ingestid
+
+        # These only really make sense when cs_server=True for test_client
+        self._time(lambda g, r: test_client.random(ingest_id, g, r), 10, 10)
+        self._time(lambda g, r: test_client.random(ingest_id, g, r), 10, 100)
+        self._time(lambda g, r: test_client.random(ingest_id, g, r), 10, 1000)
+        self._time(lambda g, r: test_client.random(ingest_id, g, r), 100, 1000)
+        self._time(lambda g, r: test_client.random(ingest_id, g, r), 1000, 1000)
+
+    def _time(self, func, g, r) -> None:
+
+        print("\nRunning {}x{} generation".format(g, r))
+        b4 = time.time()
+        func(g, r)
+        print("\nRandom {}x{} generation time {}s".format(g, r, time.time() - b4))
 
     def _connective_tissue_disorder(
         self, test_client: GeneExpressionDatabaseClient
