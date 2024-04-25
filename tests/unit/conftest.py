@@ -17,7 +17,7 @@ from geneweaver.client.gedb import (
 from geneweaver.testing.fixtures import *  # noqa: F403
 from pandas import DataFrame
 from requests.exceptions import HTTPError
-
+import os
 
 @pytest.fixture(scope="session", autouse=True)
 def test_client():
@@ -40,7 +40,7 @@ def test_client():
         # 2. Make a call, for instance to distinct tissues
         # 3. Press F12 and open developer tools, go to network
         # 4. Copy value of "_oauth2_proxy" and use here
-        auth_proxy = "YOUR_TOKEN"
+        auth_proxy = os.environ.get("AUTH_PROXY", None)
         test_client = GeneExpressionDatabaseClient(
             url="https://geneweaver-dev.jax.org/gedb", auth_proxy=auth_proxy
         )
