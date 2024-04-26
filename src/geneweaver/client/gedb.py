@@ -269,9 +269,10 @@ class GeneExpressionDatabaseClient:
 
         return [self._frame(r) for r in ret]
 
-    def random_spearmanrho(
-        self, ingest_id: str, scores: List[float], r_size: int = 1
-    ) -> List[float]:
+    def random_spearmanrho(self, ingest_id: str, 
+                            scores: List[float], 
+                            r_size: int = 1,
+                            timeout: int = 3600) -> List[float]:
         """Get a random gene expression frame and process random rhos.
 
         @param ingest_id: from which we ingested data
@@ -281,7 +282,7 @@ class GeneExpressionDatabaseClient:
         nvr: NullVarianceRequest = NullVarianceRequest(
             id=ingest_id, scores=list(scores), rSz=r_size
         )
-        response = self._post(url, nvr.__dict__)
+        response = self._post(url, nvr.__dict__, timeout=timeout)
 
         rhos: List[float] = response.json()
 
@@ -315,14 +316,14 @@ class GeneExpressionDatabaseClient:
     def _get_random_spearmanrho_url(self) -> str:
         return "{}{}".format(self.url, "/bulk/random/spearmanrho/")
 
-    def _post(self, url: str, postable_object: dict) -> Response:
+    def _post(self, url: str, postable_object: dict, timeout: int = 3600) -> Response:
 
         cookies = None
         if self.auth_proxy is not None:
             cookies = {"_oauth2_proxy": self.auth_proxy}
 
         with requests.Session() as s:
-            response = s.post(url, None, postable_object, cookies=cookies)
+            response = s.post(url, None, postable_object, cookies=cookies, timeout=timeout)
 
             if not response.ok:
                 response.raise_for_status()
