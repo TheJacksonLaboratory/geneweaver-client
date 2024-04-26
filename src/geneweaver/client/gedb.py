@@ -269,10 +269,9 @@ class GeneExpressionDatabaseClient:
 
         return [self._frame(r) for r in ret]
 
-    def random_spearmanrho(self, ingest_id: str, 
-                            scores: List[float], 
-                            r_size: int = 1,
-                            timeout: int = 3600) -> List[float]:
+    def random_spearmanrho(
+        self, ingest_id: str, scores: List[float], r_size: int = 1, timeout: int = 3600
+    ) -> List[float]:
         """Get a random gene expression frame and process random rhos.
 
         @param ingest_id: from which we ingested data
@@ -323,7 +322,9 @@ class GeneExpressionDatabaseClient:
             cookies = {"_oauth2_proxy": self.auth_proxy}
 
         with requests.Session() as s:
-            response = s.post(url, None, postable_object, cookies=cookies, timeout=timeout)
+            response = s.post(
+                url, None, postable_object, cookies=cookies, timeout=timeout
+            )
 
             if not response.ok:
                 response.raise_for_status()
