@@ -12,6 +12,7 @@ from geneweaver.client.gedb import (
     Metadata,
     Sex,
     SourceType,
+    StrainResult,
 )
 from numpy.random import Generator
 from pandas import DataFrame
@@ -60,6 +61,15 @@ class TestOrthologs:
             len(imputations) == 16425
         ), "The length of the imputations array is {}".format(len(imputations))
 
+    def test_search_strain_expressions(self, test_client: GeneExpressionDatabaseClient):
+        """Test get tissues."""
+        result: List[StrainResult] = self._connective_tissue_disorder_expressions(
+            test_client
+        )
+        assert len(result) == 657, "The length of the imputations array is {}".format(
+            len(result)
+        )
+
     def test_sort_results_by_strain(self, test_client: GeneExpressionDatabaseClient):
         """Test sort results."""
         imputations = self._connective_tissue_disorder(test_client)
@@ -69,23 +79,32 @@ class TestOrthologs:
 
     def test_expression_results(self, test_client: GeneExpressionDatabaseClient):
         """Test sort results into form used by recommender code."""
-        imputations = self._connective_tissue_disorder(test_client)
-        data: List = test_client.sort_for_concordance("strain", imputations)
+        strain_expressions: List[StrainResult] = (
+            self._connective_tissue_disorder_expressions(test_client)
+        )
+
+        data_dict = {sr.strain: sr for sr in strain_expressions}
 
         # By strain=C57BL/6J and indiv_name=s1 should give example table.
-        c57_strain: DataFrame = test_client.frame(data, "C57BL/6J", "s1", Sex.Female)
+        c57_strain: DataFrame = test_client.frame(
+            data_dict, "C57BL/6J", "s1", Sex.Female
+        )
         assert len(c57_strain) == 25, "The size of the frame is {}".format(
             len(c57_strain)
         )
 
         # By strain=BALB/cByJ and indiv_name=s8 should give example table.
-        balb_frame: DataFrame = test_client.frame(data, "BALB/cByJ", "s8", Sex.Female)
+        balb_frame: DataFrame = test_client.frame(
+            data_dict, "BALB/cByJ", "s8", Sex.Female
+        )
         assert len(balb_frame) == 25, "The size of the frame is {}".format(
             len(balb_frame)
         )
 
         # By strain=BXD24/TyJ and indiv_name=s147 should give example table.
-        bxd_frame: DataFrame = test_client.frame(data, "BXH8/TyJ", "s1752", Sex.Both)
+        bxd_frame: DataFrame = test_client.frame(
+            data_dict, "BXH8/TyJ", "s1752", Sex.Both
+        )
         assert len(bxd_frame) == 25, "The size of the frame is {}".format(
             len(bxd_frame)
         )
@@ -161,3 +180,20 @@ class TestOrthologs:
         # This is a larger search size. When connected to a real database
         # it takes about 1.5-2 minutes. This is acceptable performance we think.
         return test_client.search(drequest)
+
+    def _connective_tissue_disorder_expressions(
+        self, test_client: GeneExpressionDatabaseClient
+    ) -> List[StrainResult]:
+        genes = test_client.read_scores(
+            "tests/unit/connective_tissue_disorder_log2fc_test.csv"
+        )
+        drequest = DataRequest(
+            geneIds=list(genes.keys()),
+            strains=["*"],  # All strains if not searching on limited set.
+            sourceType=SourceType.IMPUTED.name,
+            tissue="maxilla",
+        )
+
+        # This is a larger search size. When connected to a real database
+        # it takes about 1.5-2 minutes. This is acceptable performance we think.
+        return test_client.search_expression(drequest)
