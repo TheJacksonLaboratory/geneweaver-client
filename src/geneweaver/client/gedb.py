@@ -74,6 +74,16 @@ class DataResult:
 
 
 @dataclass
+class StrainResult:
+    """Object which contains results for strain search."""
+
+    gene_ids: List[str] = None  # noqa: N815
+    gene_names: List[str] = None  # noqa: N815
+    strain: str = None  # noqa: N815
+    strain_expressions: Mapping[str, List[float]] = None  # noqa: N815
+
+
+@dataclass
 class NullVarianceRequest:
     """Simple object for getting spearmanrho variance."""
 
@@ -151,6 +161,25 @@ class GeneExpressionDatabaseClient:
         # Need to write test to check.
         return [self._class_from_args(DataResult, item) for item in response.json()]
 
+    def search_expression(self, drequest: DataRequest) -> List[StrainResult]:
+        """Do a gene expression search on the Gene Expression Database.
+
+        using fields available in the DataRequest object.
+        This call is the same as search, however it specifically
+        orders the expressions by strain, individual and sex which
+        is the required ordering for concordance calculation.
+
+        @param drequest: The request which we want to make to the client
+        to get results.
+        """
+        url = self._get_search_expression_url()
+
+        response = self._post(url, drequest.__dict__)
+
+        # TODO Not sure if need to deal with typing here.
+        # Need to write test to check.
+        return [self._class_from_args(StrainResult, item) for item in response.json()]
+
     def distinct(self, field: str) -> Set[str]:
         """Get list of unique fields from metadata.
 
@@ -211,44 +240,20 @@ class GeneExpressionDatabaseClient:
 
         return ret
 
-    def sort_for_concordance(
-        self, prop: str, expressions: List[DataResult]
-    ) -> Mapping[str, List]:
-        """Sort the data results by property then group the genes and individual names.
-
-        @param property: String e.g. "strain" to sort by strain
-        @param the raw list of data results returned from a 'search' call.
-        """
-        ret = {}
-        for dr in expressions:
-            pvalue = getattr(dr, prop)
-
-            gene_id = dr.geneIds[0]
-            # Map of values by indiv name
-            indivs = ret.get(pvalue, None)
-            if indivs is None:
-                indivs = {}
-                ret[pvalue] = indivs
-
-            names: List[str] = dr.names
-            values: List[float] = dr.values  # noqa: PD011
-            sexes: List[str] = dr.sexes
-
-            for name, value, sex in zip(names, values, sexes):
-                key = (name, sex)
-                geneset = indivs.get(key)
-                if geneset is None:
-                    geneset = OrderedDict()
-                    indivs[key] = geneset
-
-                geneset[gene_id] = value
-
-        return ret
-
-    def frame(self, data: dict, strain: str, indiv_name: str, sex: Sex) -> DataFrame:
+    def frame(
+        self, data: Mapping[str, StrainResult], strain: str, indiv_name: str, sex: Sex
+    ) -> DataFrame:
         """Convert a dictionary of gene expression to frame."""
-        ar = numpy.array(list(data[strain][(indiv_name, sex.name)].items()))
-        return DataFrame(ar, columns=["gene_id", "expr"])
+        res: StrainResult = data[strain]
+
+        ids: List[str] = res.gene_ids
+        exprs: List[float] = res.strain_expressions[
+            "{}@{}".format(indiv_name, sex.name)
+        ]
+        ret: DataFrame = pandas.DataFrame(
+            {"gene_id": numpy.array(ids), "expr": numpy.array(exprs)}
+        )
+        return ret
 
     def random(self, ingest_id: str, size: int, count: int = 1) -> List[DataFrame]:
         """Get a random gene expression frame.
@@ -299,6 +304,9 @@ class GeneExpressionDatabaseClient:
 
     def _get_search_url(self) -> str:
         return "{}{}".format(self.url, "/gene/expression/search")
+
+    def _get_search_expression_url(self) -> str:
+        return "{}{}".format(self.url, "/gene/expression/search-expression")
 
     def _get_distinct_url(self) -> str:
         return "{}{}".format(self.url, "/meta/distinct")

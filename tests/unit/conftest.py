@@ -3,6 +3,7 @@
 import gzip
 import json
 import os
+import pickle
 import random
 from typing import List, Set
 
@@ -15,6 +16,7 @@ from geneweaver.client.gedb import (
     GeneExpressionDatabaseClient,
     Metadata,
     SourceType,
+    StrainResult,
 )
 from geneweaver.testing.fixtures import *  # noqa: F403
 from numpy.random import Generator
@@ -67,6 +69,16 @@ class MockGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
 
     """
 
+    def __init__(self, url: str = None, auth_proxy: str = None) -> None:
+        """Create a GeneExpressionDatabaseClient from a URL.
+
+        @param url: The optional URL to which we will connect
+        when making gedb server queries.
+        @param auth_proxy: The optional value of a cookie to
+        connect to https version of the API.
+        """
+        super().__init__(url, auth_proxy)
+
     def search(self, drequest: DataRequest):
         """Mock search."""
         if (
@@ -81,6 +93,20 @@ class MockGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
                     self._class_from_args(DataResult, item)
                     for item in json.loads(file_content)
                 ]
+
+        raise HTTPError("Not mocked!")
+
+    def search_expression(self, drequest: DataRequest) -> List[StrainResult]:
+        """Mock search."""
+        if (
+            drequest.sourceType is SourceType.IMPUTED.name
+            and drequest.tissue == "maxilla"
+        ):
+
+            # Read file and return json
+            with open("tests/unit/strain-expressions.pkl", "rb") as f:
+                data: List[StrainResult] = pickle.load(f)
+                return data
 
         raise HTTPError("Not mocked!")
 
