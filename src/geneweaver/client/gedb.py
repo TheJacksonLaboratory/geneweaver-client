@@ -52,10 +52,10 @@ class DataRequest:
     sourcetype: SourceType = None  # noqa: N815
     species: str = None  # noqa: N815
     uberon: str = None  # noqa: N815
-    bucketname: str = None # noqa: N815
-    dataobject: str = None # noqa: N815
-    weightobject: str = None # noqa: N815
-    metaobject: str = None # noqa: N815
+    bucketname: str = None  # noqa: N815
+    dataobject: str = None  # noqa: N815
+    weightobject: str = None  # noqa: N815
+    metaobject: str = None  # noqa: N815
 
 
 # TODO Should data access objects go in api?
@@ -114,10 +114,10 @@ class Metadata:
     sourcetype: SourceType = None  # noqa: N815
     species: str = None  # noqa: N815
     uberon: str = None  # noqa: N815
-    bucketname: str = None # noqa: N815
-    dataobject: str = None # noqa: N815
-    weightobject: str = None # noqa: N815
-    metaobject: str = None # noqa: N815
+    bucketname: str = None  # noqa: N815
+    dataobject: str = None  # noqa: N815
+    weightobject: str = None  # noqa: N815
+    metaobject: str = None  # noqa: N815
 
 
 @dataclass
