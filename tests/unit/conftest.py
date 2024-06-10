@@ -82,7 +82,7 @@ class MockGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
     def search(self, drequest: DataRequest):
         """Mock search."""
         if (
-            drequest.sourcetype is SourceType.IMPUTED.name
+            drequest.sourceType is SourceType.IMPUTED.name
             and drequest.tissue == "maxilla"
         ):
 
@@ -99,7 +99,7 @@ class MockGeneExpressionDatabaseClient(GeneExpressionDatabaseClient):
     def search_expression(self, drequest: DataRequest) -> List[StrainResult]:
         """Mock search."""
         if (
-            drequest.sourcetype is SourceType.IMPUTED.name
+            drequest.sourceType is SourceType.IMPUTED.name
             and drequest.tissue == "maxilla"
         ):
 
