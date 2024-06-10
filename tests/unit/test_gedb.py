@@ -173,7 +173,7 @@ class TestOrthologs:
         drequest = DataRequest(
             geneIds=list(genes.keys()),
             strains=["*"],  # All strains if not searching on limited set.
-            sourceType=SourceType.IMPUTED.name,
+            sourcetype=SourceType.IMPUTED.name,
             tissue="maxilla",
         )
 
@@ -190,7 +190,7 @@ class TestOrthologs:
         drequest = DataRequest(
             geneIds=list(genes.keys()),
             strains=["*"],  # All strains if not searching on limited set.
-            sourceType=SourceType.IMPUTED.name,
+            sourcetype=SourceType.IMPUTED.name,
             tissue="maxilla",
         )
 
