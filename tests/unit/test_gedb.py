@@ -190,7 +190,7 @@ class TestOrthologs:
         drequest = DataRequest(
             geneIds=list(genes.keys()),
             strains=["*"],  # All strains if not searching on limited set.
-            sourcetype=SourceType.IMPUTED.name,
+            sourceType=SourceType.IMPUTED.name,
             tissue="maxilla",
         )
 
