@@ -48,8 +48,8 @@ class DataRequest:
 
     geneIds: List[str] = None  # noqa: N815
     strains: List[str] = None  # noqa: N815
-    sourceType: SourceType = None  # noqa: N815
     tissue: str = None  # noqa: N815
+    sourceType: SourceType = None  # noqa: N815
 
 
 # TODO Should data access objects go in api?
@@ -105,9 +105,13 @@ class Metadata:
     modelversion: str = None  # noqa: N815
     population: str = None  # noqa: N815
     tissue: str = None  # noqa: N815
-    sourceType: SourceType = None  # noqa: N815
+    sourcetype: SourceType = None  # noqa: N815
     species: str = None  # noqa: N815
     uberon: str = None  # noqa: N815
+    bucketname: str = None  # noqa: N815
+    dataobject: str = None  # noqa: N815
+    weightobject: str = None  # noqa: N815
+    metaobject: str = None  # noqa: N815
 
 
 @dataclass
