@@ -50,6 +50,7 @@ class DataRequest:
     strains: List[str] = None  # noqa: N815
     tissue: str = None  # noqa: N815
     sourceType: SourceType = None  # noqa: N815
+    sexes: List[str] = None  # noqa: N815
 
 
 # TODO Should data access objects go in api?
@@ -99,8 +100,22 @@ class Metadata:
 
     The Metadata is available for various properties by searching
     the database.
+    
+    Example:
+    {
+        "ingestid":"efb7dc30-f529-441c-bfc5-97876e3536ba",
+        "modelversion":"ridge_v1_2_1",
+        "population":"GenomeMUSter_v2",
+        "tissue":"maxilla",
+        "sourcetype":"IMPUTED",
+        "species":"Mus musculus",
+        "uberon":"0002397",
+        "bucketname":"jax-compsci-nc-dev-01-gene-expression-dev",
+        "dataobject":"imputed/imputed_maxilla_ridge_v1_2_1-data.tsv.gz",
+        "weightobject":"imputed/imputed_maxilla_ridge_v1_2_1-weight.tsv.gz",
+        "metaobject":"imputed/imputed_maxilla_ridge_v1_2_1-meta.tsv"
+    }
     """
-
     ingestid: str = None  # noqa: N815
     modelversion: str = None  # noqa: N815
     population: str = None  # noqa: N815
