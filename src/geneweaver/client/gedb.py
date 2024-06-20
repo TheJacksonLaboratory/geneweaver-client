@@ -100,8 +100,9 @@ class Metadata:
 
     The Metadata is available for various properties by searching
     the database.
-    
+
     Example:
+    -------
     {
         "ingestid":"efb7dc30-f529-441c-bfc5-97876e3536ba",
         "modelversion":"ridge_v1_2_1",
@@ -115,7 +116,9 @@ class Metadata:
         "weightobject":"imputed/imputed_maxilla_ridge_v1_2_1-weight.tsv.gz",
         "metaobject":"imputed/imputed_maxilla_ridge_v1_2_1-meta.tsv"
     }
+
     """
+
     ingestid: str = None  # noqa: N815
     modelversion: str = None  # noqa: N815
     population: str = None  # noqa: N815
