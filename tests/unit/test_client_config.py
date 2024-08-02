@@ -19,9 +19,9 @@ def test_client_settings_schema():
 #  a fixture so that we can override which .env files to use for testing.
 def test_client_settings_default():
     """Test the Settings class."""
-    assert settings.API_HOST == "https://geneweaver-prod.jax.org"
+    assert settings.API_HOST == "https://geneweaver.jax.org"
     assert settings.API_PATH == "/api"
-    assert settings.API_URL == "https://geneweaver-prod.jax.org/api"
+    assert settings.API_URL == "https://geneweaver.jax.org/api"
     # TODO: See comment above.
     # assert settings.API_KEY is None
 

@@ -1,47 +1,44 @@
 """GeneWeaver Client configuration module."""
 
-from typing import Optional, Type
+from typing import List, Optional
 
-from pydantic import BaseSettings, validator
+from pydantic import model_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing_extensions import Self
 
 
 class Settings(BaseSettings):
     """Settings class for GeneWeaver Client."""
 
-    AUTH_DOMAIN = "geneweaver.auth0.com"
-    AUTH_CLIENT_ID = "tvcvnbBJQr15jFds8ZkwgHoqRJ0IuGJC"
-    AUTH_ALGORITHMS = ["RS256"]
-    AUTH_SCOPES = ["openid", "profile", "email", "offline_access"]
+    AUTH_DOMAIN: str = "geneweaver.auth0.com"
+    AUTH_CLIENT_ID: str = "tvcvnbBJQr15jFds8ZkwgHoqRJ0IuGJC"
+    AUTH_ALGORITHMS: List[str] = ["RS256"]
+    AUTH_SCOPES: List[str] = ["openid", "profile", "email", "offline_access"]
 
-    API_HOST: str = "https://geneweaver-prod.jax.org"
+    API_HOST: str = "https://geneweaver.jax.org"
     API_PATH: str = "/api"
+    AON_API_PATH: str = "/api/api"
 
     API_URL: Optional[str] = None
+    AON_API_URL: Optional[str] = None
 
     GEDB: Optional[str] = None
 
-    @validator("API_URL")
-    def validate_api_url(
-        cls: Type["Settings"], v: Optional[str], values: dict  # noqa: N805
-    ) -> str:
-        """Construct the API URL if not explicitly set."""
-        if not v:
-            return values["API_HOST"] + values["API_PATH"]
-        return v
-
     API_KEY: Optional[str] = None
 
-    @validator("GEDB")
-    def validate_gedb_url(
-        cls: Type["Settings"], v: Optional[str], values: dict  # noqa: N805
-    ) -> str:
-        """Construct the GEDB if not explicitly set."""
-        if not v:
-            return values["API_HOST"] + "/gedb"
-        return v
+    @model_validator(mode="after")
+    def assemble_api_urls(self) -> Self:
+        """Build the API URLs."""
+        if not self.API_URL:
+            self.API_URL = self.API_HOST + self.API_PATH
+        if not self.AON_API_URL:
+            self.AON_API_URL = self.API_HOST + self.AON_API_PATH
+        if not self.GEDB:
+            self.GEDB = self.API_HOST + "/gedb"
+        return self
 
-    class Config:
-        """Settings configuration."""
-
-        env_file = ".env"
-        env_prefix = "GW_CLIENT_"
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        case_sensitive=False,
+        extra="ignore",
+    )
