@@ -28,6 +28,36 @@ def get(
     return resp.json()
 
 
+def get_values(
+    access_token: str,
+    geneset_id: int,
+    gene_id_type: Optional[GeneIdentifier] = None,
+    in_threshold: Optional[bool] = None,
+) -> dict:
+    """Get a Geneset's values by the Geneset ID.
+
+    :param access_token: User access token
+    :param geneset_id: Geneset ID (without the "GS" prefix).
+    :param gene_id_type: Gene ID type (one of GeneIdentifier).
+    :param in_threshold: Whether to filter genes by threshold.
+
+    :return: Geneset dict.
+    """
+    params = {}
+
+    if gene_id_type is not None:
+        params["gene_id_type"] = int(gene_id_type)
+    if in_threshold is not None:
+        params["in_threshold"] = in_threshold
+
+    with sessionmanager(token=access_token) as session:
+        resp = session.get(
+            format_endpoint(ENDPOINT + f"/{geneset_id}/values"),
+            params=params,
+        )
+    return resp.json()
+
+
 def get_genesets(access_token: str) -> list:
     """Get all visible genesets.
 
