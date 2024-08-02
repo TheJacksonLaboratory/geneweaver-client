@@ -13,7 +13,8 @@ from geneweaver.client.utils.cli.prompt.list import (
     is_list_of_str_or_int,
     prompt_for_list_selection,
 )
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+from pydantic.fields import FieldInfo
 
 
 def is_pydantic_base_model(arg: Type[Any]) -> bool:
@@ -52,7 +53,7 @@ def prompt_to_keep_field(existing_kwargs: dict, field_name: str) -> dict:
 
 
 def prompt_for_field_by_type(
-    field: Field, field_name: str, existing_kwargs: dict
+    field: FieldInfo, field_name: str, existing_kwargs: dict
 ) -> dict:
     """Prompt the user to enter a value for a field based on its type.
 
@@ -60,24 +61,25 @@ def prompt_for_field_by_type(
     :param field_name: The name of the field to prompt for.
     :param existing_kwargs: The existing kwargs to use as defaults.
     """
-    field_type = field.outer_type_ if field.outer_type_ else str
+    field_type = field.annotation if field.annotation else str
+    field_allow_none = field.default is None
     if is_pydantic_base_model(field_type):
         existing_kwargs[field_name] = prompt_for_missing_fields(
             field_type, existing_kwargs
         )
     elif is_enum_or_enum_union(field_type):
         existing_kwargs[field_name] = prompt_for_enum_selection(
-            field_type, field.allow_none
+            field_type, field_allow_none
         )
     elif is_list_of_str_or_int(field_type):
         existing_kwargs[field_name] = prompt_for_list_selection(
-            field_type, field.allow_none
+            field_type, field_allow_none
         )
     elif is_bool(field_type):
-        existing_kwargs[field_name] = prompt_for_bool(field_name, field.allow_none)
+        existing_kwargs[field_name] = prompt_for_bool(field_name, field_allow_none)
     else:
         existing_kwargs[field_name] = prompt_generic(
-            field_name, field_type, field.allow_none
+            field_name, field_type, field_allow_none
         )
     return existing_kwargs
 
@@ -96,7 +98,7 @@ def prompt_for_missing_fields(
     :param prompt_to_keep_existing: Whether to prompt the user to keep existing
     :return: A dictionary of kwargs for the model.
     """
-    for field_name, field in model.__fields__.items():
+    for field_name, field_info in model.model_fields.items():
         if exclude and field_name in exclude:
             continue
 
@@ -104,6 +106,6 @@ def prompt_for_missing_fields(
             prompt_to_keep_field(existing_kwargs, field_name)
 
         if field_name not in existing_kwargs:
-            prompt_for_field_by_type(field, field_name, existing_kwargs)
+            prompt_for_field_by_type(field_info, field_name, existing_kwargs)
 
     return existing_kwargs

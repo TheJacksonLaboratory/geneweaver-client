@@ -33,16 +33,16 @@ class MockInternalModel(BaseModel):
     bool_field: bool
 
     int_field: int
-    int_field_optional: Optional[int]
+    int_field_optional: Optional[int] = None
 
     float_field: float
-    float_field_optional: Optional[float]
+    float_field_optional: Optional[float] = None
 
     str_field: str
-    str_field_optional: Optional[str]
+    str_field_optional: Optional[str] = None
 
     list_str_field: List[str]
-    list_str_field_optional: Optional[List[str]]
+    list_str_field_optional: Optional[List[str]] = None
     list_union_field: List[Union[str, int]]
 
 
@@ -50,7 +50,7 @@ class MockModel(MockInternalModel):
     """Mock model for testing."""
 
     sub_model: MockInternalModel
-    sub_model_optional: Optional[MockInternalModel]
+    sub_model_optional: Optional[MockInternalModel] = None
 
 
 MOCK_INTERNAL_MODEL_EXAMPLE_INSTANCE = MockInternalModel(
@@ -71,7 +71,7 @@ MOCK_INTERNAL_MODEL_EXAMPLE_INSTANCE = MockInternalModel(
 
 MOCK_MODEL_EXAMPLE_INSTANCE = MockModel(
     sub_model=MOCK_INTERNAL_MODEL_EXAMPLE_INSTANCE,
-    **MOCK_INTERNAL_MODEL_EXAMPLE_INSTANCE.dict(),
+    **MOCK_INTERNAL_MODEL_EXAMPLE_INSTANCE.model_dump(),
 )
 
 MOCK_MODEL_FIELDS = [field_name for field_name in MockModel.__fields__.keys()]
