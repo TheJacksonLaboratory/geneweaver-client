@@ -58,6 +58,14 @@ def get_values_as_ensembl_mouse(
         result = response["data"]
 
     else:
+        # TODO!
+        # When a human gene maps to multiple mouse genes, there should be a row for each
+        # of those mouse ids to be included, and therefore the score will be the same
+        # for all of those.
+        #
+        # When multiple human genes map to the same mouse gene, we want to keep the
+        # gene that has the highest abs(score).
+
         aon_response = aon.ortholog_mapping(
             [g["symbol"] for g in response["data"]], Species.MUS_MUSCULUS
         )
