@@ -7,6 +7,7 @@ from typing import List, Optional
 import typer
 from geneweaver.client.api import aon, genes, genesets
 from geneweaver.client.auth import get_access_token
+from geneweaver.client.utils.aon import map_symbols
 from geneweaver.client.utils.cli.print.csv import format_csv
 from geneweaver.core.enum import GeneIdentifier, Species
 
@@ -39,6 +40,9 @@ def get_values_as_ensembl_mouse(
     ctx: typer.Context,
     geneset_id: int,
     in_threshold: Optional[bool] = None,
+    algorithm: Optional[aon.OrthologAlgorithms] = typer.Option(
+        default=None, help="Ortholog mapping algorithm. Leave empty for all algorithms."
+    ),
     as_csv: bool = typer.Option(False, "--csv", help="Output as CSV"),
 ) -> List[dict]:
     """Get a Geneset's values as Ensembl Mouse Gene IDs."""
@@ -65,43 +69,47 @@ def get_values_as_ensembl_mouse(
         #
         # When multiple human genes map to the same mouse gene, we want to keep the
         # gene that has the highest abs(score).
+        if algorithm:
+            algorithm_id = aon.algorithm_id_from_name(algorithm.value)
+        else:
+            algorithm_id = None
 
         aon_response = aon.ortholog_mapping(
-            [g["symbol"] for g in response["data"]], Species.MUS_MUSCULUS
+            [g["symbol"] for g in response["data"]],
+            Species.MUS_MUSCULUS,
+            algorithm_id=algorithm_id,
         )
 
-        to_mgi_map = {i["from_gene"]: i["to_gene"] for i in aon_response}
-
-        mgi_symbols = [
-            to_mgi_map[g["symbol"]]
-            for g in response["data"]
-            if g["symbol"] in to_mgi_map
-        ]
+        mgi_result = map_symbols(
+            {item["symbol"]: item["value"] for item in response["data"]}, aon_response
+        )
 
         gw_map_response = genes.mappings(
-            token, mgi_symbols, GeneIdentifier.ENSEMBLE_GENE, Species.MUS_MUSCULUS
+            token,
+            list(set(mgi_result.keys())),
+            GeneIdentifier.ENSEMBLE_GENE,
+            Species.MUS_MUSCULUS,
         )
 
-        mgi_to_ensembl = {
-            v["original_ref_id"]: v["mapped_ref_id"]
-            for v in gw_map_response["gene_ids_map"]
-        }
-
-        orig_to_ensembl = {
-            g["symbol"]: mgi_to_ensembl[to_mgi_map[g["symbol"]]]
-            for g in response["data"]
-            if g["symbol"] in to_mgi_map and to_mgi_map[g["symbol"]] in mgi_to_ensembl
-        }
-
-        result = [
-            {"symbol": orig_to_ensembl[g["symbol"]], "value": g["value"]}
-            for g in response["data"]
-            if g["symbol"] in orig_to_ensembl
+        ensembl_mapping = [
+            {"from_gene": g["original_ref_id"], "to_gene": g["mapped_ref_id"]}
+            for g in gw_map_response["gene_ids_map"]
         ]
+
+        ensembl_result = map_symbols(mgi_result, ensembl_mapping)
+
+        result = [{"symbol": k, "value": v} for k, v in ensembl_result.items()]
 
     if as_csv:
         result = format_csv(result)
 
-    typer.echo(result)
+    if not ctx.obj["quiet"]:
+        if not as_csv:
+            if ctx.obj["pretty"]:
+                typer.echo(json.dumps(result, indent=4))
+            else:
+                typer.echo(json.dumps(result))
+        else:
+            typer.echo(result)
 
     return result
