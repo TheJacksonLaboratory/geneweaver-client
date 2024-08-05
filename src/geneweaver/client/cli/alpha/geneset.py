@@ -62,13 +62,6 @@ def get_values_as_ensembl_mouse(
         result = response["data"]
 
     else:
-        # TODO!
-        # When a human gene maps to multiple mouse genes, there should be a row for each
-        # of those mouse ids to be included, and therefore the score will be the same
-        # for all of those.
-        #
-        # When multiple human genes map to the same mouse gene, we want to keep the
-        # gene that has the highest abs(score).
         if algorithm:
             algorithm_id = aon.algorithm_id_from_name(algorithm.value)
         else:
@@ -81,7 +74,8 @@ def get_values_as_ensembl_mouse(
         )
 
         mgi_result = map_symbols(
-            {item["symbol"]: item["value"] for item in response["data"]}, aon_response
+            {item["symbol"]: item["value"] for item in response["data"]},
+            [(r['from_gene'], r['to_gene']) for r in aon_response]
         )
 
         gw_map_response = genes.mappings(
@@ -91,12 +85,11 @@ def get_values_as_ensembl_mouse(
             Species.MUS_MUSCULUS,
         )
 
-        ensembl_mapping = [
-            {"from_gene": g["original_ref_id"], "to_gene": g["mapped_ref_id"]}
-            for g in gw_map_response["gene_ids_map"]
-        ]
-
-        ensembl_result = map_symbols(mgi_result, ensembl_mapping)
+        ensembl_result = map_symbols(
+            mgi_result,
+            [(r["original_ref_id"], r["mapped_ref_id"])
+             for r in gw_map_response["gene_ids_map"]]
+        )
 
         result = [{"symbol": k, "value": v} for k, v in ensembl_result.items()]
 
