@@ -75,7 +75,7 @@ def get_values_as_ensembl_mouse(
 
         mgi_result = map_symbols(
             {item["symbol"]: item["value"] for item in response["data"]},
-            [(r['from_gene'], r['to_gene']) for r in aon_response]
+            [(r["from_gene"], r["to_gene"]) for r in aon_response],
         )
 
         gw_map_response = genes.mappings(
@@ -87,8 +87,10 @@ def get_values_as_ensembl_mouse(
 
         ensembl_result = map_symbols(
             mgi_result,
-            [(r["original_ref_id"], r["mapped_ref_id"])
-             for r in gw_map_response["gene_ids_map"]]
+            [
+                (r["original_ref_id"], r["mapped_ref_id"])
+                for r in gw_map_response["gene_ids_map"]
+            ],
         )
 
         result = [{"symbol": k, "value": v} for k, v in ensembl_result.items()]

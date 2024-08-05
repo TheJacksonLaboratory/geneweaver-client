@@ -1,15 +1,14 @@
 """Utilities for AON interaction."""
-from typing import List, Tuple, Dict, Union, TypeVar
+
 from collections.abc import Hashable
+from typing import Dict, List, Tuple, TypeVar, Union
 
-
-Number = TypeVar('Number', bound=Union[int, float])
-T = TypeVar('T', bound=Hashable)
+Number = TypeVar("Number", bound=Union[int, float])
+T = TypeVar("T", bound=Hashable)
 
 
 def map_symbols(
-        original: Dict[T, Number],
-        mappings: List[Tuple[T, T]]
+    original: Dict[T, Number], mappings: List[Tuple[T, T]]
 ) -> Dict[T, Number]:
     """Map gene symbols using a list of mappings.
 
@@ -34,7 +33,7 @@ def map_symbols(
         try:
             value = original[source]
         except KeyError:
-           continue
+            continue
 
         if target not in mapped_values or abs(value) > abs(mapped_values[target]):
             mapped_values[target] = value
