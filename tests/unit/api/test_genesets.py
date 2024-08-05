@@ -58,3 +58,23 @@ def test_get_genesets():
             mock_sessionmanager.return_value.__enter__.return_value.get.return_value.json.call_count
             == 1
         )
+
+
+def test_get_values():
+    """Test the get_values function."""
+    with patch("geneweaver.client.api.genesets.sessionmanager") as mock_sessionmanager:
+        (
+            mock_sessionmanager.return_value.__enter__.return_value.get.return_value.json.return_value
+        ) = {"data": [{"gene1": 1.0}, {"gene2": 2.0}]}
+        result = genesets.get_values("fake_access_token", 123)
+        assert "data" in result
+        assert len(result["data"]) == 2
+        assert result["data"][0]["gene1"] == 1.0
+        assert result["data"][1]["gene2"] == 2.0
+        assert (
+            mock_sessionmanager.return_value.__enter__.return_value.get.call_count == 1
+        )
+        assert (
+            mock_sessionmanager.return_value.__enter__.return_value.get.return_value.json.call_count
+            == 1
+        )

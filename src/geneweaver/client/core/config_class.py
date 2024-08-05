@@ -17,7 +17,7 @@ class Settings(BaseSettings):
 
     API_HOST: str = "https://geneweaver.jax.org"
     API_PATH: str = "/api"
-    AON_API_PATH: str = "/api/api"
+    AON_API_PATH: str = "/aon/api"
 
     API_URL: Optional[str] = None
     AON_API_URL: Optional[str] = None
