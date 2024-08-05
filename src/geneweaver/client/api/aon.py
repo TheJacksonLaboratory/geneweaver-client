@@ -9,6 +9,8 @@ from geneweaver.core.enum import Species
 
 
 class OrthologAlgorithms(Enum):
+    """The available ortholog algorithms in Geneweaver AON."""
+
     HGNC = "HGNC"
     PANTHER = "PANTHER"
     HIERANOID = "Hieranoid"
