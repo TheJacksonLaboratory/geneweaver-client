@@ -19,7 +19,7 @@ class OrthologAlgorithms(Enum):
     INPARANOID = "InParanoid"
     ORTHOFINDER = "OrthoFinder"
     ZFIN = "ZFIN"
-    ENSEMBL_COMPARA = "Ensembl Compara"
+    ENSEMBLCOMPARA = "EnsemblCompara"
     SONICPARANOID = "SonicParanoid"
     OMA = "OMA"
     XENBASE = "Xenbase"
