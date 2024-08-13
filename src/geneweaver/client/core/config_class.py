@@ -10,8 +10,8 @@ from typing_extensions import Self
 class Settings(BaseSettings):
     """Settings class for GeneWeaver Client."""
 
-    AUTH_DOMAIN: str = "geneweaver.auth0.com"
-    AUTH_CLIENT_ID: str = "tvcvnbBJQr15jFds8ZkwgHoqRJ0IuGJC"
+    AUTH_DOMAIN: str = "thejacksonlaboratory.auth0.com"
+    AUTH_CLIENT_ID: str = "f8QZPcIrPIG6DIeWR2Rr3C8X5bzx8zBz"
     AUTH_ALGORITHMS: List[str] = ["RS256"]
     AUTH_SCOPES: List[str] = ["openid", "profile", "email", "offline_access"]
 
