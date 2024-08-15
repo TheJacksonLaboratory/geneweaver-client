@@ -2,7 +2,7 @@
 
 import typer
 from geneweaver.client import auth
-from geneweaver.client.auth import get_access_token, get_id_token
+from geneweaver.client.auth import get_access_token, get_id_token, refresh_token
 from geneweaver.client.exceptions import AuthenticationError
 
 cli = typer.Typer()
@@ -27,6 +27,12 @@ def _login(reauth: bool = typer.Option(False, "--reauth")) -> None:  # noqa: B00
     except AuthenticationError as e:
         print(e)
         raise typer.Exit(code=1) from e
+
+
+@cli.command(name="refresh")
+def _refresh() -> None:
+    """Refresh the access token. Should usually happen automatically."""
+    refresh_token()
 
 
 @cli.command()
