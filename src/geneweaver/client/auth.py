@@ -72,7 +72,10 @@ def access_token_expired(access_token: str) -> bool:
         jwt.decode(
             token_data["access_token"],
             algorithms=settings.AUTH_ALGORITHMS,
-            options={"verify_signature": False},
+            options={
+            "verify_signature": False,
+            "verify_exp": True,
+        },
         )
         return False
     except jwt.ExpiredSignatureError:
@@ -108,6 +111,7 @@ def current_user(id_token: str) -> Dict[str, str]:
 def _device_code_payload() -> Dict[str, str]:
     return {
         "client_id": settings.AUTH_CLIENT_ID,
+        "audience": "https://cube.jax.org",
         "scope": " ".join(settings.AUTH_SCOPES),
     }
 

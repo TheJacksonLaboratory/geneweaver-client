@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     AUTH_CLIENT_ID: str = "f8QZPcIrPIG6DIeWR2Rr3C8X5bzx8zBz"
     AUTH_ALGORITHMS: List[str] = ["RS256"]
     AUTH_SCOPES: List[str] = ["openid", "profile", "email", "offline_access"]
+    AUTH_AUDIENCE: str = "https://cube.jax.org"
 
     API_HOST: str = "https://geneweaver.jax.org"
     API_PATH: str = "/api"
