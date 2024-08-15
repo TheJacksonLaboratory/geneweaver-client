@@ -28,10 +28,12 @@ def _login(reauth: bool = typer.Option(False, "--reauth")) -> None:  # noqa: B00
         print(e)
         raise typer.Exit(code=1) from e
 
+
 @cli.command(name="refresh")
 def _refresh() -> None:
     """Refresh the access token. Should usually happen automatically."""
     refresh_token()
+
 
 @cli.command()
 def print_access_token() -> None:

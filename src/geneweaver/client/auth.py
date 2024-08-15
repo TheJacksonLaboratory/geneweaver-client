@@ -73,9 +73,9 @@ def access_token_expired(access_token: str) -> bool:
             token_data["access_token"],
             algorithms=settings.AUTH_ALGORITHMS,
             options={
-            "verify_signature": False,
-            "verify_exp": True,
-        },
+                "verify_signature": False,
+                "verify_exp": True,
+            },
         )
         return False
     except jwt.ExpiredSignatureError:
