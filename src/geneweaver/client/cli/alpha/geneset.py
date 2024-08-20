@@ -43,7 +43,7 @@ def get_values_as_ensembl_mouse(
         default=None, help="Ortholog mapping algorithm. Leave empty for all algorithms."
     ),
     as_csv: bool = typer.Option(False, "--csv", help="Output as CSV"),
-    csv_headers: bool = typer.Option(True, "--omit_headers", help="Omit CSV headers"),
+    csv_headers: bool = typer.Option(True, "--omit-headers", help="Omit CSV headers"),
 ) -> List[dict]:
     """Get a Geneset's values as Ensembl Mouse Gene IDs.
 
