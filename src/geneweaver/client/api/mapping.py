@@ -33,7 +33,10 @@ def ensembl_mouse_mapping(
     response = genesets.get_values(access_token, geneset_id, gene_id_type, in_threshold)
 
     if species == Species.MUS_MUSCULUS:
-        result = response["data"]
+        result = [
+            {"gene_id": item["symbol"], "score": item["value"]}
+            for item in response["data"]
+        ]
 
     else:
         if algorithm:
@@ -67,6 +70,6 @@ def ensembl_mouse_mapping(
             ],
         )
 
-        result = [{"symbol": k, "value": v} for k, v in ensembl_result.items()]
+        result = [{"gene_id": k, "score": v} for k, v in ensembl_result.items()]
 
     return result

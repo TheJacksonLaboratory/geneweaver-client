@@ -43,8 +43,12 @@ def get_values_as_ensembl_mouse(
         default=None, help="Ortholog mapping algorithm. Leave empty for all algorithms."
     ),
     as_csv: bool = typer.Option(False, "--csv", help="Output as CSV"),
+    csv_headers: bool = typer.Option(True, "--omit-headers", help="Omit CSV headers"),
 ) -> List[dict]:
-    """Get a Geneset's values as Ensembl Mouse Gene IDs."""
+    """Get a Geneset's values as Ensembl Mouse Gene IDs.
+
+    Optional csv output with or without headers.
+    """
     # Check Geneset Species
     token = get_access_token()
     result = mapping.ensembl_mouse_mapping(
@@ -55,7 +59,7 @@ def get_values_as_ensembl_mouse(
     )
 
     if as_csv:
-        result = format_csv(result)
+        result = format_csv(result, with_header=csv_headers)
 
     if not ctx.obj["quiet"]:
         if not as_csv:

@@ -53,13 +53,16 @@ def test_ensembl_mouse_mapping(
     assert mock_genesets_get_values.call_count == 1
 
     if species_id == 1:
-        assert result == [{"symbol": "A", "value": "1"}, {"symbol": "B", "value": "2"}]
+        assert result == [
+            {"gene_id": "A", "score": "1"},
+            {"gene_id": "B", "score": "2"},
+        ]
         expected_api_calls, expected_mapping_calls = 0, 0
 
     else:
         assert result == [
-            {"symbol": "A2", "value": "1"},
-            {"symbol": "B2", "value": "2"},
+            {"gene_id": "A2", "score": "1"},
+            {"gene_id": "B2", "score": "2"},
         ]
         expected_api_calls, expected_mapping_calls = 1, 2
 
