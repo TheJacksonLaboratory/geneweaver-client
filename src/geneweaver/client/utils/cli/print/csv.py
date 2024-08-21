@@ -17,7 +17,7 @@ def format_csv(data: List[Dict[str, Any]], with_header: bool = False) -> str:
         return ""
 
     csv_data = io.StringIO()
-    writer = csv.DictWriter(csv_data, fieldnames=data[0].keys())
+    writer = csv.DictWriter(csv_data, fieldnames=data[0].keys(), lineterminator="\n")
     if with_header:
         writer.writeheader()
     writer.writerows(data)
