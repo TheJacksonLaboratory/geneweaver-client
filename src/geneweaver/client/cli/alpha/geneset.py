@@ -68,6 +68,6 @@ def get_values_as_ensembl_mouse(
             else:
                 typer.echo(json.dumps(result))
         else:
-            typer.echo(result)
+            typer.echo(result, nl=False)
 
     return result
