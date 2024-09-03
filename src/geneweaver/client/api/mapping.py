@@ -32,8 +32,10 @@ def ensembl_mouse_mapping(
     if species != Species.MUS_MUSCULUS:
         try:
             gene_id_type = AON_ID_TYPE_FOR_SPECIES[species]
-        except KeyError:
-            raise ValueError(f"Species {species} is not supported for ortholog mapping")
+        except KeyError as e:
+            raise ValueError(
+                f"Species {species} is not supported for ortholog mapping"
+            ) from e
 
     response = genesets.get_values(access_token, geneset_id, gene_id_type, in_threshold)
     if species == Species.MUS_MUSCULUS:

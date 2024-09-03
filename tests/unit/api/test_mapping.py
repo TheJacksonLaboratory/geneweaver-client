@@ -8,7 +8,6 @@ from geneweaver.client.api.aon import OrthologAlgorithms
 from geneweaver.core.enum import Species
 from geneweaver.core.mapping import AON_ID_TYPE_FOR_SPECIES
 
-
 SUPPORTED_AON_SP_IDS = [int(species) for species in AON_ID_TYPE_FOR_SPECIES.keys()]
 
 
@@ -77,7 +76,7 @@ def test_ensembl_mouse_mapping(
         assert mock_aon_map_symbols.call_count == expected_mapping_calls
 
     else:
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="not supported for ortholog mapping"):
             mapping.ensembl_mouse_mapping(
                 "fake_access_token", 123, True, OrthologAlgorithms.HGNC
             )
