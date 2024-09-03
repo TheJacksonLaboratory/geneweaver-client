@@ -6,10 +6,14 @@ import pytest
 from geneweaver.client.api import mapping
 from geneweaver.client.api.aon import OrthologAlgorithms
 from geneweaver.core.enum import Species
+from geneweaver.core.mapping import AON_ID_TYPE_FOR_SPECIES
+
+SUPPORTED_AON_SP_IDS = [int(species) for species in AON_ID_TYPE_FOR_SPECIES.keys()]
 
 
 @pytest.mark.parametrize("species_id", [int(species) for species in Species])
 @pytest.mark.parametrize("algorithm", [algorithm for algorithm in OrthologAlgorithms])
+@patch("geneweaver.client.api.mapping.insert_colon_delimiter", lambda x: x)
 @patch("geneweaver.client.api.mapping.genesets.get")
 @patch("geneweaver.client.api.mapping.genesets.get_values")
 @patch("geneweaver.client.api.mapping.aon.algorithm_id_from_name")
@@ -45,28 +49,34 @@ def test_ensembl_mouse_mapping(
 
     mock_aon_map_symbols.side_effect = [{"A1": "1", "B1": "2"}, {"A2": "1", "B2": "2"}]
 
-    result = mapping.ensembl_mouse_mapping(
-        "fake_access_token", 123, True, OrthologAlgorithms.HGNC
-    )
+    if species_id in SUPPORTED_AON_SP_IDS:
+        result = mapping.ensembl_mouse_mapping(
+            "fake_access_token", 123, True, OrthologAlgorithms.HGNC
+        )
+        assert mock_genesets_get.call_count == 1
+        assert mock_genesets_get_values.call_count == 1
 
-    assert mock_genesets_get.call_count == 1
-    assert mock_genesets_get_values.call_count == 1
+        if species_id == 1:
+            assert result == [
+                {"gene_id": "A", "score": "1"},
+                {"gene_id": "B", "score": "2"},
+            ]
+            expected_api_calls, expected_mapping_calls = 0, 0
 
-    if species_id == 1:
-        assert result == [
-            {"gene_id": "A", "score": "1"},
-            {"gene_id": "B", "score": "2"},
-        ]
-        expected_api_calls, expected_mapping_calls = 0, 0
+        else:
+            assert result == [
+                {"gene_id": "A2", "score": "1"},
+                {"gene_id": "B2", "score": "2"},
+            ]
+            expected_api_calls, expected_mapping_calls = 1, 2
+
+        assert mock_aon_algorithm_id_from_name.call_count == expected_api_calls
+        assert mock_aon_ortholog_mapping.call_count == expected_api_calls
+        assert mock_genes_mappings.call_count == expected_api_calls
+        assert mock_aon_map_symbols.call_count == expected_mapping_calls
 
     else:
-        assert result == [
-            {"gene_id": "A2", "score": "1"},
-            {"gene_id": "B2", "score": "2"},
-        ]
-        expected_api_calls, expected_mapping_calls = 1, 2
-
-    assert mock_aon_algorithm_id_from_name.call_count == expected_api_calls
-    assert mock_aon_ortholog_mapping.call_count == expected_api_calls
-    assert mock_genes_mappings.call_count == expected_api_calls
-    assert mock_aon_map_symbols.call_count == expected_mapping_calls
+        with pytest.raises(ValueError, match="not supported for ortholog mapping"):
+            mapping.ensembl_mouse_mapping(
+                "fake_access_token", 123, True, OrthologAlgorithms.HGNC
+            )
