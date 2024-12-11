@@ -25,7 +25,7 @@ def ensembl_mouse_mapping(
     :return: List of geneset values. `[{"symbol": k, "value": v}, ...]
     """
     response = genesets.get(access_token, geneset_id)
-    species = Species(response["geneset"]["species_id"])
+    species = Species(response["object"]["geneset"]["species_id"])
 
     gene_id_type = GeneIdentifier.ENSEMBLE_GENE
 
