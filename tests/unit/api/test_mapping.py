@@ -31,7 +31,7 @@ def test_ensembl_mouse_mapping(
     species_id,
 ):
     """Test the `ensembl_mouse_mapping` function."""
-    mock_genesets_get.return_value = {"geneset": {"species_id": species_id}}
+    mock_genesets_get.return_value = {"object": {"geneset": {"species_id": species_id}}}
     mock_genesets_get_values.return_value = {
         "data": [{"symbol": "A", "value": "1"}, {"symbol": "B", "value": "2"}]
     }
